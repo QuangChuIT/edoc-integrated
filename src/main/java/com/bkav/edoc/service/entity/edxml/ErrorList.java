@@ -14,11 +14,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import com.bkav.edoc.service.resource.StringPool;
 
-
-/**
- * @author QuyenDN
- *
- */
 @XmlRootElement(name = "ErrorList", namespace = StringPool.TARGET_NAMESPACE)
 
 @XmlType(name = "ErrorList", propOrder = { "errors" })
@@ -28,26 +23,26 @@ import com.bkav.edoc.service.resource.StringPool;
 public class ErrorList {
 	
 	@XmlElement(name="Error")
-	private List<java.lang.Error> errors;
+	private List<Error> errors;
 
 	/**
 	 * @return the errors
 	 */
-	public List<java.lang.Error> getErrors() {
+	public List<Error> getErrors() {
 		return errors;
 	}
 
 	/**
 	 * @param errors the errors to set
 	 */
-	public void setErrors(List<java.lang.Error> errors) {
-		this.errors = errors == null ? new ArrayList<java.lang.Error>() : errors;
+	public void setErrors(List<Error> errors) {
+		this.errors = errors == null ? new ArrayList<Error>() : errors;
 	}
 
 	/**
 	 * @param errors
 	 */
-	public ErrorList(List<java.lang.Error> errors) {
+	public ErrorList(List<Error> errors) {
 		super();
 		this.errors = errors;
 	}
@@ -57,7 +52,7 @@ public class ErrorList {
 	 */
 	public ErrorList() {
 		super();
-		this.errors = new ArrayList<java.lang.Error>();
+		this.errors = new ArrayList<Error>();
 		// TODO Auto-generated constructor stub
 	}
 

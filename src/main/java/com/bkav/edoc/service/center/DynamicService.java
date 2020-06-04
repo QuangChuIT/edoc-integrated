@@ -1,11 +1,16 @@
 package com.bkav.edoc.service.center;
 
+import com.bkav.edoc.service.commonutil.Checker;
 import com.bkav.edoc.service.commonutil.ErrorCommonUtil;
+import com.bkav.edoc.service.commonutil.XmlChecker;
 import com.bkav.edoc.service.entity.edxml.Attachment;
 import com.bkav.edoc.service.entity.edxml.MessageHeader;
+import com.bkav.edoc.service.entity.edxml.Report;
 import com.bkav.edoc.service.entity.edxml.TraceHeaderList;
+import com.bkav.edoc.service.mineutil.AttachmentUtil;
 import com.bkav.edoc.service.mineutil.ExtractMime;
 import com.bkav.edoc.service.mineutil.XmlUtil;
+import org.apache.axiom.attachments.Attachments;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +23,7 @@ import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DynamicService extends AbstractMediator implements ManagedLifecycle {
 
@@ -30,14 +36,14 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         String soapNamespace = inMessageContext.getEnvelope().getNamespace()
                 .getNamespaceURI();
-        log.info(messageContext.getEnvelope());
+
         XmlUtil xmlUtil = new XmlUtil();
         try {
             Document doc = xmlUtil.convertToDocument(messageContext.getEnvelope());
 
-            switch (soapAction){
+            switch (soapAction) {
                 case "SendDocument":
-                    sendDocument(doc);
+                    sendDocument(doc, inMessageContext);
                     break;
                 case "GetListDocument":
                     break;
@@ -57,7 +63,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         return true;
     }
 
-    public void sendDocument(Document envelop){
+    public void sendDocument(Document envelop, org.apache.axis2.context.MessageContext messageContext) {
 
         List<Error> errorList = new ArrayList<Error>();
 
@@ -67,13 +73,51 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         TraceHeaderList traceHeaderList = null;
 
-        try {
-            messageHeader = extractMime.getMessageHeader(envelop);
-        } catch (Exception e){
-            log.error(ErrorCommonUtil.getInfoToLog(
-                    "Can't get message header", DynamicService.class));
+        Report report = xmlChecker.checkXmlTag(envelop);
+        if (report.isIsSuccess()) {
+            try {
+                messageHeader = extractMime.getMessageHeader(envelop);
+
+                traceHeaderList = extractMime.getTraceHeaderList(envelop, true);
+
+                //check message
+                report = checker.checkMessageHeader(messageHeader);
+
+                if (!report.isIsSuccess()) {
+
+                }
+                // check trace header list
+                report = checker.checkTraceHeaderList(traceHeaderList);
+
+                if (!report.isIsSuccess()) {
+
+                }
+
+                // Get attachment from context
+                Map<String, Object> attachments = attachmentUtil
+                        .GetAttachmentDocsByContext(messageContext);
+
+                // Kiem tra attachment
+                report = attachmentUtil.checkAllowAttachment(envelop,
+                        attachments);
+                if (!report.isIsSuccess()) {
+
+                }
+
+                List<String> attachmentNames = new ArrayList<String>();
+
+                attachmentsEntity = attachmentUtil.getAttachments(envelop,
+                        attachments);
+                for (Attachment attachment : attachmentsEntity) {
+                    attachmentNames.add(attachment.getName());
+                }
+            } catch (Exception e) {
+                log.error(ErrorCommonUtil.getInfoToLog(
+                        "Can't get message header", DynamicService.class));
+            }
         }
     }
+
     private static final Log log = LogFactory.getLog(DynamicService.class);
 
     @Override
@@ -86,5 +130,8 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
     }
 
-    private static final ExtractMime extractMime = new ExtractMime();;
+    private static final XmlChecker xmlChecker = new XmlChecker();
+    private static final ExtractMime extractMime = new ExtractMime();
+    private static final Checker checker = new Checker();
+    private static final AttachmentUtil attachmentUtil = new AttachmentUtil();
 }

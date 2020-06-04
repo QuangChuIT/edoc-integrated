@@ -1,5 +1,8 @@
 package com.bkav.edoc.service.commonutil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -9,8 +12,6 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-/*QuangCV - May 15, 2020*/
 
 public class XmlGregorianCalendarUtil {
 
@@ -56,7 +57,7 @@ public class XmlGregorianCalendarUtil {
 		try {
 			date = formatter.parse(dateString);
 		} catch (Exception e) {
-			return null;
+			_log.error(e.getMessage());
 		}
 		return date;
 	}
@@ -101,4 +102,6 @@ public class XmlGregorianCalendarUtil {
 
 		return xgcal;
 	}
+
+	private static final Log _log = LogFactory.getLog(XmlGregorianCalendarUtil.class);
 }

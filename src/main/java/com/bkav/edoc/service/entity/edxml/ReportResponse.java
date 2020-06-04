@@ -24,7 +24,7 @@ public class ReportResponse {
 	 * @param errorList
 	 * @param isSuccess
 	 */
-	public ReportResponse(boolean isSuccess, List<java.lang.Error> errorList) {
+	public ReportResponse(boolean isSuccess, List<Error> errorList) {
 		super();
 		Report = new Report(isSuccess, new ErrorList(errorList));
 	}

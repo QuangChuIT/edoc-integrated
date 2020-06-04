@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.bkav.edoc.service.mineutil;
 
@@ -21,6 +21,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import com.bkav.edoc.service.commonutil.XmlGregorianCalendarUtil;
 import com.bkav.edoc.service.entity.edxml.*;
+import com.bkav.edoc.service.kernel.util.GetterUtil;
 import com.bkav.edoc.service.resource.EdXmlConstant;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,568 +32,601 @@ import org.w3c.dom.Document;
 
 /**
  * @author QuangCV
- * 
+ *
  */
 public class ExtractMime {
 
-	public Attachment getAttachment(String name, DataHandler input)
-			throws XPathExpressionException, XMLStreamException {
-		Attachment attachment = new Attachment();
-		attachment.setName(name);
-		String contentType = input.getContentType();
-		attachment.setContentType(contentType);
+    public Attachment getAttachment(String name, DataHandler input)
+            throws XPathExpressionException, XMLStreamException {
+        Attachment attachment = new Attachment();
+        attachment.setName(name);
+        String contentType = input.getContentType();
+        attachment.setContentType(contentType);
 
-		String encoding = "base64";
-		attachment.setContentTransfer(encoding);
-		InputStream value = null;
+        String encoding = "base64";
+        attachment.setContentTransfer(encoding);
+        InputStream value = null;
 
-		try {
-			value = input.getInputStream();
-		} catch (IOException e) {
-			_log.error(e.getMessage());
-			value = new ByteArrayInputStream("".getBytes());
-		}
-		attachment.setValue(value);
+        try {
+            value = input.getInputStream();
+        } catch (IOException e) {
+            _log.error(e.getMessage());
+            value = new ByteArrayInputStream("".getBytes());
+        }
+        attachment.setValue(value);
 
-		return attachment;
-	}
+        return attachment;
+    }
 
-	public Map<String, String> getAttachmentName(Document envelope) {
+    public Map<String, String> getAttachmentName(Document envelope) {
 
-		Map<String, String> attNames = new HashMap<String, String>();
-		org.jdom2.Document jdomEnvDoc = XmlUtil.convertFromDom(envelope);
+        Map<String, String> attNames = new HashMap<String, String>();
+        org.jdom2.Document domEnvDoc = XmlUtil.convertFromDom(envelope);
 
-		Element envElement = jdomEnvDoc.getRootElement();
+        Element envElement = domEnvDoc.getRootElement();
 
-		Namespace envNs = envElement.getNamespace();
+        Namespace envNs = envElement.getNamespace();
 
-		Element body = getSingerElement(envElement, EdXmlConstant.BODY_TAG,
-				envNs);
-		if (body != null) {
-			Element manifestNode = getSingerElement(body,
-					EdXmlConstant.MANIFEST_TAG, EdXmlConstant.EDXML_NS);
-			List<Element> referenceNodes = getMultiElement(manifestNode,
-					EdXmlConstant.REFERENCE_TAG, EdXmlConstant.EDXML_NS);
-			if (referenceNodes != null && referenceNodes.size() > 0) {
-				for (Element item : referenceNodes) {
-					String name = item.getChildText(
-							EdXmlConstant.ATTACHMENT_NAME_TAG,
-							EdXmlConstant.EDXML_NS);
-					String hrefValue = item
-							.getAttributeValue(EdXmlConstant.HREF_ATTR);
-					if (hrefValue != null && hrefValue.contains("cid:")) {
-						hrefValue = hrefValue.replace("cid:", "");
-					}
+        Element body = getSingerElement(envElement, EdXmlConstant.BODY_TAG,
+                envNs);
+        if (body != null) {
+            Element manifestNode = getSingerElement(body,
+                    EdXmlConstant.MANIFEST_TAG, EdXmlConstant.EDXML_NS);
+            List<Element> referenceNodes = getMultiElement(manifestNode,
+                    EdXmlConstant.REFERENCE_TAG, EdXmlConstant.EDXML_NS);
+            if (referenceNodes != null && referenceNodes.size() > 0) {
+                for (Element item : referenceNodes) {
+                    String name = item.getChildText(
+                            EdXmlConstant.ATTACHMENT_NAME_TAG,
+                            EdXmlConstant.EDXML_NS);
+                    String hrefValue = item
+                            .getAttributeValue(EdXmlConstant.HREF_ATTR);
+                    if (hrefValue != null && hrefValue.contains("cid:")) {
+                        hrefValue = hrefValue.replace("cid:", "");
+                    }
 
-					attNames.put(hrefValue, name);
-				}
-			}
-		}
+                    attNames.put(hrefValue, name);
+                }
+            }
+        }
 
-		return attNames;
-	}
+        return attNames;
+    }
 
-	public TraceHeaderList getTraceHeaderList(Document envelopeDoc,
-											  boolean isByHeader) throws Exception {
+    public TraceHeaderList getTraceHeaderList(Document envelopeDoc,
+                                              boolean isByHeader) throws Exception {
 
-		org.jdom2.Document jdomEnvDoc = XmlUtil.convertFromDom(envelopeDoc);
+        org.jdom2.Document domEnvDoc = XmlUtil.convertFromDom(envelopeDoc);
 
-		Element rootElement = jdomEnvDoc.getRootElement();
+        Element rootElement = domEnvDoc.getRootElement();
 
-		Namespace envNs = xmlUtil.getEnvelopeNS(rootElement);
+        Namespace envNs = xmlUtil.getEnvelopeNS(rootElement);
 
-		String parentName = isByHeader ? "Header" : "Body";
+        String parentName = isByHeader ? "Header" : "Body";
 
-		Element parentNode = getSingerElement(rootElement, parentName, envNs);
+        Element parentNode = getSingerElement(rootElement, parentName, envNs);
 
-		if (!isByHeader) {
-			parentNode = parentNode.getChild("UpdateTraces");
-			// parentNode = getSingerElement(parentNode, "UpdateTraces",
-			// currentNs);
-		}
+        if (!isByHeader) {
+            parentNode = parentNode.getChild("UpdateTraces");
+            // parentNode = getSingerElement(parentNode, "UpdateTraces",
+            // currentNs);
+        }
 
-		Element traceHeaderListNode = isByHeader ? getSingerElement(parentNode,
-				"TraceHeaderList", EdXmlConstant.EDXML_NS) : parentNode
-				.getChild("TraceHeaderList");
+        Element traceHeaderListNode = isByHeader ? getSingerElement(parentNode,
+                "TraceHeaderList", EdXmlConstant.EDXML_NS) : parentNode
+                .getChild("TraceHeaderList");
 
-		TraceHeaderList traceList = new TraceHeaderList();
+        TraceHeaderList traceList = new TraceHeaderList();
 
-		traceList
-				.setTraceHeaders(GetTraceList(traceHeaderListNode, isByHeader));
+        traceList
+                .setTraceHeaders(GetTraceList(traceHeaderListNode, isByHeader));
 
-		return traceList;
-	}
+        return traceList;
+    }
 
-	/**
-	 * @param envelopeDoc
-	 * @return
-	 * @throws Exception
-	 */
-	public MessageHeader getMessageHeader(Document envelopeDoc)
-			throws Exception {
+    /**
+     * @param envelopeDoc
+     * @return
+     * @throws Exception
+     */
+    public MessageHeader getMessageHeader(Document envelopeDoc)
+            throws Exception {
 
-		org.jdom2.Document domENV = XmlUtil.convertFromDom(envelopeDoc);
+        org.jdom2.Document domENV = XmlUtil.convertFromDom(envelopeDoc);
 
-		Element rootElement = domENV.getRootElement();
+        Element rootElement = domENV.getRootElement();
 
-		MessageHeader messageHeader = new MessageHeader();
+        MessageHeader messageHeader = new MessageHeader();
 
-		Namespace envNs = xmlUtil.getEnvelopeNS(rootElement);
+        Namespace envNs = xmlUtil.getEnvelopeNS(rootElement);
 
-		Element headerNode = getSingerElement(rootElement, "Header", envNs);
+        Element headerNode = getSingerElement(rootElement, "Header", envNs);
 
-		Element messageHeaderNode = getSingerElement(headerNode,
-				"MessageHeader", EdXmlConstant.EDXML_NS);
-		
-		From from = GetFromInfo(messageHeaderNode);
-		messageHeader.setFrom(from);
+        Element messageHeaderNode = getSingerElement(headerNode,
+                "MessageHeader", EdXmlConstant.EDXML_NS);
 
+        From from = GetFromInfo(messageHeaderNode);
+        messageHeader.setFrom(from);
 
-		messageHeader.setDocumentId(GetDocumentId(messageHeaderNode));
+        String dueDate = GetterUtil.getString(messageHeaderNode.getChildText("DueDate",
+                EdXmlConstant.EDXML_NS), "");
 
-		Code code = GetCode(messageHeaderNode);
-		messageHeader.setCode(code);
+        messageHeader.setDueDate(dueDate);
 
-		PromulgationInfo pro = GetPromulgationInfo(messageHeaderNode);
-		messageHeader.setPromulgationInfo(pro);
+        List<To> tos = GetTos(messageHeaderNode);
+        messageHeader.setTo(tos);
+        messageHeader.setDocumentId(GetDocumentId(messageHeaderNode));
 
-		DocumentType docType = GetDocumentType(messageHeaderNode);
-		messageHeader.setDocumentType(docType);
+        Code code = GetCode(messageHeaderNode);
+        messageHeader.setCode(code);
 
-		messageHeader.setSubject(GetSubject(messageHeaderNode));
+        PromulgationInfo pro = GetPromulgationInfo(messageHeaderNode);
+        messageHeader.setPromulgationInfo(pro);
 
-		messageHeader.setContent(GetContent(messageHeaderNode));
+        DocumentType docType = GetDocumentType(messageHeaderNode);
+        messageHeader.setDocumentType(docType);
 
+        messageHeader.setSubject(GetSubject(messageHeaderNode));
 
-		ToPlaces toPlaces = GetToPlaces(messageHeaderNode);
-		messageHeader.setToPlaces(toPlaces);
+        messageHeader.setContent(GetContent(messageHeaderNode));
 
-		OtherInfo otherInfo = GetOtherInfo(messageHeaderNode);
-		messageHeader.setOtherInfo(otherInfo);
+        SignerInfo signerInfo = getSignerInfo(messageHeaderNode);
 
+        messageHeader.setSignerInfo(signerInfo);
 
-		return messageHeader;
-	}
+        ToPlaces toPlaces = GetToPlaces(messageHeaderNode);
+        messageHeader.setToPlaces(toPlaces);
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws Exception
-	 */
-	public List<To> GetTos(Element messageHeaderNode, Map<String, String> outOrganDueDate) throws Exception {
+        OtherInfo otherInfo = GetOtherInfo(messageHeaderNode);
+        messageHeader.setOtherInfo(otherInfo);
 
-		List<To> tos = new ArrayList<To>();
+        int steeringType = GetterUtil.getInteger(messageHeaderNode.getChildText("SteeringType", EdXmlConstant.EDXML_NS), 0);
 
-		List<Element> toNodes = getMultiElement(messageHeaderNode, "To",
-				EdXmlConstant.EDXML_NS);
+        messageHeader.setSteeringType(steeringType);
 
-		for (Element toNode : toNodes) {
-			tos.add(GetToInfo(toNode, outOrganDueDate));
-		}
+        String edxmlDocumentId = GetterUtil.getString(messageHeaderNode.getChildText("DocumentId"), "");
 
-		return tos;
+        messageHeader.setDocumentId(edxmlDocumentId);
 
-	}
+        return messageHeader;
+    }
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public String GetDocumentId(Element messageHeaderNode) {
-		String documentId = messageHeaderNode.getChildText("DocumentId",
-				EdXmlConstant.EDXML_NS);
-		return documentId;
-	}
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws Exception
+     */
+    public List<To> GetTos(Element messageHeaderNode) throws Exception {
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public Code GetCode(Element messageHeaderNode) {
+        List<To> tos = new ArrayList<To>();
 
-		Code code = new Code();
+        List<Element> toNodes = getMultiElement(messageHeaderNode, "To",
+                EdXmlConstant.EDXML_NS);
 
-		Element codeNode = getSingerElement(messageHeaderNode, "Code",
-				EdXmlConstant.EDXML_NS);
+        for (Element toNode : toNodes) {
+            tos.add(GetToInfo(toNode));
+        }
 
-		code.setCodeNumber(codeNode.getChildText("CodeNumber",
-				EdXmlConstant.EDXML_NS));
+        return tos;
 
-		code.setCodeNotation(codeNode.getChildText("CodeNotation",
-				EdXmlConstant.EDXML_NS));
+    }
 
-		return code;
-	}
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws XPathExpressionException
+     */
+    public String GetDocumentId(Element messageHeaderNode) {
+        String documentId = messageHeaderNode.getChildText("DocumentId",
+                EdXmlConstant.EDXML_NS);
+        return documentId;
+    }
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws XPathExpressionException
-	 * @throws ParseException
-	 */
-	public PromulgationInfo GetPromulgationInfo(Element messageHeaderNode)
-			throws ParseException {
-		PromulgationInfo proInfo = new PromulgationInfo();
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws XPathExpressionException
+     */
+    public Code GetCode(Element messageHeaderNode) {
 
-		Element proInfoNode = getSingerElement(messageHeaderNode,
-				"PromulgationInfo", EdXmlConstant.EDXML_NS);
+        Code code = new Code();
 
-		proInfo.setPlace(proInfoNode.getChildText("Place",
-				EdXmlConstant.EDXML_NS));
+        Element codeNode = getSingerElement(messageHeaderNode, "Code",
+                EdXmlConstant.EDXML_NS);
 
-		proInfo.setPromulgationDate(proInfoNode.getChildText(
-				"PromulgationDate", EdXmlConstant.EDXML_NS));
+        code.setCodeNumber(codeNode.getChildText("CodeNumber",
+                EdXmlConstant.EDXML_NS));
 
-		return proInfo;
-	}
+        code.setCodeNotation(codeNode.getChildText("CodeNotation",
+                EdXmlConstant.EDXML_NS));
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public DocumentType GetDocumentType(Element messageHeaderNode) {
+        return code;
+    }
 
-		DocumentType docType = new DocumentType();
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws XPathExpressionException
+     * @throws ParseException
+     */
+    public PromulgationInfo GetPromulgationInfo(Element messageHeaderNode)
+            throws ParseException {
+        PromulgationInfo proInfo = new PromulgationInfo();
 
-		Element documentTypeNode = getSingerElement(messageHeaderNode,
-				"DocumentType", EdXmlConstant.EDXML_NS);
+        Element proInfoNode = getSingerElement(messageHeaderNode,
+                "PromulgationInfo", EdXmlConstant.EDXML_NS);
 
-		docType.setType(Integer.parseInt(documentTypeNode.getChildText("Type",
-				EdXmlConstant.EDXML_NS)));
+        proInfo.setPlace(proInfoNode.getChildText("Place",
+                EdXmlConstant.EDXML_NS));
 
-		docType.setTypeName(documentTypeNode.getChildText("TypeName",
-				EdXmlConstant.EDXML_NS));
+        proInfo.setPromulgationDate(proInfoNode.getChildText(
+                "PromulgationDate", EdXmlConstant.EDXML_NS));
 
-		return docType;
-	}
+        return proInfo;
+    }
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public String GetSubject(Element messageHeaderNode) {
-		return messageHeaderNode
-				.getChildText("Subject", EdXmlConstant.EDXML_NS);
-	}
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws XPathExpressionException
+     */
+    public DocumentType GetDocumentType(Element messageHeaderNode) {
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public String GetContent(Element messageHeaderNode) {
+        DocumentType docType = new DocumentType();
 
-		return messageHeaderNode
-				.getChildText("Content", EdXmlConstant.EDXML_NS);
-	}
+        Element documentTypeNode = getSingerElement(messageHeaderNode,
+                "DocumentType", EdXmlConstant.EDXML_NS);
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public Author GetAuthor(Element messageHeaderNode) {
+        docType.setType(Integer.parseInt(documentTypeNode.getChildText("Type",
+                EdXmlConstant.EDXML_NS)));
 
-		Author author = new Author();
+        docType.setTypeName(documentTypeNode.getChildText("TypeName",
+                EdXmlConstant.EDXML_NS));
 
-		Element authorNode = getSingerElement(messageHeaderNode, "SignerInfo",
-				EdXmlConstant.EDXML_NS);
+        return docType;
+    }
 
-		author.setCompetence(authorNode.getChildText("Competence",
-				EdXmlConstant.EDXML_NS));
+    /**
+     *
+     * @param messageHeaderNode
+     * @return
+     */
+    public SignerInfo getSignerInfo(Element messageHeaderNode) {
 
-		author.setFunction(authorNode.getChildText("Position",
-				EdXmlConstant.EDXML_NS));
+        SignerInfo signerInfo = new SignerInfo();
 
-		author.setFullName(authorNode.getChildText("FullName",
-				EdXmlConstant.EDXML_NS));
+        Element signerInfoNode = getSingerElement(messageHeaderNode, "SignerInfo", EdXmlConstant.EDXML_NS);
 
-		return author;
-	}
+        signerInfo.setFullName(signerInfoNode.getChildText("FullName", EdXmlConstant.EDXML_NS));
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws XPathExpressionException
-	 * @throws ParseException
-	 */
-	public String GetResponseDate(Element messageHeaderNode) {
+        signerInfo.setCompetence(signerInfoNode.getChildText("Competence", EdXmlConstant.EDXML_NS));
 
-		return messageHeaderNode
-				.getChildText("DueDate", EdXmlConstant.EDXML_NS);
-	}
+        signerInfo.setPosition(signerInfoNode.getChildText("Position", EdXmlConstant.EDXML_NS));
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public ToPlaces GetToPlaces(Element messageHeaderNode) {
-		List<String> places = new ArrayList<String>();
-		ToPlaces toPlaces = new ToPlaces();
+        return signerInfo;
+    }
 
-		Element toPlacesNode = getSingerElement(messageHeaderNode, "ToPlaces",
-				EdXmlConstant.EDXML_NS);
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws XPathExpressionException
+     */
+    public String GetSubject(Element messageHeaderNode) {
+        return messageHeaderNode
+                .getChildText("Subject", EdXmlConstant.EDXML_NS);
+    }
 
-		List<Element> placeNodes = getMultiElement(toPlacesNode, "Place",
-				EdXmlConstant.EDXML_NS);
-		for (Element item : placeNodes) {
-			places.add(item.getTextTrim());
-		}
-		toPlaces.setPlace(places);
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws XPathExpressionException
+     */
+    public String GetContent(Element messageHeaderNode) {
 
-		return toPlaces;
-	}
+        return messageHeaderNode
+                .getChildText("Content", EdXmlConstant.EDXML_NS);
+    }
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public Appendixes GetAppendixes(Element messageHeaderNode) {
-		Appendixes appendixes = new Appendixes();
-		List<String> appendix = new ArrayList<String>();
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws XPathExpressionException
+     */
+    public Author GetAuthor(Element messageHeaderNode) {
 
-		Element otherInfoNode = getSingerElement(messageHeaderNode,
-				"OtherInfo", EdXmlConstant.EDXML_NS);
+        Author author = new Author();
 
-		Element appendixesNode = getSingerElement(otherInfoNode, "Appendixes",
-				EdXmlConstant.EDXML_NS);
+        Element authorNode = getSingerElement(messageHeaderNode, "SignerInfo",
+                EdXmlConstant.EDXML_NS);
 
-		List<Element> appendixNodes = getMultiElement(appendixesNode,
-				"Appendix", EdXmlConstant.EDXML_NS);
+        author.setCompetence(authorNode.getChildText("Competence",
+                EdXmlConstant.EDXML_NS));
 
-		for (Element item : appendixNodes) {
-			appendix.add(item.getTextTrim());
-		}
+        author.setFunction(authorNode.getChildText("Position",
+                EdXmlConstant.EDXML_NS));
 
-		appendixes.setAppendix(appendix);
+        author.setFullName(authorNode.getChildText("FullName",
+                EdXmlConstant.EDXML_NS));
 
-		return appendixes;
-	}
+        return author;
+    }
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public OtherInfo GetOtherInfo(Element messageHeaderNode) {
-		OtherInfo otherInfo = new OtherInfo();
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws XPathExpressionException
+     * @throws ParseException
+     */
+    public String GetResponseDate(Element messageHeaderNode) {
 
-		Element otherNode = getSingerElement(messageHeaderNode, "OtherInfo",
-				EdXmlConstant.EDXML_NS);
+        return messageHeaderNode
+                .getChildText("DueDate", EdXmlConstant.EDXML_NS);
+    }
 
-		otherInfo.setPriority(Integer.parseInt(otherNode.getChildText(
-				"Priority", EdXmlConstant.EDXML_NS)));
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws XPathExpressionException
+     */
+    public ToPlaces GetToPlaces(Element messageHeaderNode) {
+        List<String> places = new ArrayList<String>();
+        ToPlaces toPlaces = new ToPlaces();
 
-		otherInfo.setSphereOfPromulgation(otherNode.getChildText(
-				"SphereOfPromulgation", EdXmlConstant.EDXML_NS));
+        Element toPlacesNode = getSingerElement(messageHeaderNode, "ToPlaces",
+                EdXmlConstant.EDXML_NS);
 
-		otherInfo.setTyperNotation(otherNode.getChildText("TyperNotation",
-				EdXmlConstant.EDXML_NS));
+        List<Element> placeNodes = getMultiElement(toPlacesNode, "Place",
+                EdXmlConstant.EDXML_NS);
+        for (Element item : placeNodes) {
+            places.add(item.getTextTrim());
+        }
+        toPlaces.setPlace(places);
 
-		otherInfo.setPromulgationAmount(Integer.parseInt(otherNode
-				.getChildText("PromulgationAmount", EdXmlConstant.EDXML_NS)));
+        return toPlaces;
+    }
 
-		otherInfo.setPageAmount(Integer.parseInt(otherNode.getChildText(
-				"PageAmount", EdXmlConstant.EDXML_NS)));
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws XPathExpressionException
+     */
+    public Appendixes GetAppendixes(Element messageHeaderNode) {
+        Appendixes appendixes = new Appendixes();
+        List<String> appendix = new ArrayList<String>();
 
-		return otherInfo;
-	}
+        Element otherInfoNode = getSingerElement(messageHeaderNode,
+                "OtherInfo", EdXmlConstant.EDXML_NS);
 
-	public List<Code> getRelated(Element messageHeaderNode) {
+        Element appendixesNode = getSingerElement(otherInfoNode, "Appendixes",
+                EdXmlConstant.EDXML_NS);
 
-		Element relatedNode = getSingerElement(messageHeaderNode, "Related",
-				EdXmlConstant.EDXML_NS);
+        List<Element> appendixNodes = getMultiElement(appendixesNode,
+                "Appendix", EdXmlConstant.EDXML_NS);
 
-		if (relatedNode == null) {
-			return new ArrayList<Code>();
-		}
+        for (Element item : appendixNodes) {
+            appendix.add(item.getTextTrim());
+        }
 
-		return getRelatedCode(relatedNode);
-	}
+        appendixes.setAppendix(appendix);
 
-	private List<Code> getRelatedCode(Element relatedNode) {
+        return appendixes;
+    }
 
-		List<Code> codes = new ArrayList<Code>();
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws XPathExpressionException
+     */
+    public OtherInfo GetOtherInfo(Element messageHeaderNode) {
+        OtherInfo otherInfo = new OtherInfo();
 
-		List<Element> codeNodes = getMultiElement(relatedNode, "Code",
-				EdXmlConstant.EDXML_NS);
+        Element otherNode = getSingerElement(messageHeaderNode, "OtherInfo",
+                EdXmlConstant.EDXML_NS);
 
-		if (codeNodes != null) {
-			Code code;
-			for (Element item : codeNodes) {
-				code = new Code();
-				code.setCodeNumber(item.getChildText("CodeNumber",
-						EdXmlConstant.EDXML_NS));
+        otherInfo.setPriority(Integer.parseInt(otherNode.getChildText(
+                "Priority", EdXmlConstant.EDXML_NS)));
 
-				code.setCodeNotation(item.getChildText("CodeNotation",
-						EdXmlConstant.EDXML_NS));
-				codes.add(code);
-			}
-		}
+        otherInfo.setSphereOfPromulgation(otherNode.getChildText(
+                "SphereOfPromulgation", EdXmlConstant.EDXML_NS));
 
-		return codes;
-	}
+        otherInfo.setTyperNotation(otherNode.getChildText("TyperNotation",
+                EdXmlConstant.EDXML_NS));
 
-	/**
-	 * @param messageHeaderNode
-	 * @return
-	 * @throws Exception
-	 */
-	private From GetFromInfo(Element messageHeaderNode) throws Exception {
+        otherInfo.setPromulgationAmount(Integer.parseInt(otherNode
+                .getChildText("PromulgationAmount", EdXmlConstant.EDXML_NS)));
 
-		From from = new From();
+        otherInfo.setPageAmount(Integer.parseInt(otherNode.getChildText(
+                "PageAmount", EdXmlConstant.EDXML_NS)));
 
-		Element fromNode = getSingerElement(messageHeaderNode, "From",
-				EdXmlConstant.EDXML_NS);
+        return otherInfo;
+    }
 
-		from.setOrganId(fromNode
-				.getChildText("OrganId", EdXmlConstant.EDXML_NS));
+    public List<Code> getRelated(Element messageHeaderNode) {
 
-		from.setOrganInCharge(fromNode.getChildText("OrganizationInCharge",
-				EdXmlConstant.EDXML_NS));
+        Element relatedNode = getSingerElement(messageHeaderNode, "Related",
+                EdXmlConstant.EDXML_NS);
 
-		from.setOrganName(fromNode.getChildText("OrganName",
-				EdXmlConstant.EDXML_NS));
+        if (relatedNode == null) {
+            return new ArrayList<Code>();
+        }
 
-		from.setOrganAdd(fromNode.getChildText("OrganAdd",
-				EdXmlConstant.EDXML_NS));
+        return getRelatedCode(relatedNode);
+    }
 
-		from.setEmail(fromNode.getChildText("Email", EdXmlConstant.EDXML_NS));
+    private List<Code> getRelatedCode(Element relatedNode) {
 
-		from.setTelephone(fromNode.getChildText("Telephone",
-				EdXmlConstant.EDXML_NS));
+        List<Code> codes = new ArrayList<Code>();
 
-		from.setFax(fromNode.getChildText("Fax", EdXmlConstant.EDXML_NS));
+        List<Element> codeNodes = getMultiElement(relatedNode, "Code",
+                EdXmlConstant.EDXML_NS);
 
-		from.setWebsite(fromNode
-				.getChildText("Website", EdXmlConstant.EDXML_NS));
+        if (codeNodes != null) {
+            Code code;
+            for (Element item : codeNodes) {
+                code = new Code();
+                code.setCodeNumber(item.getChildText("CodeNumber",
+                        EdXmlConstant.EDXML_NS));
 
-		return from;
-	}
+                code.setCodeNotation(item.getChildText("CodeNotation",
+                        EdXmlConstant.EDXML_NS));
+                codes.add(code);
+            }
+        }
 
-	/**
-	 * @param toNode
-	 * @param outOrganDueDate
-	 * @return
-	 * @throws Exception
-	 */
-	private To GetToInfo(Element toNode, Map<String, String> outOrganDueDate) throws Exception {
+        return codes;
+    }
 
-		To to = new To();
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws Exception
+     */
+    private From GetFromInfo(Element messageHeaderNode) throws Exception {
 
-		to.setOrganId(toNode.getChildText("OrganId", EdXmlConstant.EDXML_NS));
+        From from = new From();
 
-		to.setOrganName(toNode
-				.getChildText("OrganName", EdXmlConstant.EDXML_NS));
+        Element fromNode = getSingerElement(messageHeaderNode, "From",
+                EdXmlConstant.EDXML_NS);
 
-		to.setOrganAdd(toNode.getChildText("OrganAdd", EdXmlConstant.EDXML_NS));
+        from.setOrganId(fromNode
+                .getChildText("OrganId", EdXmlConstant.EDXML_NS));
 
-		to.setEmail(toNode.getChildText("Email", EdXmlConstant.EDXML_NS));
+        from.setOrganInCharge(fromNode.getChildText("OrganizationInCharge",
+                EdXmlConstant.EDXML_NS));
 
-		to.setTelephone(toNode
-				.getChildText("Telephone", EdXmlConstant.EDXML_NS));
+        from.setOrganName(fromNode.getChildText("OrganName",
+                EdXmlConstant.EDXML_NS));
 
-		to.setFax(toNode.getChildText("Fax", EdXmlConstant.EDXML_NS));
+        from.setOrganAdd(fromNode.getChildText("OrganAdd",
+                EdXmlConstant.EDXML_NS));
 
-		to.setWebsite(toNode.getChildText("Website", EdXmlConstant.EDXML_NS));
-		
-		Element dueDateNode = toNode.getChild("DueDate", EdXmlConstant.EDXML_NS);
-		if(dueDateNode != null){
-			String dueDate = dueDateNode.getTextTrim();
-			outOrganDueDate.put(to.getOrganId(), dueDate);
-		}
-		
+        from.setEmail(fromNode.getChildText("Email", EdXmlConstant.EDXML_NS));
 
-		return to;
-	}
+        from.setTelephone(fromNode.getChildText("Telephone",
+                EdXmlConstant.EDXML_NS));
 
-	public Element getSingerElement(Element rootElement, String childName,
-			Namespace ns) {
-		if (rootElement == null) {
-			return null;
-		}
-		List<Element> list;
-		if (ns == null) {
-			list = rootElement.getChildren(childName);
-		} else {
-			list = rootElement.getChildren(childName, ns);
-		}
-		if (list == null || list.isEmpty())
-			return null;
-		return (Element) list.get(0);
-	}
+        from.setFax(fromNode.getChildText("Fax", EdXmlConstant.EDXML_NS));
 
-	public List<Element> getMultiElement(Element rootElement, String childName,
-			Namespace ns) {
-		if (rootElement == null) {
-			return null;
-		}
-		List<Element> list;
-		if (ns == null) {
-			list = rootElement.getChildren(childName);
-		} else {
-			list = rootElement.getChildren(childName, ns);
-		}
-		return list;
-	}
+        from.setWebsite(fromNode
+                .getChildText("Website", EdXmlConstant.EDXML_NS));
 
-	private List<TraceHeader> GetTraceList(Element traceListNode,
-			boolean isByHeader) throws Exception {
+        return from;
+    }
 
-		List<TraceHeader> results = new ArrayList<TraceHeader>();
+    /**
+     * @param toNode
+     * @return
+     * @throws Exception
+     */
+    private To GetToInfo(Element toNode) throws Exception {
 
-		List<Element> traces = isByHeader ? getMultiElement(traceListNode,
-				"TraceHeader", EdXmlConstant.EDXML_NS) : traceListNode
-				.getChildren();
-		if (traces != null) {
-			TraceHeader tmpTrace;
-			for (Element item : traces) {
-				List<Element> listChild = item.getChildren();
-				if (listChild == null) {
-					continue;
-				}
-				if (listChild.size() == 0) {
-					continue;
-				}
+        To to = new To();
 
-				tmpTrace = new TraceHeader();
-				String temp = isByHeader ? item.getChildText("OrganId",
-						EdXmlConstant.EDXML_NS) : item.getChildText("OrganId");
-				tmpTrace.setOrganId(temp);
+        to.setOrganId(toNode.getChildText("OrganId", EdXmlConstant.EDXML_NS));
 
+        to.setOrganName(toNode
+                .getChildText("OrganName", EdXmlConstant.EDXML_NS));
 
-				String strTime = isByHeader ? item.getChildText("Timestamp",
-						EdXmlConstant.EDXML_NS) : item
-						.getChildText("Timestamp");
+        to.setOrganAdd(toNode.getChildText("OrganAdd", EdXmlConstant.EDXML_NS));
 
-				Date timeStamp = XmlGregorianCalendarUtil.convertToDate(
-						strTime, XmlGregorianCalendarUtil.VN_DATE_TIME_FORMAT);
-				tmpTrace.setTimeStamp(timeStamp);
+        to.setEmail(toNode.getChildText("Email", EdXmlConstant.EDXML_NS));
 
-				results.add(tmpTrace);
-			}
-		}
+        to.setTelephone(toNode
+                .getChildText("Telephone", EdXmlConstant.EDXML_NS));
 
-		return results;
-	}
+        to.setFax(toNode.getChildText("Fax", EdXmlConstant.EDXML_NS));
 
-	private Calendar cal;
+        to.setWebsite(toNode.getChildText("Website", EdXmlConstant.EDXML_NS));
 
-	private Log _log = LogFactory.getLog(ExtractMime.class);
+        Element dueDateNode = toNode.getChild("DueDate", EdXmlConstant.EDXML_NS);
+        if (dueDateNode != null) {
+            String dueDate = dueDateNode.getTextTrim();
+        }
 
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
-			"dd/MM/yyyy");
+        return to;
+    }
 
-	private static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-			"dd/MM/yyyy HH:mm:ss");
+    public Element getSingerElement(Element rootElement, String childName,
+                                    Namespace ns) {
+        if (rootElement == null) {
+            return null;
+        }
+        List<Element> list;
+        if (ns == null) {
+            list = rootElement.getChildren(childName);
+        } else {
+            list = rootElement.getChildren(childName, ns);
+        }
+        if (list == null || list.isEmpty())
+            return null;
+        return (Element) list.get(0);
+    }
 
-	private static final XmlUtil xmlUtil = new XmlUtil();
+    public List<Element> getMultiElement(Element rootElement, String childName,
+                                         Namespace ns) {
+        if (rootElement == null) {
+            return null;
+        }
+        List<Element> list;
+        if (ns == null) {
+            list = rootElement.getChildren(childName);
+        } else {
+            list = rootElement.getChildren(childName, ns);
+        }
+        return list;
+    }
+
+    private List<TraceHeader> GetTraceList(Element traceListNode,
+                                           boolean isByHeader) throws Exception {
+
+        List<TraceHeader> results = new ArrayList<TraceHeader>();
+
+        List<Element> traces = isByHeader ? getMultiElement(traceListNode,
+                "TraceHeader", EdXmlConstant.EDXML_NS) : traceListNode
+                .getChildren();
+        if (traces != null) {
+            TraceHeader tmpTrace;
+            for (Element item : traces) {
+                List<Element> listChild = item.getChildren();
+                if (listChild == null) {
+                    continue;
+                }
+                if (listChild.size() == 0) {
+                    continue;
+                }
+
+                tmpTrace = new TraceHeader();
+                String temp = isByHeader ? item.getChildText("OrganId",
+                        EdXmlConstant.EDXML_NS) : item.getChildText("OrganId");
+                tmpTrace.setOrganId(temp);
+
+
+                String strTime = isByHeader ? item.getChildText("Timestamp",
+                        EdXmlConstant.EDXML_NS) : item
+                        .getChildText("Timestamp");
+
+                Date timeStamp = XmlGregorianCalendarUtil.convertToDate(
+                        strTime, XmlGregorianCalendarUtil.VN_DATE_TIME_FORMAT);
+                tmpTrace.setTimeStamp(timeStamp);
+
+                results.add(tmpTrace);
+            }
+        }
+
+        return results;
+    }
+
+    private Calendar cal;
+
+    private Log _log = LogFactory.getLog(ExtractMime.class);
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
+            "dd/MM/yyyy");
+
+    private static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+            "dd/MM/yyyy HH:mm:ss");
+
+    private static final XmlUtil xmlUtil = new XmlUtil();
 
 
 }
