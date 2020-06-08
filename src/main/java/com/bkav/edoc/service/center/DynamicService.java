@@ -10,8 +10,6 @@ import com.bkav.edoc.service.entity.edxml.TraceHeaderList;
 import com.bkav.edoc.service.mineutil.AttachmentUtil;
 import com.bkav.edoc.service.mineutil.ExtractMime;
 import com.bkav.edoc.service.mineutil.XmlUtil;
-import org.apache.axiom.attachments.Attachments;
-import org.apache.axiom.soap.SOAPBody;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.ManagedLifecycle;
