@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.bkav.edoc.service.database.entity.EdocDocument" table="edoc_document">
+        <id name="documentId" type="java.lang.Long">
+            <column name="document_id" />
+            <generator class="identity" />
+        </id>
+        <property name="edXMLDocId" type="string" column="edXML_doc_id"/>
+        <property name="createDate" type="date" column="create_date"/>
+        <property name="modifiedDate" type="date" column="modified_date"/>
+        <property name="subject" type="string" column="subject"/>
+        <property name="codeNumber" type="string" column="code_number"/>
+        <property name="codeNotation" type="string" column="code_notation"/>
+        <property name="promulgationPlace" type="string" column="promulgation_place"/>
+        <property name="promulgationDate" type="string" column="promulgation_date"/>
+        <property name="documentType" column="document_type">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">com.bkav.edoc.service.database.entity.EdocDocument$DocumentType</param>
+            </type>
+        </property>
+        <property name="documentTypeName" type="string" column="document_type_name"/>
+        <property name="documentTypeDetail" type="string" column="document_type_detail"/>
+        <property name="draft" column="isdraft" type="boolean"/>
+        <property name="sentDate" type="date" column="sent_date"/>
+        <property name="toOrganDomain" type="string" column="to_organ_domain"/>
+        <property name="fromOrganDomain" type="string" column="from_organ_domain"/>
+        <property name="visible" type="boolean" column="visible"/>
+        <one-to-one name="documentDetail" class="com.bkav.edoc.service.database.entity.EdocDocumentDetail"
+                    cascade="save-update"></one-to-one>
+        <one-to-one name="traceHeaderList" class="com.bkav.edoc.service.database.entity.EdocTraceHeaderList"
+                    cascade="save-update"></one-to-one>
+        <many-to-one name="priority" class="com.bkav.edoc.service.database.entity.EdocPriority" fetch="select">
+            <column name="priority_id" />
+        </many-to-one>
+        <set name="notifications" table="edoc_notification"
+             inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="DOC_ID"/>
+            </key>
+            <one-to-many class="com.bkav.edoc.service.database.entity.EdocNotification" />
+        </set>
+        <set name="traces" table="edoc_trace"
+             inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="DOC_ID"/>
+            </key>
+            <one-to-many class="com.bkav.edoc.service.database.entity.EdocTrace" />
+        </set>
+        <set name="attachments" table="edoc_attachment"
+             inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="DOC_ID"/>
+            </key>
+            <one-to-many class="com.bkav.edoc.service.database.entity.EdocAttachment" />
+        </set>
+    </class>
+</hibernate-mapping>
