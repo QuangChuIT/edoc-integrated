@@ -3,6 +3,7 @@ package com.bkav.edoc.service.center;
 import com.bkav.edoc.service.commonutil.Checker;
 import com.bkav.edoc.service.commonutil.ErrorCommonUtil;
 import com.bkav.edoc.service.commonutil.XmlChecker;
+import com.bkav.edoc.service.database.services.EdocDocumentService;
 import com.bkav.edoc.service.entity.edxml.Attachment;
 import com.bkav.edoc.service.entity.edxml.MessageHeader;
 import com.bkav.edoc.service.entity.edxml.Report;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DynamicService extends AbstractMediator implements ManagedLifecycle {
+
+    private EdocDocumentService documentService = new EdocDocumentService();
 
     public boolean mediate(MessageContext messageContext) {
         log.info("E document  mediator invoker");
@@ -109,9 +112,14 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 for (Attachment attachment : attachmentsEntity) {
                     attachmentNames.add(attachment.getName());
                 }
+                if (!documentService.addDocument(messageHeader, traceHeaderList,
+                        attachmentsEntity)) {
+                    System.out.println("Error attachment");
+                }
             } catch (Exception e) {
                 log.error(ErrorCommonUtil.getInfoToLog(
                         "Can't get message header", DynamicService.class));
+                e.printStackTrace();
             }
         }
     }

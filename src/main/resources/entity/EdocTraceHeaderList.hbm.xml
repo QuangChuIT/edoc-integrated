@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.bkav.edoc.service.database.entity.EdocTraceHeaderList" table="edoc_trace_header_list">
+        <id name="documentId" type="java.lang.Long">
+            <column name="document_id" />
+            <generator class="foreign">
+                <param name="property">document</param>
+            </generator>
+        </id>
+        <property name="organDomain" type="string" column="organ_domain"/>
+        <property name="timeStamp" type="timestamp" column="time_stamp"/>
+        <property name="bussinessDocReason" type="string" column="bussiness_doc_reason"/>
+        <property name="paper" type="int" column="paper"/>
+        <property name="department" type="string" column="department"/>
+        <property name="staff" type="string" column="staff"/>
+        <property name="mobile" type="string" column="mobile"/>
+        <property name="email" type="string" column="email"/>
+        <property name="bussinessDocType" column="bussiness_doc_type">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">com.bkav.edoc.service.database.entity.EdocTraceHeaderList$BussinessDocType</param>
+            </type>
+        </property>
+        <one-to-one name="document" class="com.bkav.edoc.service.database.entity.EdocDocument"
+                    constrained="true"></one-to-one>
+    </class>
+</hibernate-mapping>

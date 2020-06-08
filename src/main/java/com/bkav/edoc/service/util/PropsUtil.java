@@ -28,4 +28,14 @@ public class PropsUtil {
         }
         return prop;
     }
+
+    public static String get(String key) {
+        if(prop.isEmpty()) {
+            try {
+                prop = readPropertyFile();
+            } catch (Exception e) {
+            }
+        }
+        return prop.getProperty(key);
+    }
 }

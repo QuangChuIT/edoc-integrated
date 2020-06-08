@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.bkav.edoc.service.database.entity.EdocDocumentDetail" table="edoc_document_detail">
+        <id name="documentId" type="java.lang.Long">
+            <column name="document_id" />
+            <generator class="foreign">
+                <param name="property">document</param>
+            </generator>
+        </id>
+        <property name="content" type="string" column="content"/>
+        <property name="signerCompetence" type="string" column="signer_competence"/>
+        <property name="signerPosition" type="string" column="signer_position"/>
+        <property name="dueDate" type="date" column="due_date"/>
+        <property name="toPlaces" type="string" column="to_places"/>
+        <property name="sphereOfPromulgation" type="string" column="sphere_of_promulgation"/>
+        <property name="typerNotation" type="string" column="typer_notation"/>
+        <property name="promulgationAmount" type="long" column="promulgation_amount"/>
+        <property name="pageAmount" type="long" column="page_amount"/>
+        <property name="appendixes" type="string" column="appendixes"/>
+        <property name="responseForOrganId" type="string" column="response_for_organ_id"/>
+        <property name="responseForCode" type="string" column="response_for_code"/>
+        <property name="responseForPromulgationDate" type="timestamp" column="response_for_promulgation_date"/>
+        <property name="responseForDocumentId" type="string" column="response_for_document_id"/>
+        <property name="steeringType" column="steering_type">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">com.bkav.edoc.service.database.entity.EdocDocumentDetail$SteeringType</param>
+            </type>
+        </property>
+        <one-to-one name="document" class="com.bkav.edoc.service.database.entity.EdocDocument"
+                    constrained="true"></one-to-one>
+    </class>
+</hibernate-mapping>
