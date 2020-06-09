@@ -53,13 +53,8 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                             "Can't define soap envelop", DynamicService.class));
             }
         } catch (Exception e) {
-            log.error(ErrorCommonUtil.getInfoToLog(
-                    "Can't define soap envelop", DynamicService.class));
+            log.error(e);
         }
-
-        log.info("Soap Action " + soapAction + " invoke !!!!!!!! ");
-
-        log.info("Soap Namespace " + soapNamespace + " invoke !!!!!!!! ");
 
         return true;
     }
@@ -117,9 +112,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
                 }
             } catch (Exception e) {
-                log.error(ErrorCommonUtil.getInfoToLog(
-                        "Can't get message header", DynamicService.class));
-                e.printStackTrace();
+                log.error(e);
             }
         }
     }
