@@ -3,14 +3,11 @@ package com.bkav.edoc.service.commonutil;
 import com.bkav.edoc.service.entity.edxml.*;
 import com.bkav.edoc.service.entity.edxml.Error;
 import com.bkav.edoc.service.kernel.util.FileUtil;
-import com.bkav.edoc.service.kernel.util.GetterUtil;
 import com.bkav.edoc.service.kernel.util.InternetAddressUtil;
 import com.bkav.edoc.service.kernel.util.MimeTypesUtil;
 import com.bkav.edoc.service.resource.StringPool;
 import com.bkav.edoc.service.util.EdXMLConfigKey;
 import com.bkav.edoc.service.util.EdXMLConfigUtil;
-import com.bkav.edoc.service.util.PropsUtil;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -34,10 +31,8 @@ public class Checker {
 
         errorList.addAll(checkExistTo(messageHeader.getTo()));
 
-        String duaDate = messageHeader.getDueDate();
-
         for (To to : messageHeader.getTo()) {
-            errorList.addAll(checkTo(to, duaDate));
+            errorList.addAll(checkTo(to));
         }
 
         errorList.addAll(checkDuplicateTo(messageHeader.getTo()));
@@ -182,7 +177,7 @@ public class Checker {
      * @return
      * @throws Exception
      */
-    private List<Error> checkTo(To to, String dueDate) throws Exception {
+    private List<Error> checkTo(To to) throws Exception {
 
         List<Error> errorList = new ArrayList<Error>();
 
@@ -200,27 +195,7 @@ public class Checker {
 
         errorList.addAll(checkWebsite(to.getWebsite(), false));
 
-        if (dueDate != null) {
-
-            boolean result = checkDueDate(dueDate);
-            if (!result) {
-                String lastOfErrorCode = new StringBuilder("MessageHeader")
-                        .append("To").append("DueDate").toString();
-                errorList.add(new Error(String.format("R.%s", lastOfErrorCode),
-                        "DueDate is not of date type."));
-            }
-        }
-
         return errorList;
-    }
-
-    private boolean checkDueDate(String strDate) {
-        try {
-            Date resultDate = dateFormat.parse(strDate);
-            return true;
-        } catch (ParseException e) {
-            return false;
-        }
     }
 
     /**
@@ -528,14 +503,6 @@ public class Checker {
 
         }
 
-        /*
-         * if (isFrom && !_globalUtil.checkDomain(organId)) {
-         *
-         * errorList.add(new Error(String.format("M.%s", lastOfErrorCode),
-         * "OrganId invalid."));
-         *
-         * }
-         */
         return errorList;
     }
 

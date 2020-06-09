@@ -1,6 +1,10 @@
 package com.bkav.edoc.service.redis;
 
+import com.bkav.edoc.service.kernel.string.StringPool;
+import com.bkav.edoc.service.util.PropsUtil;
 import com.google.gson.Gson;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import redis.clients.jedis.Jedis;
 
 public class RedisUtil {
@@ -11,6 +15,7 @@ public class RedisUtil {
 
     private Gson gson = new Gson();
 
+
     static public RedisUtil getInstance() {
 
         if (INSTANCE == null) {
@@ -19,8 +24,18 @@ public class RedisUtil {
         return INSTANCE;
     }
 
+    private static String buildKey(String key) {
+        StringBuilder keyBuilder = new StringBuilder(String.valueOf(System.nanoTime()));
+        keyBuilder.append(StringPool.UNDERLINE);
+        keyBuilder.append(KEY_NAMESPACE_PREFIX);
+        keyBuilder.append(key);
+        return keyBuilder.toString();
+    }
+
+    private static final String KEY_NAMESPACE_PREFIX = "edoc_service_";
+
     private RedisUtil() {
-        jedisClient = new Jedis("localhost", 6379);
+        jedisClient = new Jedis(PropsUtil.get("eDoc.service.redis.host"), Integer.parseInt(PropsUtil.get("eDoc.service.redis.port")));
     }
 
     public static void main(String[] args) {
@@ -30,7 +45,7 @@ public class RedisUtil {
             Test entry = RedisUtil.getInstance().get("entry-1", Test.class);
             System.out.println(entry);
         } catch (Exception e) {
-            e.printStackTrace();
+            _log.error(e);
         }
     }
 
@@ -43,6 +58,7 @@ public class RedisUtil {
     public boolean set(String key, Object value) {
         String json = gson.toJson(value);
         return jedisClient.set(key, json).equals("OK");
+
     }
 
     public boolean delete(String key) {
@@ -60,7 +76,10 @@ public class RedisUtil {
                 return false;
         }
         catch (Exception e) {
+            _log.error("Error when clear all cached !!! " + e.getMessage());
             return false;
         }
     }
+
+    private static Log _log = LogFactory.getLog(RedisUtil.class);
 }

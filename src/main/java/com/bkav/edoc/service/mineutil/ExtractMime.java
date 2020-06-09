@@ -184,7 +184,7 @@ public class ExtractMime {
 
         messageHeader.setSteeringType(steeringType);
 
-        String edxmlDocumentId = GetterUtil.getString(messageHeaderNode.getChildText("DocumentId"), "");
+        String edxmlDocumentId = GetterUtil.getString(messageHeaderNode.getChildText("DocumentId", EdXmlConstant.EDXML_NS), "");
 
         messageHeader.setDocumentId(edxmlDocumentId);
 
