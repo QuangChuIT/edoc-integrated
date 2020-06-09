@@ -21,12 +21,13 @@ public class HibernateUtil {
             // Create the SessionFactory from hibernate.cfg.xml
             Configuration configuration = new Configuration();
             Properties settings = new Properties();
-            settings.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
-            settings.put(Environment.URL, "jdbc:mysql://localhost:3306/edoc");
-            settings.put(Environment.USER, "root");
-            settings.put(Environment.PASS, "abcd1234");
-            settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
-            settings.put(Environment.SHOW_SQL, "true");
+            settings.put(Environment.DRIVER, PropsUtil.get(Environment.DRIVER));
+            settings.put(Environment.URL, PropsUtil.get(Environment.URL));
+            settings.put(Environment.USER, PropsUtil.get(Environment.USER));
+            settings.put(Environment.PASS, PropsUtil.get(Environment.PASS));
+            settings.put(Environment.DIALECT, PropsUtil.get(Environment.DIALECT));
+            settings.put(Environment.SHOW_SQL, PropsUtil.get(Environment.SHOW_SQL));
+            settings.put(Environment.AUTO_CLOSE_SESSION, PropsUtil.get(Environment.AUTO_CLOSE_SESSION));
             configuration.setProperties(settings);
             configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocDocument.hbm.xml"));
             configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocDocumentDetail.hbm.xml"));
