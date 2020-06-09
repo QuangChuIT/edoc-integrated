@@ -60,7 +60,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.9</version>
+            <version>5.1.47</version>
         </dependency>
 
         <!-- Hibernate framework -->
@@ -70,6 +70,12 @@
             <version>5.2.17.Final</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.1-api -->
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.0.Final</version>
+        </dependency>
 
         <!-- Hibernate library dependecy start -->
         <dependency>
@@ -89,19 +95,21 @@
             <artifactId>cglib</artifactId>
             <version>2.2</version>
         </dependency>
-        <!-- Hibernate library dependecy end -->
 
+        <!-- Hibernate library dependecy end -->
         <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>jta</artifactId>
             <version>1.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.codehaus.woodstox/stax2-api -->
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>stax2-api</artifactId>
-            <version>3.1.4</version>
+            <version>3.0.1</version>
         </dependency>
+
     </dependencies>
 
     <repositories>

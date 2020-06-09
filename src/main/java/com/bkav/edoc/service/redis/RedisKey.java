@@ -25,7 +25,7 @@ public class RedisKey {
 
     public final static String CHECK_ALLOW_KEY = "CheckAllowDocument_";
 
-    public final static String GET_ORNGAN_NAME_BY_DOMAIN = "GetOrganNameByDomain_";
+    public final static String GET_ORGAN_NAME_BY_DOMAIN = "GetOrganNameByDomain_";
 
     public final static String GLOBAL_IDS_FOR_TEST = "GlobalIdsForTest";
 

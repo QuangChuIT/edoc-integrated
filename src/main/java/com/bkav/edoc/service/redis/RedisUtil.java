@@ -3,9 +3,6 @@ package com.bkav.edoc.service.redis;
 import com.google.gson.Gson;
 import redis.clients.jedis.Jedis;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RedisUtil {
 
     private static RedisUtil INSTANCE;
