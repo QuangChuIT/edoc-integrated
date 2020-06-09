@@ -114,7 +114,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 }
                 if (!documentService.addDocument(messageHeader, traceHeaderList,
                         attachmentsEntity)) {
-                    System.out.println("Error attachment");
+
                 }
             } catch (Exception e) {
                 log.error(ErrorCommonUtil.getInfoToLog(

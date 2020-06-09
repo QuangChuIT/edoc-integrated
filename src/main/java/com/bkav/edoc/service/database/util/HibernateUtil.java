@@ -28,6 +28,7 @@ public class HibernateUtil {
             settings.put(Environment.DIALECT, PropsUtil.get(Environment.DIALECT));
             settings.put(Environment.SHOW_SQL, PropsUtil.get(Environment.SHOW_SQL));
             settings.put(Environment.AUTO_CLOSE_SESSION, PropsUtil.get(Environment.AUTO_CLOSE_SESSION));
+
             configuration.setProperties(settings);
             configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocDocument.hbm.xml"));
             configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocDocumentDetail.hbm.xml"));

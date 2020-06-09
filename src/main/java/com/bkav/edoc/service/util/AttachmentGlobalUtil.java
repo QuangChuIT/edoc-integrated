@@ -7,8 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.bkav.edoc.service.center.DynamicService;
 import com.bkav.edoc.service.kernel.string.StringPool;
 import com.bkav.edoc.service.kernel.util.Validator;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class AttachmentGlobalUtil {
 
@@ -128,7 +131,7 @@ public class AttachmentGlobalUtil {
 
 		if (!targetFodler.exists()) {
 			if (!targetFodler.mkdirs()) {
-//				_log.("Can't create dir with" + targetFodler.getAbsolutePath());
+				log.error("Can't create dir with" + targetFodler.getAbsolutePath());
 			}
 		}
 
@@ -136,6 +139,6 @@ public class AttachmentGlobalUtil {
 
 	}
 
-//	private static Log _log = LogFactoryUtil.getLog(AttachmentGlobalUtil.class);
+	private static final Log log = LogFactory.getLog(AttachmentGlobalUtil.class);
 
 }

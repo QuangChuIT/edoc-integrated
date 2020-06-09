@@ -4,11 +4,9 @@
 
 <hibernate-mapping>
     <class name="com.bkav.edoc.service.database.entity.EdocTraceHeaderList" table="edoc_trace_header_list">
-        <id name="documentId" type="java.lang.Long">
-            <column name="document_id" />
-            <generator class="foreign">
-                <param name="property">document</param>
-            </generator>
+        <id name="traceId" type="java.lang.Long">
+            <column name="trace_id" />
+            <generator class="identity" />
         </id>
         <property name="organDomain" type="string" column="organ_domain"/>
         <property name="timeStamp" type="timestamp" column="time_stamp"/>
@@ -23,7 +21,8 @@
                 <param name="enumClass">com.bkav.edoc.service.database.entity.EdocTraceHeaderList$BussinessDocType</param>
             </type>
         </property>
-        <one-to-one name="document" class="com.bkav.edoc.service.database.entity.EdocDocument"
-                    constrained="true"></one-to-one>
+        <many-to-one name="document" class="com.bkav.edoc.service.database.entity.EdocDocument" fetch="select">
+            <column name="document_id"/>
+        </many-to-one>
     </class>
 </hibernate-mapping>

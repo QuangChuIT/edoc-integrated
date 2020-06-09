@@ -1,15 +1,13 @@
 package com.bkav.edoc.service.database.services;
 
 import com.bkav.edoc.service.database.daoimpl.*;
-import com.bkav.edoc.service.database.entity.EdocAttachment;
-import com.bkav.edoc.service.database.entity.EdocDocument;
-import com.bkav.edoc.service.database.entity.EdocDocumentDetail;
-import com.bkav.edoc.service.database.entity.EdocPriority;
+import com.bkav.edoc.service.database.entity.*;
 import com.bkav.edoc.service.entity.edxml.*;
 import com.bkav.edoc.service.redis.RedisKey;
 import com.bkav.edoc.service.redis.RedisUtil;
 import com.bkav.edoc.service.util.AttachmentGlobalUtil;
 import com.bkav.edoc.service.util.PropsUtil;
+import org.hibernate.Session;
 
 import java.io.File;
 import java.io.InputStream;
@@ -23,6 +21,7 @@ public class EdocDocumentService {
     private EdocDocumentDetailDaoImpl documentDetailDaoImpl = new EdocDocumentDetailDaoImpl();
     private EdocTraceHeaderListDaoImpl traceHeaderListDaoImpl = new EdocTraceHeaderListDaoImpl();
     private EdocAttachmentDaoImpl attachmentDaoImpl = new EdocAttachmentDaoImpl();
+    private EdocNotificationDaoImpl notificationDaoImpl = new EdocNotificationDaoImpl();
 
     private String SPERATOR = File.separator;
 
@@ -41,8 +40,6 @@ public class EdocDocumentService {
     }
 
     public boolean addDocument(MessageHeader messageHeader, TraceHeaderList traces, List<Attachment> attachments) throws Exception {
-        String s = PropsUtil.get("eDoc.service.enable.test");
-        System.out.println(s);
         // add Edoc document
         EdocDocument edocDocument = addEdocDocument(messageHeader);
         if(edocDocument == null) {
@@ -60,8 +57,18 @@ public class EdocDocumentService {
             return false;
         }
 
+        // Insert Trace Header List
+        if (!addTraceHeaderList(traces, docId)) {
+            return false;
+        }
+
         // add attachment
         if (!addAttachments(messageHeader, attachments, domain, docId)) {
+            return false;
+        }
+
+        // add notifications
+        if (!addNotifications(messageHeader, docId)) {
             return false;
         }
 
@@ -69,7 +76,7 @@ public class EdocDocumentService {
     }
 
     public EdocDocument addEdocDocument(MessageHeader messageHeader) throws Exception {
-        documentDaoImpl.openCurrentSession();
+        Session currentSession = documentDaoImpl.openCurrentSession();
 
         boolean isDraft = false;
         Date sentDate = new Date();
@@ -94,6 +101,7 @@ public class EdocDocumentService {
         String documentTypeName = messageHeader.getDocumentType().getTypeName();
 
         long priorityId = messageHeader.getOtherInfo().getPriority();
+        priorityDaoImpl.setCurrentSession(currentSession);
         EdocPriority priority = priorityDaoImpl.findById(priorityId);
         String toOrganDomain = getToOrganDomain(messageHeader.getTo());
         String fromOrganDomain = messageHeader.getFrom().getOrganId();
@@ -119,7 +127,8 @@ public class EdocDocumentService {
     }
 
     private boolean addDocumentDetails(MessageHeader messageHeader, long docId) {
-        documentDetailDaoImpl.openCurrentSession();
+        Session currentSession = documentDetailDaoImpl.openCurrentSession();
+        currentSession.beginTransaction();
 
         String content = messageHeader.getContent();
         String signerCompetence = messageHeader.getSignerInfo().getCompetence();
@@ -143,13 +152,6 @@ public class EdocDocumentService {
         long pageAmount = messageHeader.getOtherInfo().getPageAmount();
         long promulgationAmount = messageHeader.getOtherInfo().getPromulgationAmount();
 
-//        StringBuffer appendixesBuffer = new StringBuffer();
-//        Appendixes appendixes = messageHeader.get;
-//        for (int i = 0; i < appendixes.getAppendix().size(); i++) {
-//            appendixesBuffer.append(appendixes.getAppendix().get(i));
-//            appendixesBuffer.append("#");
-//
-//        }
         int steeringTypeInt = messageHeader.getSteeringType();
         EdocDocumentDetail.SteeringType steeringType = EdocDocumentDetail.SteeringType.values()[steeringTypeInt];
 
@@ -165,11 +167,60 @@ public class EdocDocumentService {
         documentDetail.setPageAmount(pageAmount);
         documentDetail.setPromulgationAmount(promulgationAmount);
         documentDetail.setSteeringType(steeringType);
+        documentDaoImpl.setCurrentSession(currentSession);
         EdocDocument document = documentDaoImpl.findById(docId);
         documentDetail.setDocument(document);
 
         documentDetailDaoImpl.persist(documentDetail);
+        currentSession.getTransaction().commit();
         documentDetailDaoImpl.closeCurrentSession();
+        return true;
+    }
+
+    private boolean addTraceHeaderList(TraceHeaderList traceHeaderList, long docId) {
+        Session currentSession = traceHeaderListDaoImpl.openCurrentSession();
+        if (traceHeaderList != null && traceHeaderList.getTraceHeaders().size() > 0) {
+            documentDaoImpl.setCurrentSession(currentSession);
+            EdocDocument document = documentDaoImpl.findById(docId);
+            for (TraceHeader trace : traceHeaderList.getTraceHeaders()) {
+                EdocTraceHeaderList traceHeader = new EdocTraceHeaderList();
+                traceHeader.setOrganDomain(trace.getOrganId());
+                traceHeader.setTimeStamp(trace.getTimeStamp());
+                if(traceHeaderList.getBussiness() != null) {
+                    traceHeader.setBussinessDocReason(traceHeaderList.getBussiness().getBussinessDocReason());
+                    int bussinessDocType = (int)traceHeaderList.getBussiness().getBussinessDocType();
+                    EdocTraceHeaderList.BussinessDocType type = EdocTraceHeaderList.BussinessDocType.values()[bussinessDocType];
+                    traceHeader.setBussinessDocType(type);
+                    traceHeader.setPaper((int)traceHeaderList.getBussiness().getPaper());
+                }
+                traceHeader.setDocument(document);
+                traceHeaderListDaoImpl.persist(traceHeader);
+            }
+        }
+        traceHeaderListDaoImpl.closeCurrentSession();
+        return true;
+    }
+
+    private boolean addNotifications(MessageHeader messageHeader, long docId) {
+        Session currentSession = notificationDaoImpl.openCurrentSession();
+        documentDaoImpl.setCurrentSession(currentSession);
+        EdocDocument document = documentDaoImpl.findById(docId);
+        // Insert Notification
+        List<To> tos = messageHeader.getTo();
+        Date dueDate = null;
+        try {
+            dueDate = dateFormat.parse(messageHeader.getDueDate());
+        } catch (ParseException e) {
+        }
+        for (To to : tos) {
+            EdocNotification notification = new EdocNotification();
+            notification.setCreateDate(new Date());
+            notification.setDueDate(dueDate);
+            notification.setReceiverId(to.getOrganId());
+            notification.setDocument(document);
+            notificationDaoImpl.persist(notification);
+        }
+        notificationDaoImpl.closeCurrentSession();
         return true;
     }
 
@@ -211,7 +262,7 @@ public class EdocDocumentService {
     }
 
     private boolean addAttachment(long docId, MessageHeader messageHeader, Attachment attachment, long fileSize, String path) throws Exception {
-        attachmentDaoImpl.openCurrentSession();
+        Session currentSession = attachmentDaoImpl.openCurrentSession();
         String name = attachment.getName();
         String type = attachment.getContentType();
         String toOrganDomain = getToOrganDomain(messageHeader.getTo());
@@ -223,6 +274,9 @@ public class EdocDocumentService {
         edocAttachment.setCreateDate(new Date());
         edocAttachment.setFullPath(path);
         edocAttachment.setSize(String.valueOf(fileSize));
+        documentDaoImpl.setCurrentSession(currentSession);
+        EdocDocument document = documentDaoImpl.findById(docId);
+        edocAttachment.setDocument(document);
 
         attachmentDaoImpl.persist(edocAttachment);
         attachmentDaoImpl.closeCurrentSession();

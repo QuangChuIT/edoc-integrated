@@ -8,7 +8,7 @@ public class EdocTraceHeaderList {
         REVOKE, NEW, UPDATE, REPLACE
     }
 
-    private Long documentId;
+    private Long traceId;
     private String organDomain;
     private Date timeStamp;
     private BussinessDocType bussinessDocType;
@@ -20,12 +20,12 @@ public class EdocTraceHeaderList {
     private String email;
     private EdocDocument document;
 
-    public void setDocumentId(Long documentId) {
-        this.documentId = documentId;
+    public Long getTraceId() {
+        return traceId;
     }
 
-    public Long getDocumentId() {
-        return documentId;
+    public void setTraceId(Long traceId) {
+        this.traceId = traceId;
     }
 
     public String getOrganDomain() {
