@@ -25,6 +25,7 @@ import com.bkav.edoc.service.kernel.util.GetterUtil;
 import com.bkav.edoc.service.resource.EdXmlConstant;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.w3c.dom.Document;
@@ -79,12 +80,16 @@ public class ExtractMime {
                     String name = item.getChildText(
                             EdXmlConstant.ATTACHMENT_NAME_TAG,
                             EdXmlConstant.EDXML_NS);
-                    String hrefValue = item
-                            .getAttributeValue(EdXmlConstant.HREF_ATTR);
+                    List<Attribute> attributes = item.getAttributes();
+                    String hrefValue = null;
+                    for (Attribute attribute : attributes) {
+                        if (attribute.getName().equals(EdXmlConstant.HREF_ATTR)) {
+                            hrefValue = attribute.getValue();
+                        }
+                    }
                     if (hrefValue != null && hrefValue.contains("cid:")) {
                         hrefValue = hrefValue.replace("cid:", "");
                     }
-
                     attNames.put(hrefValue, name);
                 }
             }

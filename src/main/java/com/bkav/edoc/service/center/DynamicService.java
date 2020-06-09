@@ -11,6 +11,10 @@ import com.bkav.edoc.service.entity.edxml.TraceHeaderList;
 import com.bkav.edoc.service.mineutil.AttachmentUtil;
 import com.bkav.edoc.service.mineutil.ExtractMime;
 import com.bkav.edoc.service.mineutil.XmlUtil;
+import com.bkav.edoc.service.resource.StringPool;
+import com.bkav.edoc.service.util.ResponseUtil;
+import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.ManagedLifecycle;
@@ -21,6 +25,7 @@ import org.apache.synapse.mediators.AbstractMediator;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,16 +40,16 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         String soapAction = inMessageContext.getSoapAction();
 
-        String soapNamespace = inMessageContext.getEnvelope().getNamespace()
-                .getNamespaceURI();
+        Map<String, Object> map = new HashMap<>();
 
-        XmlUtil xmlUtil = new XmlUtil();
+        SOAPEnvelope responseEnvelope = null;
+
         try {
             Document doc = xmlUtil.convertToDocument(messageContext.getEnvelope());
 
             switch (soapAction) {
                 case "SendDocument":
-                    sendDocument(doc, inMessageContext);
+                    map = sendDocument(doc, inMessageContext);
                     break;
                 case "GetListDocument":
                     break;
@@ -55,17 +60,25 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         } catch (Exception e) {
             log.error(e);
         }
+        responseEnvelope = ResponseUtil.buildResultEnvelope(inMessageContext,map,soapAction);
 
+        try {
+            messageContext.setEnvelope(responseEnvelope);
+        } catch (AxisFault axisFault) {
+            axisFault.printStackTrace();
+        }
         return true;
     }
 
-    public void sendDocument(Document envelop, org.apache.axis2.context.MessageContext messageContext) {
+    public Map<String, Object> sendDocument(Document envelop, org.apache.axis2.context.MessageContext messageContext) {
 
-        List<Error> errorList = new ArrayList<Error>();
+        Map<String, Object> map = new HashMap<>();
 
         List<Attachment> attachmentsEntity = new ArrayList<Attachment>();
 
         MessageHeader messageHeader = null;
+
+        Document bodyChildDocument = null;
 
         TraceHeaderList traceHeaderList = null;
 
@@ -80,13 +93,23 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 report = checker.checkMessageHeader(messageHeader);
 
                 if (!report.isIsSuccess()) {
+                    bodyChildDocument = xmlUtil.convertEntityToDocument(
+                            Report.class, report);
 
+                    map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+
+                    return map;
                 }
                 // check trace header list
                 report = checker.checkTraceHeaderList(traceHeaderList);
 
                 if (!report.isIsSuccess()) {
+                    bodyChildDocument = xmlUtil.convertEntityToDocument(
+                            Report.class, report);
 
+                    map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+
+                    return map;
                 }
 
                 // Get attachment from context
@@ -115,6 +138,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 log.error(e);
             }
         }
+        return map;
     }
 
     private static final Log log = LogFactory.getLog(DynamicService.class);
@@ -133,4 +157,6 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     private static final ExtractMime extractMime = new ExtractMime();
     private static final Checker checker = new Checker();
     private static final AttachmentUtil attachmentUtil = new AttachmentUtil();
+
+    private static final XmlUtil xmlUtil = new XmlUtil();
 }
