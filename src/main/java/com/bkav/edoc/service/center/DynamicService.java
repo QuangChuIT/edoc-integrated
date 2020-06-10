@@ -11,6 +11,8 @@ import com.bkav.edoc.service.entity.edxml.TraceHeaderList;
 import com.bkav.edoc.service.mineutil.AttachmentUtil;
 import com.bkav.edoc.service.mineutil.ExtractMime;
 import com.bkav.edoc.service.mineutil.XmlUtil;
+import com.bkav.edoc.service.redis.RedisKey;
+import com.bkav.edoc.service.redis.RedisUtil;
 import com.bkav.edoc.service.resource.StringPool;
 import com.bkav.edoc.service.util.ResponseUtil;
 import org.apache.axiom.soap.SOAPEnvelope;
@@ -24,6 +26,11 @@ import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
 import org.w3c.dom.Document;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +89,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         TraceHeaderList traceHeaderList = null;
 
+        StringBuilder strDocumentId = new StringBuilder();
         Report report = xmlChecker.checkXmlTag(envelop);
         if (report.isIsSuccess()) {
             try {
@@ -132,15 +140,44 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 for (Attachment attachment : attachmentsEntity) {
                     attachmentNames.add(attachment.getName());
                 }
+
+                // add document
                 if (!documentService.addDocument(messageHeader, traceHeaderList,
-                        attachmentsEntity)) {
+                        attachmentsEntity, strDocumentId)) {
 
                 }
+
+                // save envelop file to cache
+                saveEnvelopeFileCache(envelop, strDocumentId.toString());
+
             } catch (Exception e) {
                 log.error(e);
             }
         }
         return map;
+    }
+
+    /**
+     * save envelop file to cache
+     * @param document
+     * @param strDocumentId
+     * @throws Exception
+     */
+    private void saveEnvelopeFileCache(Document document, String strDocumentId) {
+        try {
+            // read document by string
+            DOMSource domSource = new DOMSource(document);
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult(writer);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.transform(domSource, result);
+
+            // save envelop file to cache
+            RedisUtil.getInstance().set(RedisKey.getKey(strDocumentId, RedisKey.GET_ENVELOP_FILE), writer.toString());
+        } catch (Exception e) {
+            log.error(e);
+        }
     }
 
     private static final Log log = LogFactory.getLog(DynamicService.class);

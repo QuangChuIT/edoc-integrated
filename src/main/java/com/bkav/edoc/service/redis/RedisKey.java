@@ -1,19 +1,6 @@
 package com.bkav.edoc.service.redis;
 
 public class RedisKey {
-    public final static int CHECK_PERMISSION_TIME_LIFE = 3600;
-
-    public final static int SEND_DOCUMENT_TIME_LIFE = 604800;
-
-    public final static int CHECK_ALLOW_TIME_LIFE = 604800;
-
-    public final static int GET_ORGAN_NAME_BY_DOMAIN_TIME = 604800;
-
-    public final static int GET_DOCUMENT_TIME_LIFE = 604800;
-
-    public final static int GET_PENDING_TIME_LIFE = 604800;
-
-    //Method Prefix Key
 
     public final static String CHECK_PERMISSION_KEY = "CheckPermission_";
 
@@ -22,6 +9,8 @@ public class RedisKey {
     public final static String GET_DOCUMENT_KEY = "GetDocument_";
 
     public final static String GET_PENDING_KEY = "GetPendingDocument_";
+
+    public final static String GET_ENVELOP_FILE = "GetEnvelopFile_";
 
     public final static String CHECK_ALLOW_KEY = "CheckAllowDocument_";
 

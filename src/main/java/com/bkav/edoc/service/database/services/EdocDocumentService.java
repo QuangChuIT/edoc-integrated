@@ -10,9 +10,15 @@ import com.bkav.edoc.service.util.PropsUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
+import org.w3c.dom.Document;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -47,13 +53,18 @@ public class EdocDocumentService {
      * @return
      * @throws Exception
      */
-    public boolean addDocument(MessageHeader messageHeader, TraceHeaderList traces, List<Attachment> attachments) throws Exception {
+    public boolean addDocument(MessageHeader messageHeader, TraceHeaderList traces, List<Attachment> attachments, StringBuilder outDocumentId) throws Exception {
+        // output document id
+        if (outDocumentId == null) {
+            outDocumentId = new StringBuilder();
+        }
         // add eDoc document
         EdocDocument edocDocument = addEdocDocument(messageHeader);
         if(edocDocument == null) {
             return false;
         }
         long docId = edocDocument.getDocumentId();
+        outDocumentId.append(docId);
         String domain = edocDocument.getFromOrganDomain();
 
         // Add document to cache (using by get document)
@@ -79,6 +90,9 @@ public class EdocDocumentService {
         if (!notificationService.addNotifications(messageHeader, docId)) {
             return false;
         }
+
+        // save pending document to cache
+        savePendingDocumentCache(messageHeader.getTo(), docId);
 
         return true;
     }
@@ -186,6 +200,35 @@ public class EdocDocumentService {
 
         RedisUtil.getInstance().set(RedisKey.getKey(String.valueOf(documentId),
                 RedisKey.GET_DOCUMENT_KEY), cacheThis);
+    }
+
+    /**
+     * save pending document for to domain -> cache
+     * @param tos
+     * @param docId
+     */
+    private void savePendingDocumentCache(List<To> tos, long docId) {
+        for (To to : tos) {
+            // TODO: Cache
+            List obj = RedisUtil.getInstance().get(RedisKey.getKey(to.getOrganId(), RedisKey.GET_PENDING_KEY), List.class);
+            // if data in cache not exist, create new
+            if (obj == null) {
+                List<Long> documentIds = new ArrayList<Long>();
+                documentIds.add(docId);
+                RedisUtil.getInstance().set(RedisKey.getKey(to.getOrganId(), RedisKey.GET_PENDING_KEY), documentIds);
+            } else {
+                // add document id to old list in cache
+                List<Long> oldDocumentIds = null;
+                if (obj instanceof List) {
+                    oldDocumentIds = (List<Long>) obj;
+                } else {
+                    oldDocumentIds = new ArrayList<Long>();
+                }
+
+                oldDocumentIds.add(docId);
+                RedisUtil.getInstance().set(RedisKey.getKey(to.getOrganId(), RedisKey.GET_PENDING_KEY), oldDocumentIds);
+            }
+        }
     }
 
     private static final Log log = LogFactory.getLog(EdocDocumentService.class);

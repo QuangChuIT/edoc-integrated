@@ -22,7 +22,7 @@ public class EdocAttachmentService {
     private EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
     private EdocAttachmentDaoImpl attachmentDaoImpl = new EdocAttachmentDaoImpl();
 
-    private String SPERATOR = File.separator;
+    private String SEPERATOR = File.separator;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
             "dd/MM/yyyy");
 
@@ -47,14 +47,14 @@ public class EdocAttachmentService {
             Calendar cal = Calendar.getInstance();
             for (int i = 0; i < attachments.size(); i++) {
                 Attachment attachment = attachments.get(i);
-                String dataPath = new StringBuilder(domain).append(SPERATOR)
-                        .append(cal.get(Calendar.YEAR)).append(SPERATOR)
-                        .append(cal.get(Calendar.MONTH) + 1).append(SPERATOR)
-                        .append(cal.get(Calendar.DAY_OF_MONTH)).append(SPERATOR)
+                String dataPath = new StringBuilder(domain).append(SEPERATOR)
+                        .append(cal.get(Calendar.YEAR)).append(SEPERATOR)
+                        .append(cal.get(Calendar.MONTH) + 1).append(SEPERATOR)
+                        .append(cal.get(Calendar.DAY_OF_MONTH)).append(SEPERATOR)
                         .append(docId).append("_").append(i + 1).toString();
 
                 String specPath = new StringBuilder(rootPath)
-                        .append((rootPath.endsWith(SPERATOR) ? "" : SPERATOR))
+                        .append((rootPath.endsWith(SEPERATOR) ? "" : SEPERATOR))
                         .append(dataPath).toString();
 
                 long size = 0L;
