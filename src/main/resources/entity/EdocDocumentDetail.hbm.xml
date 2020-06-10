@@ -30,6 +30,6 @@
             </type>
         </property>
         <one-to-one name="document" class="com.bkav.edoc.service.database.entity.EdocDocument"
-                    constrained="true"></one-to-one>
+                    constrained="true"/>
     </class>
 </hibernate-mapping>

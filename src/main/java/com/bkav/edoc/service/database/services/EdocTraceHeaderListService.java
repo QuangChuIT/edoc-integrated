@@ -35,10 +35,10 @@ public class EdocTraceHeaderListService {
                     traceHeader.setOrganDomain(trace.getOrganId());
                     traceHeader.setTimeStamp(trace.getTimeStamp());
                     if (traceHeaderList.getBussiness() != null) {
-                        traceHeader.setBussinessDocReason(traceHeaderList.getBussiness().getBussinessDocReason());
+                        traceHeader.setBusinessDocReason(traceHeaderList.getBussiness().getBussinessDocReason());
                         int bussinessDocType = (int) traceHeaderList.getBussiness().getBussinessDocType();
-                        EdocTraceHeaderList.BussinessDocType type = EdocTraceHeaderList.BussinessDocType.values()[bussinessDocType];
-                        traceHeader.setBussinessDocType(type);
+                        EdocTraceHeaderList.BusinessDocType type = EdocTraceHeaderList.BusinessDocType.values()[bussinessDocType];
+                        traceHeader.setBusinessDocType(type);
                         traceHeader.setPaper((int) traceHeaderList.getBussiness().getPaper());
                     }
                     traceHeader.setDocument(document);

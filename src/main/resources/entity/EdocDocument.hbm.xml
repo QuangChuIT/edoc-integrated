@@ -15,7 +15,7 @@
         <property name="codeNumber" type="string" column="code_number"/>
         <property name="codeNotation" type="string" column="code_notation"/>
         <property name="promulgationPlace" type="string" column="promulgation_place"/>
-        <property name="promulgationDate" type="string" column="promulgation_date"/>
+        <property name="promulgationDate" type="date" column="promulgation_date"/>
         <property name="documentType" column="document_type">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">com.bkav.edoc.service.database.entity.EdocDocument$DocumentType</param>
@@ -23,7 +23,7 @@
         </property>
         <property name="documentTypeName" type="string" column="document_type_name"/>
         <property name="documentTypeDetail" type="string" column="document_type_detail"/>
-        <property name="draft" column="isdraft" type="boolean"/>
+        <property name="draft" column="is_draft" type="boolean"/>
         <property name="sentDate" type="date" column="sent_date"/>
         <property name="toOrganDomain" type="string" column="to_organ_domain"/>
         <property name="fromOrganDomain" type="string" column="from_organ_domain"/>

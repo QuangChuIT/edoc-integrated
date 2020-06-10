@@ -22,7 +22,12 @@ public class EdocDocument {
     private DocumentType documentType;
     private String documentTypeName;
     private String documentTypeDetail;
-    private Boolean draft;
+    private boolean draft;
+
+    public void setDraft(boolean draft) {
+        this.draft = draft;
+    }
+
     private Date sentDate;
     private String toOrganDomain;
     private String fromOrganDomain;

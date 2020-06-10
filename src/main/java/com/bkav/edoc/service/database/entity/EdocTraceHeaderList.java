@@ -4,15 +4,15 @@ import java.util.Date;
 
 public class EdocTraceHeaderList {
 
-    public enum BussinessDocType {
+    public enum BusinessDocType {
         REVOKE, NEW, UPDATE, REPLACE
     }
 
     private Long traceId;
     private String organDomain;
     private Date timeStamp;
-    private BussinessDocType bussinessDocType;
-    private String bussinessDocReason;
+    private BusinessDocType businessDocType;
+    private String businessDocReason;
     private Integer paper;
     private String department;
     private String staff;
@@ -44,20 +44,20 @@ public class EdocTraceHeaderList {
         this.timeStamp = timeStamp;
     }
 
-    public BussinessDocType getBussinessDocType() {
-        return bussinessDocType;
+    public BusinessDocType getBusinessDocType() {
+        return businessDocType;
     }
 
-    public void setBussinessDocType(BussinessDocType bussinessDocType) {
-        this.bussinessDocType = bussinessDocType;
+    public void setBusinessDocType(BusinessDocType businessDocType) {
+        this.businessDocType = businessDocType;
     }
 
-    public String getBussinessDocReason() {
-        return bussinessDocReason;
+    public String getBusinessDocReason() {
+        return businessDocReason;
     }
 
-    public void setBussinessDocReason(String bussinessDocReason) {
-        this.bussinessDocReason = bussinessDocReason;
+    public void setBusinessDocReason(String businessDocReason) {
+        this.businessDocReason = businessDocReason;
     }
 
     public Integer getPaper() {
