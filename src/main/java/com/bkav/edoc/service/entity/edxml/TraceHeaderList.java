@@ -12,16 +12,16 @@ import java.util.List;
 public class TraceHeaderList {
 	private List<TraceHeader> traceHeaders;
 	
-	private Bussiness bussiness;
+	private Business business;
 
 	/**
 	 * @param traceHeaders
-	 * @param bussiness
+	 * @param business
 	 */
-	public TraceHeaderList(List<TraceHeader> traceHeaders, Bussiness bussiness) {
+	public TraceHeaderList(List<TraceHeader> traceHeaders, Business bussiness) {
 		super();
 		this.traceHeaders = traceHeaders;
-		this.bussiness = bussiness;
+		this.business = business;
 	}
 
 	/**
@@ -46,17 +46,17 @@ public class TraceHeaderList {
 	}
 
 	/**
-	 * @return the bussiness
+	 * @return the business
 	 */
-	public Bussiness getBussiness() {
-		return bussiness;
+	public Business getBusiness() {
+		return business;
 	}
 
 	/**
-	 * @param bussiness the bussiness to set
+	 * @param business the business to set
 	 */
-	public void setBussiness(Bussiness bussiness) {
-		this.bussiness = bussiness;
+	public void setBusiness(Business business) {
+		this.business = business;
 	}
 	
 }

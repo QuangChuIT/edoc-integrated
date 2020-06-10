@@ -18,7 +18,7 @@
         <property name="email" type="string" column="email"/>
         <property name="businessDocType" column="bussiness_doc_type">
             <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">com.bkav.edoc.service.database.entity.EdocTraceHeaderList$BussinessDocType</param>
+                <param name="enumClass">com.bkav.edoc.service.database.entity.EdocTraceHeaderList$BusinessDocType</param>
             </type>
         </property>
         <many-to-one name="document" class="com.bkav.edoc.service.database.entity.EdocDocument" fetch="select">

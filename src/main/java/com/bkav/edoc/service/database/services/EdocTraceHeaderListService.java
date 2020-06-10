@@ -34,12 +34,12 @@ public class EdocTraceHeaderListService {
                     EdocTraceHeaderList traceHeader = new EdocTraceHeaderList();
                     traceHeader.setOrganDomain(trace.getOrganId());
                     traceHeader.setTimeStamp(trace.getTimeStamp());
-                    if (traceHeaderList.getBussiness() != null) {
-                        traceHeader.setBusinessDocReason(traceHeaderList.getBussiness().getBussinessDocReason());
-                        int bussinessDocType = (int) traceHeaderList.getBussiness().getBussinessDocType();
-                        EdocTraceHeaderList.BusinessDocType type = EdocTraceHeaderList.BusinessDocType.values()[bussinessDocType];
+                    if (traceHeaderList.getBusiness() != null) {
+                        traceHeader.setBusinessDocReason(traceHeaderList.getBusiness().getBusinessDocReason());
+                        int businessDocType = (int) traceHeaderList.getBusiness().getBusinessDocType();
+                        EdocTraceHeaderList.BusinessDocType type = EdocTraceHeaderList.BusinessDocType.values()[businessDocType];
                         traceHeader.setBusinessDocType(type);
-                        traceHeader.setPaper((int) traceHeaderList.getBussiness().getPaper());
+                        traceHeader.setPaper((int) traceHeaderList.getBusiness().getPaper());
                     }
                     traceHeader.setDocument(document);
                     traceHeaderListDaoImpl.persist(traceHeader);

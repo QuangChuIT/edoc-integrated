@@ -25,7 +25,6 @@ public class EdocDocumentService {
     private EdocAttachmentService attachmentService = new EdocAttachmentService();
     private EdocNotificationService notificationService = new EdocNotificationService();
 
-    private String SPERATOR = File.separator;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
             "dd/MM/yyyy");
 
@@ -49,7 +48,7 @@ public class EdocDocumentService {
      * @throws Exception
      */
     public boolean addDocument(MessageHeader messageHeader, TraceHeaderList traces, List<Attachment> attachments) throws Exception {
-        // add Edoc document
+        // add eDoc document
         EdocDocument edocDocument = addEdocDocument(messageHeader);
         if(edocDocument == null) {
             return false;
@@ -57,7 +56,7 @@ public class EdocDocumentService {
         long docId = edocDocument.getDocumentId();
         String domain = edocDocument.getFromOrganDomain();
 
-        // Add document to cache (using by getdocument)
+        // Add document to cache (using by get document)
         saveGetDocumentCache(docId, edocDocument.getFromOrganDomain(),
                 edocDocument.getSentDate());
 
@@ -85,7 +84,7 @@ public class EdocDocumentService {
     }
 
     /**
-     * Add edoc document, save to database
+     * Add eDoc document, save to database
      * @param messageHeader
      * @return
      * @throws Exception
@@ -96,7 +95,7 @@ public class EdocDocumentService {
         try {
             currentSession.beginTransaction();
 
-            // get info of edoc document
+            // get info of eDoc document
             boolean isDraft = false;
             Date sentDate = new Date();
             String edXMLDocId = messageHeader.getDocumentId();
@@ -161,7 +160,7 @@ public class EdocDocumentService {
      */
     private String getToOrganDomain(List<To> tos) {
 
-        StringBuffer toOrganDomainBuffer = new StringBuffer();
+        StringBuilder toOrganDomainBuffer = new StringBuilder();
 
         for (int i = 0; i < tos.size(); i++) {
             toOrganDomainBuffer.append(tos.get(i).getOrganId());
