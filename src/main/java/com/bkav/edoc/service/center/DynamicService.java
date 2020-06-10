@@ -60,7 +60,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         } catch (Exception e) {
             log.error(e);
         }
-        responseEnvelope = ResponseUtil.buildResultEnvelope(inMessageContext,map,soapAction);
+        responseEnvelope = ResponseUtil.buildResultEnvelope(inMessageContext, map, soapAction);
 
         try {
             messageContext.setEnvelope(responseEnvelope);
@@ -85,8 +85,10 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         Report report = xmlChecker.checkXmlTag(envelop);
         if (report.isIsSuccess()) {
             try {
+                // Extract MessageHeader
                 messageHeader = extractMime.getMessageHeader(envelop);
 
+                // Extract TraceHeaderList
                 traceHeaderList = extractMime.getTraceHeaderList(envelop, true);
 
                 //check message
@@ -116,14 +118,14 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 Map<String, Object> attachments = attachmentUtil
                         .GetAttachmentDocsByContext(messageContext);
 
-                // Kiem tra attachment
+                // Check Attachment attachment
                 report = attachmentUtil.checkAllowAttachment(envelop,
                         attachments);
                 if (!report.isIsSuccess()) {
 
                 }
 
-                List<String> attachmentNames = new ArrayList<String>();
+                List<String> attachmentNames = new ArrayList<>();
 
                 attachmentsEntity = attachmentUtil.getAttachments(envelop,
                         attachments);
