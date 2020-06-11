@@ -43,7 +43,9 @@ public class EdocNotificationService {
             }
             for (To to : tos) {
                 EdocNotification notification = new EdocNotification();
-                notification.setCreateDate(new Date());
+                Date currentDate = new Date();
+                notification.setCreateDate(currentDate);
+                notification.setModifiedDate(currentDate);
                 notification.setDueDate(dueDate);
                 notification.setReceiverId(to.getOrganId());
                 notification.setDocument(document);

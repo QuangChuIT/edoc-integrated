@@ -97,9 +97,11 @@ public class EdocAttachmentService {
     private void addAttachment(long docId, MessageHeader messageHeader, Attachment attachment, long fileSize, String path) throws Exception {
         String name = attachment.getName();
         String type = attachment.getContentType();
+        String organDomain = messageHeader.getFrom().getOrganId();
         String toOrganDomain = getToOrganDomain(messageHeader.getTo());
 
         EdocAttachment edocAttachment = new EdocAttachment();
+        edocAttachment.setOrganDomain(organDomain);
         edocAttachment.setName(name);
         edocAttachment.setType(type);
         edocAttachment.setToOrganDomain(toOrganDomain);

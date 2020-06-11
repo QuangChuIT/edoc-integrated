@@ -152,6 +152,9 @@ public class EdocDocumentService {
             newDocument.setFromOrganDomain(fromOrganDomain);
             newDocument.setSentDate(sentDate);
             newDocument.setDraft(isDraft);
+            Date currentDate = new Date();
+            newDocument.setCreateDate(currentDate);
+            newDocument.setModifiedDate(currentDate);
 
             documentDaoImpl.persist(newDocument);
             currentSession.getTransaction().commit();
