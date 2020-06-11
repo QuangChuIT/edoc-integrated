@@ -139,7 +139,7 @@ public class EdocDocument {
         this.draft = draft;
     }
 
-    public Boolean isDraft() {
+    public Boolean getDraft() {
         return draft;
     }
 
@@ -167,7 +167,7 @@ public class EdocDocument {
         this.fromOrganDomain = fromOrganDomain;
     }
 
-    public Boolean isVisible() {
+    public Boolean getVisible() {
         return visible;
     }
 

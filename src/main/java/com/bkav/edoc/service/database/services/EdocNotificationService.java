@@ -47,6 +47,7 @@ public class EdocNotificationService {
                 notification.setDueDate(dueDate);
                 notification.setReceiverId(to.getOrganId());
                 notification.setDocument(document);
+                notification.setTaken(false);
                 notificationDaoImpl.persist(notification);
             }
 
@@ -61,6 +62,15 @@ public class EdocNotificationService {
             notificationDaoImpl.closeCurrentSession();
         }
         return true;
+    }
+
+    public List<Long> getDocumentIdsByOrganId(String organId) {
+        Session currentSession = notificationDaoImpl.openCurrentSession();
+
+        List<Long> notificationIds = notificationDaoImpl.getDocumentIdsByOrganId(organId);
+
+        notificationDaoImpl.closeCurrentSession();
+        return notificationIds;
     }
 
     private static final Log log = LogFactory.getLog(EdocNotificationService.class);

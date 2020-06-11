@@ -1,5 +1,6 @@
 package com.bkav.edoc.service.util;
 
+import com.bkav.edoc.service.entity.edxml.GetPendingDocumentIDResponse;
 import com.bkav.edoc.service.mineutil.XmlUtil;
 import com.bkav.edoc.service.resource.StringPool;
 import org.apache.axiom.attachments.Attachments;
@@ -18,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public class ResponseUtil {
@@ -183,6 +185,11 @@ public class ResponseUtil {
         }
 
         return responseEnvelope;
+    }
+
+    public GetPendingDocumentIDResponse createGetPendingDocumentIDResponse(
+            List<Long> documentIds) {
+		return new GetPendingDocumentIDResponse(documentIds);
     }
 
     private final static Log _log = LogFactory.getLog(ResponseUtil.class);

@@ -98,6 +98,32 @@ public class ExtractMime {
         return attNames;
     }
 
+    /**
+     * Get organ id from pending document
+     * @param envelope
+     * @return
+     */
+    public String getOrganId(Document envelope) {
+
+        org.jdom2.Document domEnvDoc = XmlUtil.convertFromDom(envelope);
+
+        Element envElement = domEnvDoc.getRootElement();
+
+        Namespace envNs = envElement.getNamespace();
+
+        Element body = getSingerElement(envElement, EdXmlConstant.BODY_TAG,
+                envNs);
+        if (body != null) {
+            Element pendingDocumentNode = getSingerElement(body,
+                    EdXmlConstant.GET_PENDING_DOCUMENT, null);
+            if (pendingDocumentNode != null) {
+                return pendingDocumentNode.getChildText("OrganId", null);
+            }
+        }
+
+        return null;
+    }
+
     public TraceHeaderList getTraceHeaderList(Document envelopeDoc,
                                               boolean isByHeader) throws Exception {
 

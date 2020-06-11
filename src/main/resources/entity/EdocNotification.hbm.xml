@@ -13,6 +13,7 @@
         <property name="createDate" type="timestamp" column="create_date"/>
         <property name="modifiedDate" type="timestamp" column="modified_date"/>
         <property name="dueDate" type="timestamp" column="due_date"/>
+        <property name="taken" column="taken" type="boolean"/>
         <many-to-one name="document" class="com.bkav.edoc.service.database.entity.EdocDocument" fetch="select">
             <column name="document_id"/>
         </many-to-one>

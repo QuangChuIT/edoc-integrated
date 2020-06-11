@@ -12,6 +12,16 @@ public class EdocNotification {
     private Date dueDate;
     private EdocDocument document;
 
+    public Boolean getTaken() {
+        return taken;
+    }
+
+    public void setTaken(Boolean taken) {
+        this.taken = taken;
+    }
+
+    private Boolean taken;
+
     public Long getNotificationId() {
         return notificationId;
     }

@@ -4,10 +4,8 @@ import com.bkav.edoc.service.commonutil.Checker;
 import com.bkav.edoc.service.commonutil.ErrorCommonUtil;
 import com.bkav.edoc.service.commonutil.XmlChecker;
 import com.bkav.edoc.service.database.services.EdocDocumentService;
-import com.bkav.edoc.service.entity.edxml.Attachment;
-import com.bkav.edoc.service.entity.edxml.MessageHeader;
-import com.bkav.edoc.service.entity.edxml.Report;
-import com.bkav.edoc.service.entity.edxml.TraceHeaderList;
+import com.bkav.edoc.service.database.services.EdocNotificationService;
+import com.bkav.edoc.service.entity.edxml.*;
 import com.bkav.edoc.service.mineutil.AttachmentUtil;
 import com.bkav.edoc.service.mineutil.ExtractMime;
 import com.bkav.edoc.service.mineutil.MimeUtil;
@@ -15,6 +13,7 @@ import com.bkav.edoc.service.mineutil.XmlUtil;
 import com.bkav.edoc.service.redis.RedisKey;
 import com.bkav.edoc.service.redis.RedisUtil;
 import com.bkav.edoc.service.resource.StringPool;
+import com.bkav.edoc.service.util.CommonUtil;
 import com.bkav.edoc.service.util.ResponseUtil;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axis2.AxisFault;
@@ -34,10 +33,13 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DynamicService extends AbstractMediator implements ManagedLifecycle {
 
     private EdocDocumentService documentService = new EdocDocumentService();
+
+    private EdocNotificationService notificationService = new EdocNotificationService();
 
     public boolean mediate(MessageContext messageContext) {
         log.info("--------------- eDoc mediator invoker by class mediator ---------------");
@@ -175,137 +177,42 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         Map<String, Object> map = new HashMap<String, Object>();
 
-        Document bodyChildDocument = null;
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-
-            Map<String, Object> params = xmlUtil
-                    .getParamForDocumentPendings(doc);
-
-            int number = 0;
-
-            Date date = null;
-            final String numberKey = "number";
-            final String dateKey = "date";
-            boolean getByDefault = false;
-            boolean getByNumber = false;
-            boolean getByDate = false;
-            boolean getByBoth = false;
-
-            if (params.isEmpty()) {
-                getByDefault = true;
-            } else {
-
-                getByNumber = params.containsKey(numberKey);
-
-                getByDate = params.containsKey(dateKey);
-
-                if (getByNumber && !getByDate) {
-
-                    number = Integer.parseInt(String.valueOf(params
-                            .get(numberKey)));
-
-                } else if (!getByNumber && getByDate) {
-
-                    String strDate = String.valueOf(params.get(dateKey));
-
-                    date = dateFormat.parse(strDate);
-
-                } else if (getByNumber && getByDate) {
-
-                    number = Integer.parseInt(String.valueOf(params
-                            .get(numberKey)));
-
-                    String strDate = String.valueOf(params.get(dateKey));
-
-                    date = dateFormat.parse(strDate);
-
-                    getByBoth = true;
-                }
-            }
-
-            if (getByDefault) {
-                bodyChildDocument = getPendingDocumentIds();
-            } else {
-                if (getByNumber && !getByDate) {
-                    bodyChildDocument = getPendingDocumentIds(number);
-                } else if (!getByNumber && getByDate) {
-                    bodyChildDocument = getPendingDocumentIds(date);
-                } else if (getByBoth) {
-                    bodyChildDocument = getPendingDocumentIds(number, date);
-                }
-            }
-        } catch (Exception e) {
-            log.error(e);
-        }
-
-        MimeUtil.setOutputSWA(true, messageContext);
-        map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
-
-        return map;
-    }
-
-    /**
-     * @return org.w3c.dom.Document - SOAPBody Child Element
-     */
-    @SuppressWarnings("unchecked")
-    private Document getPendingDocumentIds() {
-
         Document responseDocument = null;
 
         List<Long> notifications = null;
 
+        String organId = extractMime.getOrganId(doc);
 
-        return responseDocument;
-    }
+        // TODO: Cache
+        List obj = RedisUtil.getInstance().get(RedisKey.getKey(organId, RedisKey.GET_PENDING_KEY), List.class);
+        if (obj != null) {
+            notifications = CommonUtil.convertToListLong(obj);
+        } else {
+            try {
+                // notifications = new ArrayList<Long>();
+                notifications = notificationService.getDocumentIdsByOrganId(organId);
+            } catch (Exception e) {
+                log.error(e);
+            }
+        }
 
-    /**
-     * @param number - Integer: limit record
-     * @return org.w3c.dom.Document - SOAPBody Child Element
-     */
-    private Document getPendingDocumentIds(int number) throws Exception {
+        if (notifications == null) {
+            notifications = new ArrayList<Long>();
+        }
 
-        Document responseDocument = null;
+        GetPendingDocumentIDResponse response = new ResponseUtil()
+                .createGetPendingDocumentIDResponse(notifications);
 
-        List<Long> documentIds = new ArrayList<Long>();
+        try {
+            responseDocument = xmlUtil.convertEntityToDocument(
+                    GetPendingDocumentIDResponse.class, response);
 
-        Report report = checker.checkNumber(number);
+        } catch (Exception ex) {
+            log.error(ex);
+        }
 
-        return responseDocument;
-
-    }
-
-    /**
-     * @param date - Date: select by date
-     * @return org.w3c.dom.Document - SOAPBody Child Element
-     */
-    private Document getPendingDocumentIds(Date date) {
-
-        Document responseDocument = null;
-
-        List<Long> documentIds = new ArrayList<Long>();
-
-
-        return responseDocument;
-
-    }
-
-    /**
-     * @param number - Integer: limit record
-     * @param date   - Date: select by date
-     * @return org.w3c.dom.Document - SOAPBody Child Element
-     */
-    private Document getPendingDocumentIds(int number, Date date) {
-
-        Document responseDocument = null;
-
-        List<Long> documentIds = new ArrayList<Long>();
-
-        Report report = checker.checkNumber(number);
-
-        return responseDocument;
-
+        map.put(StringPool.CHILD_BODY_KEY, responseDocument);
+        return map;
     }
 
     /**
