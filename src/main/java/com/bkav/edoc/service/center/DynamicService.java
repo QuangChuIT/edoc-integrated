@@ -10,6 +10,7 @@ import com.bkav.edoc.service.entity.edxml.Report;
 import com.bkav.edoc.service.entity.edxml.TraceHeaderList;
 import com.bkav.edoc.service.mineutil.AttachmentUtil;
 import com.bkav.edoc.service.mineutil.ExtractMime;
+import com.bkav.edoc.service.mineutil.MimeUtil;
 import com.bkav.edoc.service.mineutil.XmlUtil;
 import com.bkav.edoc.service.redis.RedisKey;
 import com.bkav.edoc.service.redis.RedisUtil;
@@ -31,17 +32,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class DynamicService extends AbstractMediator implements ManagedLifecycle {
 
     private EdocDocumentService documentService = new EdocDocumentService();
 
     public boolean mediate(MessageContext messageContext) {
-        log.info("E document  mediator invoker");
+        log.info("--------------- eDoc mediator invoker by class mediator ---------------");
 
         org.apache.axis2.context.MessageContext inMessageContext = ((Axis2MessageContext) messageContext).getAxis2MessageContext();
 
@@ -60,6 +59,12 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     break;
                 case "GetListDocument":
                     break;
+                case "GetPendingDocumentIds":
+                    map = getPendingDocumentIds(doc, inMessageContext);
+                    break;
+                case "GetDocument":
+                    map = getDocument(doc, inMessageContext);
+                    break;
                 default:
                     log.error(ErrorCommonUtil.getInfoToLog(
                             "Can't define soap envelop", DynamicService.class));
@@ -75,6 +80,11 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             axisFault.printStackTrace();
         }
         return true;
+    }
+
+    private Map<String, Object> getDocument(Document doc, org.apache.axis2.context.MessageContext inMessageContext) {
+        Map<String, Object> map = new HashMap<>();
+        return map;
     }
 
     public Map<String, Object> sendDocument(Document envelop, org.apache.axis2.context.MessageContext messageContext) {
@@ -158,7 +168,149 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     }
 
     /**
+     * @param doc
+     * @return
+     */
+    public Map<String, Object> getPendingDocumentIds(Document doc, org.apache.axis2.context.MessageContext messageContext) {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        Document bodyChildDocument = null;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+
+            Map<String, Object> params = xmlUtil
+                    .getParamForDocumentPendings(doc);
+
+            int number = 0;
+
+            Date date = null;
+            final String numberKey = "number";
+            final String dateKey = "date";
+            boolean getByDefault = false;
+            boolean getByNumber = false;
+            boolean getByDate = false;
+            boolean getByBoth = false;
+
+            if (params.isEmpty()) {
+                getByDefault = true;
+            } else {
+
+                getByNumber = params.containsKey(numberKey);
+
+                getByDate = params.containsKey(dateKey);
+
+                if (getByNumber && !getByDate) {
+
+                    number = Integer.parseInt(String.valueOf(params
+                            .get(numberKey)));
+
+                } else if (!getByNumber && getByDate) {
+
+                    String strDate = String.valueOf(params.get(dateKey));
+
+                    date = dateFormat.parse(strDate);
+
+                } else if (getByNumber && getByDate) {
+
+                    number = Integer.parseInt(String.valueOf(params
+                            .get(numberKey)));
+
+                    String strDate = String.valueOf(params.get(dateKey));
+
+                    date = dateFormat.parse(strDate);
+
+                    getByBoth = true;
+                }
+            }
+
+            if (getByDefault) {
+                bodyChildDocument = getPendingDocumentIds();
+            } else {
+                if (getByNumber && !getByDate) {
+                    bodyChildDocument = getPendingDocumentIds(number);
+                } else if (!getByNumber && getByDate) {
+                    bodyChildDocument = getPendingDocumentIds(date);
+                } else if (getByBoth) {
+                    bodyChildDocument = getPendingDocumentIds(number, date);
+                }
+            }
+        } catch (Exception e) {
+            log.error(e);
+        }
+
+        MimeUtil.setOutputSWA(true, messageContext);
+        map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+
+        return map;
+    }
+
+    /**
+     * @return org.w3c.dom.Document - SOAPBody Child Element
+     */
+    @SuppressWarnings("unchecked")
+    private Document getPendingDocumentIds() {
+
+        Document responseDocument = null;
+
+        List<Long> notifications = null;
+
+
+        return responseDocument;
+    }
+
+    /**
+     * @param number - Integer: limit record
+     * @return org.w3c.dom.Document - SOAPBody Child Element
+     */
+    private Document getPendingDocumentIds(int number) throws Exception {
+
+        Document responseDocument = null;
+
+        List<Long> documentIds = new ArrayList<Long>();
+
+        Report report = checker.checkNumber(number);
+
+        return responseDocument;
+
+    }
+
+    /**
+     * @param date - Date: select by date
+     * @return org.w3c.dom.Document - SOAPBody Child Element
+     */
+    private Document getPendingDocumentIds(Date date) {
+
+        Document responseDocument = null;
+
+        List<Long> documentIds = new ArrayList<Long>();
+
+
+        return responseDocument;
+
+    }
+
+    /**
+     * @param number - Integer: limit record
+     * @param date   - Date: select by date
+     * @return org.w3c.dom.Document - SOAPBody Child Element
+     */
+    private Document getPendingDocumentIds(int number, Date date) {
+
+        Document responseDocument = null;
+
+        List<Long> documentIds = new ArrayList<Long>();
+
+        Report report = checker.checkNumber(number);
+
+        return responseDocument;
+
+    }
+
+    /**
      * save envelop file to cache
+     *
      * @param document
      * @param strDocumentId
      * @throws Exception
