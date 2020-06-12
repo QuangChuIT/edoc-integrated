@@ -7,11 +7,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.activation.DataHandler;
 import javax.xml.XMLConstants;
@@ -39,6 +35,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import com.bkav.edoc.service.commonutil.Checker;
 import com.bkav.edoc.service.entity.edxml.*;
 import com.bkav.edoc.service.entity.soapenv.Body;
 import com.bkav.edoc.service.entity.soapenv.Header;
@@ -1286,6 +1283,476 @@ public class XmlUtil {
         return level;
     }
 
+    /**
+     * @param messageHeader
+     * @param ns
+     * @return
+     * @throws Exception
+     */
+    public Document getMessHeaderDoc(MessageHeader messageHeader, OMNamespace ns)
+            throws Exception {
+        OMFactory factoryOM = OMAbstractFactory.getOMFactory();
+        OMElement messageHeaderNode = factoryOM.createOMElement(
+                StringPool.EDXML_MESSAGE_HEADER_BLOCK, ns);
+        List<OMNode> nodes = getHeaderChild(messageHeader, ns);
+
+        for (OMNode omNode : nodes) {
+            messageHeaderNode.addChild(omNode);
+        }
+
+        nodes.clear();
+
+        return XMLUtils.toDOM(messageHeaderNode).getOwnerDocument();
+    }
+
+    /**
+     * @param currentHeader
+     * @param ns
+     * @return
+     * @throws SAXException
+     * @throws IOException
+     */
+    private List<OMNode> getHeaderChild(MessageHeader currentHeader,
+                                        OMNamespace ns) throws SAXException, IOException {
+
+        List<OMNode> nodes = new ArrayList<OMNode>();
+
+        // SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        OMFactory factoryOM = OMAbstractFactory.getOMFactory();
+
+        boolean allowAll = false;
+
+        // String allowElements = new XmlUtil().getAllDefineElementName();
+        String allowElements = "";
+
+        if (allowElements.length() == 0) {
+            allowAll = true;
+        }
+
+        Checker checker = new Checker();
+        // Tao from Element
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_FROM) || allowAll) {
+
+            OMElement from = factoryOM.createOMElement("From", ns);
+
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.FROM_ORGAN_ID) || allowAll) {
+
+                OMElement fromOrganId = factoryOM
+                        .createOMElement("OrganId", ns);
+
+                fromOrganId.setText(currentHeader.getFrom().getOrganId());
+
+                from.addChild(fromOrganId);
+            }
+
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.FROM_ORGAN_NAME) || allowAll) {
+
+                OMElement fromOrganName = factoryOM.createOMElement(
+                        "OrganName", ns);
+
+                fromOrganName.setText(currentHeader.getFrom().getOrganName());
+
+                from.addChild(fromOrganName);
+            }
+
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.FROM_ORGAN_IN_CHARGE) || allowAll) {
+
+                OMElement fromOrganName = factoryOM.createOMElement(
+                        "OrganInCharge", ns);
+
+                fromOrganName.setText(currentHeader.getFrom()
+                        .getOrganInCharge());
+
+                from.addChild(fromOrganName);
+            }
+
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.FROM_ORGAN_ADD) || allowAll) {
+
+                OMElement fromOrganAdd = factoryOM.createOMElement("OrganAdd",
+                        ns);
+
+                fromOrganAdd.setText(currentHeader.getFrom().getOrganAdd());
+
+                from.addChild(fromOrganAdd);
+            }
+
+            if (checker.checkAllowElement(allowElements, StringPool.FROM_EMAIL)
+                    || allowAll) {
+
+                OMElement fromEmail = factoryOM.createOMElement("Email", ns);
+
+                fromEmail.setText(currentHeader.getFrom().getEmail());
+
+                from.addChild(fromEmail);
+            }
+
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.FROM_TELEPHONE) || allowAll) {
+
+                OMElement fromTelephone = factoryOM.createOMElement(
+                        "Telephone", ns);
+
+                fromTelephone.setText(currentHeader.getFrom().getTelephone());
+
+                from.addChild(fromTelephone);
+            }
+
+            if (checker.checkAllowElement(allowElements, StringPool.FROM_FAX)
+                    || allowAll) {
+
+                OMElement fromFax = factoryOM.createOMElement("Fax", ns);
+
+                fromFax.setText(currentHeader.getFrom().getFax());
+
+                from.addChild(fromFax);
+            }
+
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.FROM_WEBSITE) || allowAll) {
+
+                OMElement fromWebsite = factoryOM
+                        .createOMElement("Website", ns);
+
+                fromWebsite.setText(currentHeader.getFrom().getWebsite());
+
+                from.addChild(fromWebsite);
+            }
+            nodes.add(from);
+        }
+
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_TO) || allowAll) {
+
+            // Tao To element
+            List<To> tos = currentHeader.getTo();
+            String strDueDate = currentHeader.getDueDate();
+            boolean isCreateDueDate = false;
+            if(strDueDate != null && !strDueDate.isEmpty()){
+                isCreateDueDate = true;
+            }
+            for (To item : tos) {
+
+                OMElement to = factoryOM.createOMElement("To", ns);
+
+                if (checker.checkAllowElement(allowElements,
+                        StringPool.TO_ORGAN_ID) || allowAll) {
+                    OMElement toOrganId = factoryOM.createOMElement("OrganId",
+                            ns);
+                    toOrganId.setText(item.getOrganId());
+                    to.addChild(toOrganId);
+                }
+
+                if (checker.checkAllowElement(allowElements,
+                        StringPool.TO_ORGAN_NAME) || allowAll) {
+                    OMElement toOrganName = factoryOM.createOMElement(
+                            "OrganName", ns);
+                    toOrganName.setText(item.getOrganName());
+                    to.addChild(toOrganName);
+                }
+
+                if (checker.checkAllowElement(allowElements,
+                        StringPool.TO_ORGAN_ADD) || allowAll) {
+                    OMElement toOrganAdd = factoryOM.createOMElement(
+                            "OrganAdd", ns);
+                    toOrganAdd.setText(item.getOrganAdd());
+                    to.addChild(toOrganAdd);
+                }
+
+                if (checker.checkAllowElement(allowElements,
+                        StringPool.TO_EMAIL) || allowAll) {
+                    OMElement toEmail = factoryOM.createOMElement("Email", ns);
+                    toEmail.setText(item.getEmail());
+                    to.addChild(toEmail);
+                }
+
+                if (checker.checkAllowElement(allowElements,
+                        StringPool.TO_TELEPHONE) || allowAll) {
+                    OMElement toTelephone = factoryOM.createOMElement(
+                            "Telephone", ns);
+                    toTelephone.setText(item.getTelephone());
+                    to.addChild(toTelephone);
+                }
+
+                if (checker.checkAllowElement(allowElements, StringPool.TO_FAX)
+                        || allowAll) {
+                    OMElement toFax = factoryOM.createOMElement("Fax", ns);
+                    toFax.setText(item.getFax());
+                    to.addChild(toFax);
+                }
+
+                if (checker.checkAllowElement(allowElements,
+                        StringPool.TO_WEBSITE) || allowAll) {
+                    OMElement toWebsite = factoryOM.createOMElement("Website",
+                            ns);
+                    toWebsite.setText(item.getWebsite());
+                    to.addChild(toWebsite);
+                }
+
+                if (checker.checkAllowElement(allowElements,
+                        StringPool.TO_DUE_DATE) || allowAll) {
+                    if(strDueDate != null && strDueDate.length() > 0){
+                            OMElement toDueDate = factoryOM.createOMElement("DueDate",
+                                    ns);
+                            toDueDate.setText(strDueDate);
+                            to.addChild(toDueDate);
+                    }
+                }
+
+                nodes.add(to);
+            }
+        }
+
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_DOCUMENT_ID) || allowAll) {
+            // Tao <edXML:DocumentId>
+            OMElement documentId = factoryOM.createOMElement("DocumentId", ns);
+            documentId.setText(currentHeader.getDocumentId());
+            nodes.add(documentId);
+        }
+
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_CODE) || allowAll) {
+            // Tao Code
+            OMElement code = factoryOM.createOMElement("Code", ns);
+
+            if (checker
+                    .checkAllowElement(allowElements, StringPool.CODE_NUMBER)
+                    || allowAll) {
+                OMElement codeNumber = factoryOM.createOMElement("CodeNumber",
+                        ns);
+                codeNumber.setText(currentHeader.getCode().getCodeNumber());
+                code.addChild(codeNumber);
+            }
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.CODE_NOTATION) || allowAll) {
+                OMElement codeNotation = factoryOM.createOMElement(
+                        "CodeNotation", ns);
+                codeNotation.setText(currentHeader.getCode().getCodeNotation());
+                code.addChild(codeNotation);
+            }
+
+            nodes.add(code);
+        }
+
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_PROMULGATION_INFO) || allowAll) {
+            // Tao PromulgationInfo
+
+            OMElement promulgationInfo = factoryOM.createOMElement(
+                    "PromulgationInfo", ns);
+
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.PROMULGATION_INFO_DATE) || allowAll) {
+                OMElement promulgationDate = factoryOM.createOMElement(
+                        "PromulgationDate", ns);
+
+                String dateStr = currentHeader.getPromulgationInfo()
+                        .getPromulgationDate();
+
+                promulgationDate
+                        .setText(dateStr.isEmpty() ? StringPool.DEFAULT_DATE
+                                : dateStr);
+                promulgationInfo.addChild(promulgationDate);
+            }
+
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.PROMULGATION_INFO_PLACE) || allowAll) {
+                OMElement promulgationPlace = factoryOM.createOMElement(
+                        "Place", ns);
+                promulgationPlace.setText(currentHeader.getPromulgationInfo()
+                        .getPlace());
+                promulgationInfo.addChild(promulgationPlace);
+            }
+
+            nodes.add(promulgationInfo);
+        }
+
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_DOCUMENT_TYPE) || allowAll) {
+            // Tao DocumentType
+            OMElement documentType = factoryOM.createOMElement("DocumentType",
+                    ns);
+
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.DOCUMENT_TYPE_TYPE) || allowAll) {
+                OMElement type = factoryOM.createOMElement("Type", ns);
+                String typeString = String.valueOf(currentHeader
+                        .getDocumentType().getType());
+                type.setText(typeString.isEmpty() ? StringPool.DEFAUlt_INTEGER
+                        : typeString);
+                documentType.addChild(type);
+            }
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.DOCUMENT_TYPE_TYPE_NAME) || allowAll) {
+                OMElement typeName = factoryOM.createOMElement("TypeName", ns);
+                typeName.setText(currentHeader.getDocumentType().getTypeName());
+                documentType.addChild(typeName);
+            }
+
+            nodes.add(documentType);
+        }
+
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_SUBJECT) || allowAll) {
+            // Tao Subject
+            OMElement subject = factoryOM.createOMElement("Subject", ns);
+            subject.setText(currentHeader.getSubject());
+            nodes.add(subject);
+        }
+
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_CONTENT) || allowAll) {
+            // Tao Content
+            OMElement content = factoryOM.createOMElement("Content", ns);
+            content.setText(currentHeader.getContent());
+            nodes.add(content);
+        }
+
+        // TODO: Chua check on/off cho the Related
+//        OMElement related = factoryOM.createOMElement("Related", ns);
+//        Code item = currentHeader.getCode();
+//        OMElement relatedCode = factoryOM.createOMElement("Code", ns);
+//
+//        OMElement relatedCodeNumber = factoryOM.createOMElement(
+//                "CodeNumber", ns);
+//        relatedCodeNumber.setText(item.getCodeNumber());
+//        relatedCode.addChild(relatedCodeNumber);
+//
+//        OMElement relatedCodeNotation = factoryOM.createOMElement(
+//                "CodeNotation", ns);
+//        relatedCodeNotation.setText(item.getCodeNotation());
+//        relatedCode.addChild(relatedCodeNotation);
+//        related.addChild(relatedCode);
+//        nodes.add(related);
+
+//        if (checker.checkAllowElement(allowElements,
+//                StringPool.MESSAGE_HEADER_AUTHOR) || allowAll) {
+//            // Tao Author
+//            OMElement author = factoryOM.createOMElement("SignerInfo", ns);
+//
+//            if (checker.checkAllowElement(allowElements,
+//                    StringPool.AUTHOR_COMPETENCE) || allowAll) {
+//                OMElement competence = factoryOM.createOMElement("Competence",
+//                        ns);
+//                competence.setText(currentHeader.getAuthor().getCompetence());
+//                author.addChild(competence);
+//            }
+//            if (checker.checkAllowElement(allowElements,
+//                    StringPool.AUTHOR_FUNCTION) || allowAll) {
+//                OMElement function = factoryOM.createOMElement("Position", ns);
+//                function.setText(currentHeader.getAuthor().getFunction());
+//                author.addChild(function);
+//            }
+//            if (checker.checkAllowElement(allowElements,
+//                    StringPool.AUTHOR_FULLNAME) || allowAll) {
+//                OMElement fullName = factoryOM.createOMElement("FullName", ns);
+//                fullName.setText(currentHeader.getAuthor().getFullName());
+//                author.addChild(fullName);
+//            }
+//
+//            nodes.add(author);
+//        }
+
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_RESPONSE_DATE) || allowAll) {
+            // Tao ResponseDate
+            OMElement responseDate = factoryOM.createOMElement("DueDate", ns);
+//            String dateStr = currentHeader.getResponseDate();
+            String dateStr = currentHeader.getDueDate();
+            responseDate.setText(dateStr.isEmpty() ? StringPool.DEFAULT_DATE
+                    : dateStr);
+            nodes.add(responseDate);
+        }
+
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_TOPLACES) || allowAll) {
+            // Tao ToPlaces
+            OMElement toplaces = factoryOM.createOMElement("ToPlaces", ns);
+            for (String placeStr : currentHeader.getToPlaces().getPlace()) {
+                OMElement place = factoryOM.createOMElement("Place", ns);
+                place.setText(placeStr);
+                toplaces.addChild(place);
+            }
+            nodes.add(toplaces);
+        }
+
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_OTHERINFO) || allowAll) {
+            // Tao OtherInfo
+            OMElement otherInfo = factoryOM.createOMElement("OtherInfo", ns);
+
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.OTHERINFO_PRIORITY) || allowAll) {
+                OMElement priority = factoryOM.createOMElement("Priority", ns);
+                String priorityStr = String.valueOf(currentHeader
+                        .getOtherInfo().getPriority());
+                priority.setText(priorityStr.isEmpty() ? StringPool.DEFAUlt_INTEGER
+                        : priorityStr);
+                otherInfo.addChild(priority);
+            }
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.OTHERINFO_SPHERE_OF_PROMULGATION) || allowAll) {
+                OMElement sphere = factoryOM.createOMElement(
+                        "SphereOfPromulgation", ns);
+                sphere.setText(currentHeader.getOtherInfo()
+                        .getSphereOfPromulgation());
+                otherInfo.addChild(sphere);
+            }
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.OTHERINFO_TYPER_NOTATION) || allowAll) {
+                OMElement typerNotation = factoryOM.createOMElement(
+                        "TyperNotation", ns);
+                typerNotation.setText(currentHeader.getOtherInfo()
+                        .getTyperNotation());
+                otherInfo.addChild(typerNotation);
+            }
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.OTHERINFO_PROMULGATION_AMOUNT) || allowAll) {
+                OMElement promulAmount = factoryOM.createOMElement(
+                        "PromulgationAmount", ns);
+                String promulAmountStr = String.valueOf(currentHeader
+                        .getOtherInfo().getPromulgationAmount());
+                promulAmount
+                        .setText(promulAmountStr.isEmpty() ? StringPool.DEFAUlt_INTEGER
+                                : promulAmountStr);
+                otherInfo.addChild(promulAmount);
+            }
+            if (checker.checkAllowElement(allowElements,
+                    StringPool.OTHERINFO_PAGE_AMOUNT) || allowAll) {
+                OMElement pageAmount = factoryOM.createOMElement("PageAmount",
+                        ns);
+                String pageAmountStr = String.valueOf(currentHeader
+                        .getOtherInfo().getPageAmount());
+                pageAmount
+                        .setText(pageAmountStr.isEmpty() ? StringPool.DEFAUlt_INTEGER
+                                : pageAmountStr);
+                otherInfo.addChild(pageAmount);
+            }
+
+//            if (checker.checkAllowElement(allowElements,
+//                    StringPool.MESSAGE_HEADER_APPENDIXES) || allowAll) {
+//                // Tao Appendixes
+//                OMElement appendixes = factoryOM.createOMElement("Appendixes",
+//                        ns);
+//                for (String item : currentHeader.getAppendixes().getAppendix()) {
+//                    OMElement appendix = factoryOM.createOMElement("Appendix",
+//                            ns);
+//                    appendix.setText(item);
+//                    appendixes.addChild(appendix);
+//                }
+//                otherInfo.addChild(appendixes);
+//            }
+
+            nodes.add(otherInfo);
+        }
+        return nodes;
+    }
 
     private static Log _log = LogFactory.getLog(XmlUtil.class);
 

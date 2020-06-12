@@ -1,17 +1,13 @@
 package com.bkav.edoc.service.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 import com.bkav.edoc.service.center.DynamicService;
 import com.bkav.edoc.service.kernel.string.StringPool;
 import com.bkav.edoc.service.kernel.util.Validator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.net.util.Base64;
 
 public class AttachmentGlobalUtil {
 
@@ -137,6 +133,41 @@ public class AttachmentGlobalUtil {
 
 		return targetFodler.getAbsolutePath();
 
+	}
+
+	public byte[] parseBase64ISToBytes(InputStream base64IS) throws IOException {
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			byte[] buffer = new byte[1024];
+			int readed = 0;
+			while ((readed = base64IS.read(buffer, 0, buffer.length)) != -1) {
+
+				baos.write(buffer, 0, readed);
+			}
+		} catch (Exception ex) {
+			log.error(ex);
+		} finally {
+			base64IS.close();
+		}
+		byte[] bytes = baos.toByteArray();
+		baos.close();
+
+		if (!Base64.isBase64(bytes[0])) {
+			bytes = Base64.encodeBase64(bytes);
+		}
+		return bytes;
+	}
+
+	public InputStream getFileIS(String filePath) throws IOException {
+
+		File file = new File(filePath);
+
+		if (file.exists()) {
+			return new FileInputStream(file);
+		}
+
+		return null;
 	}
 
 	private static final Log log = LogFactory.getLog(AttachmentGlobalUtil.class);

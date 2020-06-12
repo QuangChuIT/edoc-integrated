@@ -18,4 +18,5 @@ public class EdXmlConstant {
     public static final String HREF_ATTR = "href";
     public static final String ATTACHMENT_NAME_TAG = "AttachmentName";
     public static final String GET_PENDING_DOCUMENT = "GetPendingDocumentIdsRequest";
+    public static final String GET_DOCUMENT = "GetDocumentRequest";
 }

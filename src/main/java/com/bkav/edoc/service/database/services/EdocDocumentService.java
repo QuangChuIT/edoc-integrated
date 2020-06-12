@@ -3,6 +3,7 @@ package com.bkav.edoc.service.database.services;
 import com.bkav.edoc.service.database.daoimpl.*;
 import com.bkav.edoc.service.database.entity.*;
 import com.bkav.edoc.service.entity.edxml.*;
+import com.bkav.edoc.service.mineutil.Mapper;
 import com.bkav.edoc.service.redis.RedisKey;
 import com.bkav.edoc.service.redis.RedisUtil;
 import com.bkav.edoc.service.util.AttachmentGlobalUtil;
@@ -33,9 +34,17 @@ public class EdocDocumentService {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
             "dd/MM/yyyy");
+    private Mapper mapper = new Mapper();
 
     public EdocDocumentService() {
 
+    }
+
+    public EdocDocument getDocument(long documentId) {
+        documentDaoImpl.openCurrentSession();
+        EdocDocument result = documentDaoImpl.findById(documentId);
+        documentDaoImpl.closeCurrentSession();
+        return result;
     }
 
     public List<EdocDocument> findAll() {
@@ -196,7 +205,7 @@ public class EdocDocumentService {
      * @param fromOrganDomain
      * @param sentDate
      */
-    private void saveGetDocumentCache(long documentId, String fromOrganDomain, Date sentDate) {
+    public void saveGetDocumentCache(long documentId, String fromOrganDomain, Date sentDate) {
         Map<String, Object> cacheThis = new HashMap<>();
         cacheThis.put("sentDate", sentDate);
         cacheThis.put("fromDomain", fromOrganDomain);
@@ -232,6 +241,17 @@ public class EdocDocumentService {
                 RedisUtil.getInstance().set(RedisKey.getKey(to.getOrganId(), RedisKey.GET_PENDING_KEY), oldDocumentIds);
             }
         }
+    }
+
+    public MessageHeader getDocumentById(long docId) {
+
+        EdocDocument document = this.getDocument(docId);
+
+        EdocDocumentDetail detail = document.getDocumentDetail();
+
+        Set<EdocNotification> notifications = document.getNotifications();
+
+        return mapper.modelToMessageHeader(document, detail, notifications);
     }
 
     private static final Log log = LogFactory.getLog(EdocDocumentService.class);

@@ -103,7 +103,7 @@ public class ExtractMime {
      * @param envelope
      * @return
      */
-    public String getOrganId(Document envelope) {
+    public String getOrganId(Document envelope, String documentName) {
 
         org.jdom2.Document domEnvDoc = XmlUtil.convertFromDom(envelope);
 
@@ -115,7 +115,7 @@ public class ExtractMime {
                 envNs);
         if (body != null) {
             Element pendingDocumentNode = getSingerElement(body,
-                    EdXmlConstant.GET_PENDING_DOCUMENT, null);
+                    documentName, null);
             if (pendingDocumentNode != null) {
                 return pendingDocumentNode.getChildText("OrganId", null);
             }

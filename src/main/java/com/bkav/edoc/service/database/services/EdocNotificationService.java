@@ -9,6 +9,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
+import javax.management.Notification;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -66,13 +68,49 @@ public class EdocNotificationService {
         return true;
     }
 
+    /**
+     * get document id by domain
+     * @param organId
+     * @return
+     */
     public List<Long> getDocumentIdsByOrganId(String organId) {
-        Session currentSession = notificationDaoImpl.openCurrentSession();
+        notificationDaoImpl.openCurrentSession();
 
         List<Long> notificationIds = notificationDaoImpl.getDocumentIdsByOrganId(organId);
 
         notificationDaoImpl.closeCurrentSession();
         return notificationIds;
+    }
+
+    /**
+     * check allow of this domain with document
+     * @param documentId
+     * @param organId
+     * @return
+     */
+    public boolean checkAllowWithDocument(String documentId, String organId) {
+        notificationDaoImpl.openCurrentSession();
+
+        boolean checkAllow = notificationDaoImpl.checkAllowWithDocument(documentId, organId);
+
+        notificationDaoImpl.closeCurrentSession();
+        return checkAllow;
+    }
+
+    public void removePendingDocumentId(String domain, long documentId) {
+        Session currentSession = notificationDaoImpl.openCurrentSession();
+        try {
+            currentSession.beginTransaction();
+            notificationDaoImpl.setNotificationTaken(String.valueOf(documentId), domain);
+            currentSession.getTransaction().commit();
+        } catch (SQLException e) {
+            log.error(e);
+            if(currentSession != null) {
+                currentSession.getTransaction().rollback();
+            }
+        } finally {
+            notificationDaoImpl.closeCurrentSession();
+        }
     }
 
     private static final Log log = LogFactory.getLog(EdocNotificationService.class);

@@ -6,17 +6,17 @@ import com.bkav.edoc.service.database.entity.EdocDocument;
 import com.bkav.edoc.service.entity.edxml.Attachment;
 import com.bkav.edoc.service.entity.edxml.MessageHeader;
 import com.bkav.edoc.service.entity.edxml.To;
+import com.bkav.edoc.service.mineutil.Mapper;
 import com.bkav.edoc.service.util.AttachmentGlobalUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class EdocAttachmentService {
     private EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
@@ -25,6 +25,8 @@ public class EdocAttachmentService {
     private String SEPERATOR = File.separator;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
             "dd/MM/yyyy");
+
+    private Mapper mapper = new Mapper();
 
     /**
      * Add attachments
@@ -113,6 +115,28 @@ public class EdocAttachmentService {
         edocAttachment.setDocument(document);
 
         attachmentDaoImpl.persist(edocAttachment);
+    }
+
+    public List<Attachment> getAttachmentsByDocumentId(long documentId) throws IOException {
+        attachmentDaoImpl.openCurrentSession();
+
+        List<EdocAttachment> attachments = attachmentDaoImpl.getAttachmentsByDocumentId(documentId);
+        ListIterator<EdocAttachment> iterator = attachments.listIterator();
+
+        List<Attachment> attachmentEntities = new ArrayList<>();
+
+        while (iterator.hasNext()) {
+
+            EdocAttachment attachment = iterator.next();
+
+            Attachment result = mapper.attachmentModelToServiceEntity(attachment);
+
+            attachmentEntities.add(result);
+
+        }
+
+        attachmentDaoImpl.closeCurrentSession();
+        return attachmentEntities;
     }
 
     /**
