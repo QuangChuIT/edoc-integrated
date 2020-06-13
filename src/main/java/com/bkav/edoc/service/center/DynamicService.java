@@ -3,7 +3,6 @@ package com.bkav.edoc.service.center;
 import com.bkav.edoc.service.commonutil.Checker;
 import com.bkav.edoc.service.commonutil.ErrorCommonUtil;
 import com.bkav.edoc.service.commonutil.XmlChecker;
-import com.bkav.edoc.service.database.entity.EdocDocument;
 import com.bkav.edoc.service.database.services.EdocAttachmentService;
 import com.bkav.edoc.service.database.services.EdocDocumentService;
 import com.bkav.edoc.service.database.services.EdocNotificationService;
@@ -34,9 +33,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DynamicService extends AbstractMediator implements ManagedLifecycle {
 
@@ -94,6 +91,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         Map<String, Object> map = new HashMap<>();
         List<Error> errors = new ArrayList<>();
         Report report = null;
+        List<Error> errorList = new ArrayList<Error>();
         long documentId = 0L;
         String organId = "";
 
@@ -131,6 +129,9 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                             "M.DOCUMENT",
                             "van-ban-nay-khong-nam-trong-pham-vi-cua-xac-thuc-hien-tai"));
                     report = new Report(false, new ErrorList(errors));
+                    errorList.add(new Error("Error", "Van ban khong ton tai"));
+                    report = new Report(false, new ErrorList(errorList));
+
 
                     Document bodyChildDocument = xmlUtil
                             .convertEntityToDocument(Report.class, report);
@@ -177,6 +178,9 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 // remove pending document
                 this.removePendingDocumentId(organId, documentId);
             } catch (Exception e) {
+                errorList.add(new Error("Error", "Loi he thong"));
+                report = new Report(false, new ErrorList(errorList));
+
                 Document bodyChildDocument = xmlUtil.convertEntityToDocument(
                         Report.class, report);
                 map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
@@ -188,6 +192,8 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     public Map<String, Object> sendDocument(Document envelop, org.apache.axis2.context.MessageContext messageContext) {
 
         Map<String, Object> map = new HashMap<>();
+
+        List<Error> errorList = new ArrayList<Error>();
 
         List<Attachment> attachmentsEntity = new ArrayList<Attachment>();
 
@@ -247,6 +253,22 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                         attachments);
                 for (Attachment attachment : attachmentsEntity) {
                     attachmentNames.add(attachment.getName());
+                }
+
+
+                // check exist document
+                if (documentService.checkExistDocument(messageHeader.getSubject(), messageHeader.getCode().getCodeNumber()
+                        , messageHeader.getCode().getCodeNotation(), messageHeader.getPromulgationInfo().getPromulgationDate()
+                        , messageHeader.getFrom().getOrganId(), messageHeader.getTo(), attachmentNames)) {
+
+                    errorList.add(new Error("Exist", "Van ban da ton tai"));
+                    report = new Report(false, new ErrorList(errorList));
+
+                    bodyChildDocument = xmlUtil.convertEntityToDocument(
+                            Report.class, report);
+                    map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+
+                    return map;
                 }
 
                 // add document

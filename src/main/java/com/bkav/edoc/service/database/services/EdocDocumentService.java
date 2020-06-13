@@ -1,5 +1,6 @@
 package com.bkav.edoc.service.database.services;
 
+import com.bkav.edoc.service.commonutil.XmlGregorianCalendarUtil;
 import com.bkav.edoc.service.database.daoimpl.*;
 import com.bkav.edoc.service.database.entity.*;
 import com.bkav.edoc.service.entity.edxml.*;
@@ -197,6 +198,39 @@ public class EdocDocumentService {
 
         }
         return toOrganDomainBuffer.toString();
+    }
+
+    public List<String> getToOrganDomains(List<To> tos) {
+
+        List<String> results = new ArrayList<String>();
+
+        for (To to : tos) {
+            results.add(to.getOrganId());
+        }
+        return results;
+    }
+
+    /**
+     * check document is exist
+     * @param subject
+     * @param codeNumber
+     * @param codeNotation
+     * @param promulgationDateStr
+     * @param fromOrganDomain
+     * @param tos
+     * @param attachmentNames
+     * @return
+     */
+    public boolean checkExistDocument(String subject, String codeNumber, String codeNotation, String promulgationDateStr, String fromOrganDomain, List<To> tos, List<String> attachmentNames) {
+        documentDaoImpl.openCurrentSession();
+
+        Date promulgationDate = XmlGregorianCalendarUtil.convertToDate(promulgationDateStr, "dd/MM/yyyy");
+        String toOrganDomain = getToOrganDomain(tos);
+
+        boolean check = documentDaoImpl.checkExistDocument(subject, codeNumber, codeNotation, promulgationDate, fromOrganDomain, toOrganDomain, attachmentNames);
+
+        documentDaoImpl.closeCurrentSession();
+        return check;
     }
 
     /**
