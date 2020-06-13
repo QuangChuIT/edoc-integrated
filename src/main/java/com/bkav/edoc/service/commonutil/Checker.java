@@ -8,6 +8,9 @@ import com.bkav.edoc.service.kernel.util.MimeTypesUtil;
 import com.bkav.edoc.service.resource.StringPool;
 import com.bkav.edoc.service.util.EdXMLConfigKey;
 import com.bkav.edoc.service.util.EdXMLConfigUtil;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1050,6 +1053,18 @@ public class Checker {
         } catch (ParseException e) {
             return ERROR_DATE_COMPARE;
         }
+    }
+
+    public boolean checkAllowElement(String allowElements, String targetElement)
+            throws SAXException, IOException {
+
+        if (allowElements.indexOf(targetElement) == -1) {
+
+            return false;
+
+        }
+
+        return true;
     }
 
     private static final Locale _LOCALE = new Locale("vi", "VN");
