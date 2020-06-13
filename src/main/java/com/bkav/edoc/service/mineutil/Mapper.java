@@ -9,15 +9,15 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.bkav.edoc.service.database.entity.EdocAttachment;
-import com.bkav.edoc.service.database.entity.EdocDocument;
-import com.bkav.edoc.service.database.entity.EdocDocumentDetail;
-import com.bkav.edoc.service.database.entity.EdocNotification;
+import com.bkav.edoc.service.database.entity.*;
+import com.bkav.edoc.service.database.services.EdocDynamicContactService;
 import com.bkav.edoc.service.entity.edxml.*;
 import com.bkav.edoc.service.resource.StringPool;
 import com.bkav.edoc.service.util.AttachmentGlobalUtil;
 
 public class Mapper {
+
+	private static EdocDynamicContactService dynamicContactService = new EdocDynamicContactService();
 
 	public Mapper() {
 
@@ -29,22 +29,22 @@ public class Mapper {
 		From from = new From();
 		from.setOrganId(document.getFromOrganDomain());
 //		// TODO: Can lay thong tin don vi roi insert vao
-//		info = globalUtil.getDynamicContactById(document.getFromOrganDomain());
-//		if (info == null) {
+		EdocDynamicContact dynamicContact = dynamicContactService.getDynamicContactByDomain(document.getFromOrganDomain());
+		if (dynamicContact == null) {
 			from.setOrganName(StringPool.DEFAULT_STRING);
 			from.setOrganAdd(StringPool.DEFAULT_STRING);
 			from.setEmail(StringPool.DEFAULT_STRING);
 			from.setTelephone(StringPool.DEFAULT_STRING);
 			from.setFax(StringPool.DEFAULT_STRING);
 			from.setWebsite(StringPool.DEFAULT_STRING);
-//		} else {
-//			from.setOrganName(info.getName());
-//			from.setOrganAdd(info.getAddress());
-//			from.setEmail(info.getEmail());
-//			from.setTelephone(info.getTelephone());
-//			from.setFax(info.getFax());
-//			from.setWebsite(info.getWebsite());
-//		}
+		} else {
+			from.setOrganName(dynamicContact.getName());
+			from.setOrganAdd(dynamicContact.getAddress());
+			from.setEmail(dynamicContact.getEmail());
+			from.setTelephone(dynamicContact.getTelephone());
+			from.setFax(dynamicContact.getFax());
+			from.setWebsite(dynamicContact.getWebsite());
+		}
 		messageHeader.setFrom(from);
 
 		String[] toStrs = document.getToOrganDomain().split("#");
