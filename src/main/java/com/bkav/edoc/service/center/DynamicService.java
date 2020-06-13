@@ -8,6 +8,7 @@ import com.bkav.edoc.service.database.services.EdocAttachmentService;
 import com.bkav.edoc.service.database.services.EdocDocumentService;
 import com.bkav.edoc.service.database.services.EdocNotificationService;
 import com.bkav.edoc.service.entity.edxml.*;
+import com.bkav.edoc.service.entity.edxml.Error;
 import com.bkav.edoc.service.mineutil.*;
 import com.bkav.edoc.service.redis.RedisKey;
 import com.bkav.edoc.service.redis.RedisUtil;
@@ -39,9 +40,9 @@ import java.util.stream.Collectors;
 
 public class DynamicService extends AbstractMediator implements ManagedLifecycle {
 
-    private EdocDocumentService documentService = new EdocDocumentService();
-    private EdocNotificationService notificationService = new EdocNotificationService();
-    private EdocAttachmentService attachmentService = new EdocAttachmentService();
+    private final EdocDocumentService documentService = new EdocDocumentService();
+    private final EdocNotificationService notificationService = new EdocNotificationService();
+    private final EdocAttachmentService attachmentService = new EdocAttachmentService();
 
     private ArchiveMime archiveMime = new ArchiveMime();
 
@@ -89,8 +90,9 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     }
 
     private Map<String, Object> getDocument(Document doc, org.apache.axis2.context.MessageContext inMessageContext) {
-        Map<String, Object> map = new HashMap<>();
 
+        Map<String, Object> map = new HashMap<>();
+        List<Error> errors = new ArrayList<>();
         Report report = null;
         long documentId = 0L;
         String organId = "";
@@ -99,11 +101,10 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             documentId = xmlUtil.getDocumentId(doc);
             organId = extractMime.getOrganId(doc, EdXmlConstant.GET_DOCUMENT);
         } catch (Exception ex) {
-            log.error(ex);
+            log.error("Error when get document " + ex.getMessage());
             documentId = 0L;
             organId = "";
         }
-
         // check document id and organ id
         if (documentId > 0L && organId != null && !organId.isEmpty()) {
 
@@ -116,7 +117,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 allowObj = RedisUtil.getInstance().get(RedisKey.getKey(organId
                         + documentId, RedisKey.CHECK_ALLOW_KEY), Boolean.class);
                 if (allowObj != null) {
-                    acceptToDocument = (Boolean) allowObj;
+                    acceptToDocument = true;
                 } else {
                     acceptToDocument = notificationService.checkAllowWithDocument(String.valueOf(documentId), organId);
 
@@ -126,6 +127,11 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 }
 
                 if (!acceptToDocument) {
+                    errors.add(new Error(
+                            "M.DOCUMENT",
+                            "van-ban-nay-khong-nam-trong-pham-vi-cua-xac-thuc-hien-tai"));
+                    report = new Report(false, new ErrorList(errors));
+
                     Document bodyChildDocument = xmlUtil
                             .convertEntityToDocument(Report.class, report);
 
@@ -134,18 +140,12 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     return map;
                 }
 
-                // Add trace danh dau organDomain hien tai da lay van ban
-//				globalUtil.updateTrace(documentId, Calendar.getInstance()
-//						.getTime(), _domain, StringPool.BLANK,
-//						StringPool.BLANK, TraceHandleType.RECEIVE, true);
-                // addTrace(documentId, _domain, false);
-
-                // get attachment in document
-                List<Attachment> attachmentsByEntity = new ArrayList<Attachment>();
+                List<Attachment> attachmentsByEntity = new ArrayList<>();
                 attachmentsByEntity = attachmentService.getAttachmentsByDocumentId(documentId);
 
                 // get saved doc in cache
-                String savedDocStr = RedisUtil.getInstance().get(RedisKey.getKey(String.valueOf(documentId), RedisKey.GET_ENVELOP_FILE), String.class);
+                String savedDocStr = RedisUtil.getInstance().get(RedisKey
+                        .getKey(String.valueOf(documentId), RedisKey.GET_ENVELOP_FILE), String.class);
                 Document savedDoc = xmlUtil.getDocumentFromFile(new ByteArrayInputStream(savedDocStr.getBytes(StandardCharsets.UTF_8)));
 
                 if (savedDoc != null) {
@@ -337,6 +337,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
     /**
      * remove pending document
+     *
      * @param domain
      * @param documentId
      */
@@ -349,6 +350,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
     /**
      * remove pending document in cache
+     *
      * @param domain
      * @param documentId
      */
@@ -357,7 +359,8 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 RedisKey.GET_PENDING_KEY), List.class);
 
         if (obj != null) {
-            List<Long> oldDocumentIds = CommonUtil.convertToListLong(obj);;
+            List<Long> oldDocumentIds = CommonUtil.convertToListLong(obj);
+            ;
             oldDocumentIds.remove(documentId);
 
             RedisUtil.getInstance().set(RedisKey.getKey(domain,

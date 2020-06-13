@@ -47,10 +47,10 @@ public class Mapper {
 //		}
 		messageHeader.setFrom(from);
 
-		String[] toStrs = document.getToOrganDomain().split("#");
+		String[] toStr = document.getToOrganDomain().split("#");
 		List<To> tos = new ArrayList<To>();
 //		messageHeader.setDueDateForOrgans(processNotifications(notifications));
-		for (String item : toStrs) {
+		for (String item : toStr) {
 			To to = new To();
 			to.setOrganId(item);
 //			info = globalUtil.getDynamicContactById(item);
