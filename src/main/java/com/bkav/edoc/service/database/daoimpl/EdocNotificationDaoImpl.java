@@ -16,6 +16,7 @@ public class EdocNotificationDaoImpl extends RootDaoImpl<EdocNotification, Long>
 
     /**
      * get document id by domain
+     *
      * @param organId
      * @return
      */
@@ -32,6 +33,7 @@ public class EdocNotificationDaoImpl extends RootDaoImpl<EdocNotification, Long>
 
     /**
      * check allow of this domain with document
+     *
      * @param documentId
      * @param organId
      * @return
@@ -44,7 +46,7 @@ public class EdocNotificationDaoImpl extends RootDaoImpl<EdocNotification, Long>
         query.setString("receiverId", organId);
         query.setString("documentId", documentId);
         List result = query.list();
-        if(result == null || result.size() == 0) {
+        if (result == null || result.size() == 0) {
             return false;
         }
         return true;

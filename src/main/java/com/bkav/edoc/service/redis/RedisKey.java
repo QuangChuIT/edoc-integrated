@@ -18,6 +18,8 @@ public class RedisKey {
 
     public final static String GLOBAL_IDS_FOR_TEST = "GlobalIdsForTest";
 
+    public final static String GET_ATTACHMENT_BY_DOC_ID = "GetAttachmentByDocID_";
+
     public final static String[] DEFAULT_SERVER = new String[] { "127.0.0.1:11211" };
 
     public final static String  SERVER_KEY = "edxml.service.memcached.address";

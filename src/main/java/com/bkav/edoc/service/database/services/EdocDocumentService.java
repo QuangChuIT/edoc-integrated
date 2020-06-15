@@ -4,6 +4,7 @@ import com.bkav.edoc.service.commonutil.XmlGregorianCalendarUtil;
 import com.bkav.edoc.service.database.daoimpl.*;
 import com.bkav.edoc.service.database.entity.*;
 import com.bkav.edoc.service.entity.edxml.*;
+import com.bkav.edoc.service.kernel.util.GetterUtil;
 import com.bkav.edoc.service.mineutil.Mapper;
 import com.bkav.edoc.service.redis.RedisKey;
 import com.bkav.edoc.service.redis.RedisUtil;
@@ -12,26 +13,24 @@ import com.bkav.edoc.service.util.PropsUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
-import org.w3c.dom.Document;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class EdocDocumentService {
-    private EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
-    private EdocPriorityDaoImpl priorityDaoImpl = new EdocPriorityDaoImpl();
-    private EdocDocumentDetailService documentDetailService = new EdocDocumentDetailService();
-    private EdocTraceHeaderListService traceHeaderListService = new EdocTraceHeaderListService();
-    private EdocAttachmentService attachmentService = new EdocAttachmentService();
-    private EdocNotificationService notificationService = new EdocNotificationService();
+    private final EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
+    private final EdocPriorityDaoImpl priorityDaoImpl = new EdocPriorityDaoImpl();
+    private final EdocDocumentDetailService documentDetailService = new EdocDocumentDetailService();
+    private final EdocTraceHeaderListService traceHeaderListService = new EdocTraceHeaderListService();
+    private final EdocAttachmentService attachmentService = new EdocAttachmentService();
+    private final EdocNotificationService notificationService = new EdocNotificationService();
+
+    private final String SEPARATOR = File.separator;
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
             "dd/MM/yyyy");
@@ -57,20 +56,22 @@ public class EdocDocumentService {
 
     /**
      * Add document from envelop
+     *
      * @param messageHeader
      * @param traces
      * @param attachments
      * @return
      * @throws Exception
      */
-    public boolean addDocument(MessageHeader messageHeader, TraceHeaderList traces, List<Attachment> attachments, StringBuilder outDocumentId) throws Exception {
+    public boolean addDocument(MessageHeader messageHeader, TraceHeaderList traces, List<Attachment> attachments,
+                               StringBuilder outDocumentId, StringBuilder attachmentSize) throws Exception {
         // output document id
         if (outDocumentId == null) {
             outDocumentId = new StringBuilder();
         }
         // add eDoc document
         EdocDocument edocDocument = addEdocDocument(messageHeader);
-        if(edocDocument == null) {
+        if (edocDocument == null) {
             return false;
         }
         long docId = edocDocument.getDocumentId();
@@ -90,11 +91,53 @@ public class EdocDocumentService {
         if (!traceHeaderListService.addTraceHeaderList(traces, docId)) {
             return false;
         }
+        // Insert vao bang Attachment
+        AttachmentGlobalUtil attUtil = new AttachmentGlobalUtil();
+        String rootPath = attUtil.getAttachmentPath();
+        long totalSize = 0;
+        JSONArray jsonAttachments = new JSONArray();
+        Calendar cal = Calendar.getInstance();
+        for (int i = 0; i < attachments.size(); i++) {
+            Attachment attachment = attachments.get(i);
+            String dataPath = new StringBuilder(domain).append(SEPARATOR)
+                    .append(cal.get(Calendar.YEAR)).append(SEPARATOR)
+                    .append(cal.get(Calendar.MONTH) + 1).append(SEPARATOR)
+                    .append(cal.get(Calendar.DAY_OF_MONTH)).append(SEPARATOR)
+                    .append(docId).append("_").append(i + 1).toString();
 
-        // add attachment
-        if (!attachmentService.addAttachments(messageHeader, attachments, domain, docId)) {
-            return false;
+            String specPath = new StringBuilder(rootPath)
+                    .append((rootPath.endsWith(SEPARATOR) ? "" : SEPARATOR))
+                    .append(dataPath).toString();
+
+            long size = 0L;
+            InputStream is = attachment.getValue();
+
+            size = attUtil.saveToFile(specPath, is);
+            is.close();
+            totalSize += size;
+            if (size < 0) {
+                System.out.println("Save attachment failed!");
+                return false;
+            }
+            long attachmentId = attachmentService.addAttachment(docId, messageHeader, attachment, size, dataPath);
+
+            if (attachmentId == 0) {
+                return false;
+            } else {
+                JSONObject jsonAttachment = new JSONObject();
+                jsonAttachment.put("attachmentId", attachmentId);
+                jsonAttachment.put("attachmentName", attachment.getName());
+                jsonAttachment.put("contentType", attachment.getContentType());
+                jsonAttachment.put("link", GetterUtil.getString(PropsUtil.get("service.attachments.link.config")) + SEPARATOR + attachmentId);
+                jsonAttachments.put(jsonAttachment);
+            }
         }
+        Object object = RedisUtil.getInstance().get(RedisKey.GET_ATTACHMENT_BY_DOC_ID + docId, Object.class);
+        if (object == null) {
+            RedisUtil.getInstance().set(RedisKey.GET_ATTACHMENT_BY_DOC_ID + docId, jsonAttachments);
+        }
+
+        attachmentSize.append(totalSize);
 
         // add notifications
         if (!notificationService.addNotifications(messageHeader, docId)) {
@@ -109,6 +152,7 @@ public class EdocDocumentService {
 
     /**
      * Add eDoc document, save to database
+     *
      * @param messageHeader
      * @return
      * @throws Exception
@@ -171,7 +215,7 @@ public class EdocDocumentService {
             return newDocument;
         } catch (Exception e) {
             log.error(e);
-            if(currentSession != null) {
+            if (currentSession != null) {
                 currentSession.getTransaction().rollback();
             }
             return null;
@@ -182,6 +226,7 @@ public class EdocDocumentService {
 
     /**
      * get to organ domain from list tos
+     *
      * @param tos
      * @return
      */
@@ -212,6 +257,7 @@ public class EdocDocumentService {
 
     /**
      * check document is exist
+     *
      * @param subject
      * @param codeNumber
      * @param codeNotation
@@ -235,6 +281,7 @@ public class EdocDocumentService {
 
     /**
      * save document to cache for get document
+     *
      * @param documentId
      * @param fromOrganDomain
      * @param sentDate
@@ -250,6 +297,7 @@ public class EdocDocumentService {
 
     /**
      * save pending document for to domain -> cache
+     *
      * @param tos
      * @param docId
      */

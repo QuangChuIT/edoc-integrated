@@ -8,12 +8,14 @@ import com.bkav.edoc.service.database.services.EdocDocumentService;
 import com.bkav.edoc.service.database.services.EdocNotificationService;
 import com.bkav.edoc.service.entity.edxml.*;
 import com.bkav.edoc.service.entity.edxml.Error;
+import com.bkav.edoc.service.kernel.util.GetterUtil;
 import com.bkav.edoc.service.mineutil.*;
 import com.bkav.edoc.service.redis.RedisKey;
 import com.bkav.edoc.service.redis.RedisUtil;
 import com.bkav.edoc.service.resource.EdXmlConstant;
 import com.bkav.edoc.service.resource.StringPool;
 import com.bkav.edoc.service.util.CommonUtil;
+import com.bkav.edoc.service.util.PropsUtil;
 import com.bkav.edoc.service.util.ResponseUtil;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axis2.AxisFault;
@@ -41,7 +43,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     private final EdocNotificationService notificationService = new EdocNotificationService();
     private final EdocAttachmentService attachmentService = new EdocAttachmentService();
 
-    private ArchiveMime archiveMime = new ArchiveMime();
+    private final ArchiveMime archiveMime = new ArchiveMime();
 
     public boolean mediate(MessageContext messageContext) {
         log.info("--------------- eDoc mediator invoker by class mediator ---------------");
@@ -245,36 +247,50 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                         attachments);
                 if (!report.isIsSuccess()) {
 
+                    bodyChildDocument = xmlUtil.convertEntityToDocument(Report.class, report);
+
+                    map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+
+                    return map;
                 }
 
                 List<String> attachmentNames = new ArrayList<>();
 
                 attachmentsEntity = attachmentUtil.getAttachments(envelop,
                         attachments);
+
+                // TODO: Turning empty attachment in map
                 for (Attachment attachment : attachmentsEntity) {
                     attachmentNames.add(attachment.getName());
                 }
 
+                boolean enableCheckExist = GetterUtil.get(PropsUtil.get("eDoc.service.sendDocument.checkExist.enable"), false);
 
-                // check exist document
-                if (documentService.checkExistDocument(messageHeader.getSubject(), messageHeader.getCode().getCodeNumber()
-                        , messageHeader.getCode().getCodeNotation(), messageHeader.getPromulgationInfo().getPromulgationDate()
-                        , messageHeader.getFrom().getOrganId(), messageHeader.getTo(), attachmentNames)) {
+                if(enableCheckExist){
+                    // check exist document
+                    if (documentService.checkExistDocument(messageHeader.getSubject(), messageHeader.getCode().getCodeNumber()
+                            , messageHeader.getCode().getCodeNotation(), messageHeader.getPromulgationInfo().getPromulgationDate()
+                            , messageHeader.getFrom().getOrganId(), messageHeader.getTo(), attachmentNames)) {
 
-                    errorList.add(new Error("Exist", "Van ban da ton tai"));
-                    report = new Report(false, new ErrorList(errorList));
+                        errorList.add(new Error("M.Exist", "Van ban da ton tai tren he thong"));
+                        report = new Report(false, new ErrorList(errorList));
 
-                    bodyChildDocument = xmlUtil.convertEntityToDocument(
-                            Report.class, report);
-                    map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+                        bodyChildDocument = xmlUtil.convertEntityToDocument(
+                                Report.class, report);
+                        map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
 
-                    return map;
+                        return map;
+                    }
                 }
+                StringBuilder  attachmentSize = new StringBuilder();
 
                 // add document
                 if (!documentService.addDocument(messageHeader, traceHeaderList,
-                        attachmentsEntity, strDocumentId)) {
+                        attachmentsEntity, strDocumentId, attachmentSize)) {
+                    bodyChildDocument = xmlUtil.convertEntityToDocument(Report.class, report);
 
+                    map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+                    return map;
                 }
 
                 // save envelop file to cache
