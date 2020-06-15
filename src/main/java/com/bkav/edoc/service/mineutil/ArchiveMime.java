@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.bkav.edoc.service.mineutil;
 
@@ -16,6 +16,7 @@ import javax.activation.DataHandler;
 import com.bkav.edoc.service.entity.edxml.Envelope;
 import com.bkav.edoc.service.entity.edxml.Manifest;
 import com.bkav.edoc.service.entity.edxml.Reference;
+import com.bkav.edoc.service.kernel.util.MimeTypesUtil;
 import com.bkav.edoc.service.util.AttachmentGlobalUtil;
 import org.apache.axiom.attachments.Attachments;
 import org.apache.axiom.attachments.ByteArrayDataSource;
@@ -32,198 +33,185 @@ import com.bkav.edoc.service.resource.StringPool;
 
 public class ArchiveMime {
 
-	public ArchiveMime() {}
+    public ArchiveMime() {
+    }
 
-	/**
-	 * create mime
-	 * @param envelope
-	 * @param attachmentsByEntity
-	 * @return
-	 * @throws Exception
-	 */
-	public Map<String, Object> createMime(Envelope envelope,
-										  List<Attachment> attachmentsByEntity) throws Exception {
+    /**
+     * create mime for document
+     * @param envelope
+     * @param attachmentsByEntity
+     * @return
+     * @throws Exception
+     */
+    public Map<String, Object> createMime(Document envelope,
+                                          List<Attachment> attachmentsByEntity, Object objAttachment) throws Exception {
 
-		Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<String, Object>();
 
-		Document bodyChildDocument = null;
+        Map<String, String> attachmentIds = xmlUtil.getAttachmentIds(envelope);
 
-		Document messageHeaderDocument = null;
+        Attachments attachments = null;
+        long dataAttSize = 0L;
+        // Bat dau them attachment
+        if (attachmentsByEntity != null) {
+            attachments = new Attachments();
+            for (Attachment attachment : attachmentsByEntity) {
+                InputStream attStream = attachment.getValue();
+                if (attStream != null) {
+                    // Tao attachmentPart
+                    String contentId = RandomUtil.randomId();
 
-		Document traceHeaderDocument = null;
+                    String oldContentId = "";
 
-		Attachments attachments = null;
+                    if (attachmentIds != null) {
+                        oldContentId = attachmentIds.get(attachment.getName());
+                    }
 
-		OMFactory factoryOM = OMAbstractFactory.getOMFactory();
+                    if (oldContentId != null && oldContentId.length() > 0) {
+                        contentId = oldContentId;
+                    }
+                    byte[] value = attGlobalUtil
+                            .parseBase64ISToBytes(attStream);
 
-		OMNamespace ns = factoryOM.createOMNamespace(
-				StringPool.TARGET_NAMESPACE, StringPool.EDXML_PREFIX);
+                    String contentType = MimeTypesUtil.getContentType(attachment.getName());
+                    attStream.close();
 
-		messageHeaderDocument = xmlUtil.getMessHeaderDoc(envelope.getHeader()
-				.getMessageHeader(), ns);
+                    if (!Base64.isArrayByteBase64(value)) {
+                        value = Base64.encodeBase64(value, true);
+                    }
 
-		traceHeaderDocument = xmlUtil.getTraceHeaderDoc(envelope.getHeader()
-				.getTraceHeaderList(), ns);
+                    ByteArrayDataSource byteArrayDataSource = new ByteArrayDataSource(value, contentType);
 
-		List<Reference> references = new ArrayList<Reference>();
+                    DataHandler data = new DataHandler(byteArrayDataSource);
 
-		long dataAttSize = 0l;
+                    attachments.addDataHandler(contentId, data);
 
-		// Bat dau them attachment
-		if (attachmentsByEntity != null) {
-			attachments = new Attachments();
-			for (Attachment attachment : attachmentsByEntity) {
-				InputStream attStream = attachment.getValue();
-				if (attStream != null) {
-					// Tao attachmentPart
-					String contentId = RandomUtil.randomId();
+                    dataAttSize += value.length;
 
-					String contentType = attachment.getContentType();
+                } else {
+                    if (attachment.getName().length() > 0) {
+                        log.error("Can't read attachment name: "
+                                + attachment.getName());
+                    }
+                }
 
-					// TODO: Replace by CommonIO
-					// String base64String = new
-					// AttachmentGlobalUtil().parseBase64ISToString(attachment.getValue());
+            }
+        }
 
-					// DataHandler data = new DataHandler(base64String,
-					// contentType);
-					byte[] value = attGlobalUtil
-							.parseBase64ISToBytes(attStream);
+        map.put(StringPool.ENVELOPE_SAVED_KEY, envelope);
+        map.put(StringPool.ATTACHMENT_KEY, attachments);
+        map.put(StringPool.ATTACHMENT_SIZE_KEY, dataAttSize);
+        map.put("attachment_detail", objAttachment);
+        return map;
 
-					if (attStream != null) {
-						attStream.close();
-					}
+    }
 
-					DataHandler data = new DataHandler(value, contentType);
+    /**
+     * create mime for entity
+     * @param envelope
+     * @param attachmentsByEntity
+     * @return
+     * @throws Exception
+     */
+    public Map<String, Object> createMime(Envelope envelope,
+                                          List<Attachment> attachmentsByEntity, Object objAttachments) throws Exception {
+        Map<String, Object> map = new HashMap<>();
 
-					attachments.addDataHandler(contentId, data);
+        Document bodyChildDocument = null;
 
-					dataAttSize += value.length;
+        Document messageHeaderDocument = null;
 
-					// Tao referen tren body
-					Reference reference = new Reference();
-					reference.setHref("cid:" + contentId);
-					reference.setId(contentId);
-					reference.setAttachmentName(attachment.getName());
-					reference.setDescription("Attachment by xml");
-					references.add(reference);
+        Document traceHeaderDocument = null;
 
-				} else {
-					if (attachment.getName().length() > 0) {
-						log.error("Canot read attachment name: "
-								+ attachment.getName());
-					}
-				}
+        Attachments attachments = null;
 
-			}
-		}
+        OMFactory factoryOM = OMAbstractFactory.getOMFactory();
 
-		Manifest manifest = new Manifest();
+        OMNamespace ns = factoryOM.createOMNamespace(
+                StringPool.TARGET_NAMESPACE, StringPool.EDXML_PREFIX);
 
-		manifest.setReference(references);
+        messageHeaderDocument = xmlUtil.getMessHeaderDoc(envelope.getHeader()
+                .getMessageHeader(), ns);
 
-		bodyChildDocument = xmlUtil.getBodyChildDoc(manifest, ns);
+        traceHeaderDocument = xmlUtil.getTraceHeaderDoc(envelope.getHeader()
+                .getTraceHeaderList(), ns);
 
-		map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+        List<Reference> references = new ArrayList<Reference>();
 
-		map.put(StringPool.MESSAGE_HEADER_KEY, messageHeaderDocument);
+        long dataAttSize = 0l;
 
-		map.put(StringPool.TRACE_HEADER_KEY, traceHeaderDocument);
+        // Bat dau them attachment
+        if (attachmentsByEntity != null) {
+            attachments = new Attachments();
+            for (Attachment attachment : attachmentsByEntity) {
+                InputStream attStream = attachment.getValue();
+                if (attStream != null) {
+                    // Tao attachmentPart
+                    String contentId = RandomUtil.randomId();
 
-		map.put(StringPool.ATTACHMENT_KEY, attachments);
+                    String contentType = MimeTypesUtil
+                            .getContentType(attachment.getName());
 
-		map.put(StringPool.ATTACHMENT_SIZE_KEY, dataAttSize);
+                    // TODO: Replace by CommonIO
+                    // String base64String = new
+                    // AttachmentGlobalUtil().parseBase64ISToString(attachment.getValue());
 
-		return map;
+                    // DataHandler data = new DataHandler(base64String,
+                    // contentType);
+                    byte[] value = attGlobalUtil
+                            .parseBase64ISToBytes(attStream);
 
-	}
+                    if (attStream != null) {
+                        attStream.close();
+                    }
 
-	/**
-	 * create mime
-	 * @param savedEnvelope
-	 * @param attachmentsByEntity
-	 * @return
-	 * @throws Exception
-	 */
-	public Map<String, Object> createMime(Document savedEnvelope,
-			List<Attachment> attachmentsByEntity) throws Exception {
+                    DataHandler data = new DataHandler(value, contentType);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+                    attachments.addDataHandler(contentId, data);
 
-		Map<String, String> attachmentIds = xmlUtil
-				.getAttachmentIds(savedEnvelope);
+                    dataAttSize += value.length;
 
-		Attachments attachments = null;
+                    // Tao referen tren body
+                    Reference reference = new Reference();
+                    reference.setHref("cid:" + contentId);
+                    reference.setId(contentId);
+                    reference.setAttachmentName(attachment.getName());
+                    reference.setDescription("Attachment by xml");
+                    references.add(reference);
 
-		long dataAttSize = 0l;
+                } else {
+                    if (attachment.getName().length() > 0) {
+                        log.error("Cannot read attachment name: "
+                                + attachment.getName());
+                    }
+                }
 
-		if (attachmentsByEntity != null) {
+            }
+        }
 
-			attachments = new Attachments();
+        Manifest manifest = new Manifest();
 
-			List<String> contentIdKeys;
+        manifest.setReference(references);
 
-			for (Attachment attachment : attachmentsByEntity) {
+        bodyChildDocument = xmlUtil.getBodyChildDoc(manifest, ns);
 
-				InputStream attStream = attachment.getValue();
+        map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
 
-				if (attStream != null) {
+        map.put(StringPool.MESSAGE_HEADER_KEY, messageHeaderDocument);
 
-					// Tao attachmentPart
-					String contentId = RandomUtil.randomId();
+        map.put(StringPool.TRACE_HEADER_KEY, traceHeaderDocument);
 
-					String oldContentId = "";
+        map.put(StringPool.ATTACHMENT_KEY, attachments);
 
-					if (attachmentIds != null) {
+        map.put(StringPool.ATTACHMENT_SIZE_KEY, dataAttSize);
 
-						oldContentId = attachmentIds.get(attachment
-								.getName());
-					}
+        map.put("attachment_detail", objAttachments);
 
-					if (oldContentId != null && oldContentId.length() > 0) {
-						contentId = oldContentId;
-					}
+        return map;
 
-					String contentType = attachment.getContentType();
+    }
 
-					byte[] value = attGlobalUtil
-							.parseBase64ISToBytes(attStream);
-
-					if (attStream != null) {
-						attStream.close();
-					}
-					
-					if (!Base64.isArrayByteBase64(value)) {
-						value = Base64.encodeBase64(value, true);
-					}
-					
-					ByteArrayDataSource bads = new ByteArrayDataSource(value,
-							contentType);
-					DataHandler data = new DataHandler(bads);
-
-					attachments.addDataHandler(contentId, data);
-
-					dataAttSize += value.length;
-
-				} else {
-					if (attachment.getName().length() > 0) {
-						log.error("Canot read attachment name: " + attachment.getName());
-					}
-				}
-
-			}
-		}
-
-		map.put(StringPool.ENVELOPE_SAVED_KEY, savedEnvelope);
-
-		map.put(StringPool.ATTACHMENT_KEY, attachments);
-
-		map.put(StringPool.ATTACHMENT_SIZE_KEY, dataAttSize);
-
-		return map;
-
-	}
-
-	private AttachmentGlobalUtil attGlobalUtil = new AttachmentGlobalUtil();
-	private XmlUtil xmlUtil = new XmlUtil();
-	private static final Log log = LogFactory.getLog(ArchiveMime.class);
+    private AttachmentGlobalUtil attGlobalUtil = new AttachmentGlobalUtil();
+    private XmlUtil xmlUtil = new XmlUtil();
+    private static final Log log = LogFactory.getLog(ArchiveMime.class);
 }

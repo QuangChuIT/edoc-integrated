@@ -3,6 +3,7 @@ package com.bkav.edoc.service.center;
 import com.bkav.edoc.service.commonutil.Checker;
 import com.bkav.edoc.service.commonutil.ErrorCommonUtil;
 import com.bkav.edoc.service.commonutil.XmlChecker;
+import com.bkav.edoc.service.database.entity.EdocAttachment;
 import com.bkav.edoc.service.database.services.EdocAttachmentService;
 import com.bkav.edoc.service.database.services.EdocDocumentService;
 import com.bkav.edoc.service.database.services.EdocNotificationService;
@@ -26,6 +27,8 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.SynapseEnvironment;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import javax.xml.transform.Transformer;
@@ -33,6 +36,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -42,6 +46,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     private final EdocDocumentService documentService = new EdocDocumentService();
     private final EdocNotificationService notificationService = new EdocNotificationService();
     private final EdocAttachmentService attachmentService = new EdocAttachmentService();
+    private final String SEPARATOR = File.separator;
 
     private final ArchiveMime archiveMime = new ArchiveMime();
 
@@ -143,16 +148,37 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     return map;
                 }
 
-                List<Attachment> attachmentsByEntity = new ArrayList<>();
-                attachmentsByEntity = attachmentService.getAttachmentsByDocumentId(documentId);
+                Object attachmentObj = null;
+                JSONArray arrayAttachments = new JSONArray();
+                attachmentObj = RedisUtil.getInstance().get(RedisKey.GET_ATTACHMENT_BY_DOC_ID + documentId, Object.class);
+                if (attachmentObj == null) {
+                    List<EdocAttachment> attachments = attachmentService.getEdocAttachmentsByDocId(documentId);
+                    for (EdocAttachment attachment : attachments) {
+                        JSONObject objectAttachment = new JSONObject();
+                        objectAttachment.put("attachmentId", attachment.getAttachmentId());
+                        objectAttachment.put("attachmentName", attachment.getName());
+                        objectAttachment.put("contentType", attachment.getType());
+                        objectAttachment.put("link", PropsUtil.get("service.attachments.link.config") + SEPARATOR + attachment.getAttachmentId());
+                        arrayAttachments.put(objectAttachment);
+                    }
+                    attachmentObj = arrayAttachments;
+                    RedisUtil.getInstance().set(RedisKey.GET_ATTACHMENT_BY_DOC_ID + documentId, arrayAttachments);
+                }
+
+                List<Attachment> attachmentsByEntity = attachmentService.getAttachmentsByDocumentId(documentId);
+
+                MimeUtil.setOutputSWA(true, inMessageContext);
 
                 // get saved doc in cache
                 String savedDocStr = RedisUtil.getInstance().get(RedisKey
                         .getKey(String.valueOf(documentId), RedisKey.GET_ENVELOP_FILE), String.class);
-                Document savedDoc = xmlUtil.getDocumentFromFile(new ByteArrayInputStream(savedDocStr.getBytes(StandardCharsets.UTF_8)));
+                Document savedDoc = null;
+                if(savedDocStr != null){
+                    savedDoc = xmlUtil.getDocumentFromFile(new ByteArrayInputStream(savedDocStr.getBytes(StandardCharsets.UTF_8)));
+                }
 
                 if (savedDoc != null) {
-                    map = archiveMime.createMime(savedDoc, attachmentsByEntity);
+                    map = archiveMime.createMime(savedDoc, attachmentsByEntity, attachmentObj);
                 } else {
                     // get info in db
                     Envelope envelopeByEntity = new Envelope();
@@ -174,13 +200,14 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     envelopeByEntity.setBody(new Body());
 
                     map = archiveMime.createMime(envelopeByEntity,
-                            attachmentsByEntity);
+                            attachmentsByEntity, attachmentObj);
                 }
 
                 // remove pending document
                 this.removePendingDocumentId(organId, documentId);
             } catch (Exception e) {
-                errorList.add(new Error("Error", "Loi he thong"));
+                errorList.add(new Error("M.GetDocument", "Error when process get document " + e.getMessage()));
+
                 report = new Report(false, new ErrorList(errorList));
 
                 Document bodyChildDocument = xmlUtil.convertEntityToDocument(
@@ -188,6 +215,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
             }
         }
+
         return map;
     }
 
@@ -266,7 +294,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
                 boolean enableCheckExist = GetterUtil.get(PropsUtil.get("eDoc.service.sendDocument.checkExist.enable"), false);
 
-                if(enableCheckExist){
+                if (enableCheckExist) {
                     // check exist document
                     if (documentService.checkExistDocument(messageHeader.getSubject(), messageHeader.getCode().getCodeNumber()
                             , messageHeader.getCode().getCodeNotation(), messageHeader.getPromulgationInfo().getPromulgationDate()
@@ -282,7 +310,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                         return map;
                     }
                 }
-                StringBuilder  attachmentSize = new StringBuilder();
+                StringBuilder attachmentSize = new StringBuilder();
 
                 // add document
                 if (!documentService.addDocument(messageHeader, traceHeaderList,
