@@ -73,6 +73,26 @@ public class EdocAttachmentService {
         return attachmentId;
     }
 
+    /**
+     * get list edoc attachment
+     * @param docId
+     * @return
+     */
+    public  List<EdocAttachment> getEdocAttachmentsByDocId(long docId) {
+        attachmentDaoImpl.openCurrentSession();
+
+        List<EdocAttachment> attachments = attachmentDaoImpl.getAttachmentsByDocumentId(docId);
+
+        attachmentDaoImpl.closeCurrentSession();
+        return attachments;
+    }
+
+    /**
+     * get list attachment
+     * @param documentId
+     * @return
+     * @throws IOException
+     */
     public List<Attachment> getAttachmentsByDocumentId(long documentId) throws IOException {
         attachmentDaoImpl.openCurrentSession();
 
