@@ -73,7 +73,7 @@ public class ArchiveMime {
                     byte[] value = attGlobalUtil
                             .parseBase64ISToBytes(attStream);
 
-                    String contentType = MimeTypesUtil.getContentType(attachment.getName());
+                    String contentType = attachment.getContentType();
                     attStream.close();
 
                     if (!Base64.isArrayByteBase64(value)) {

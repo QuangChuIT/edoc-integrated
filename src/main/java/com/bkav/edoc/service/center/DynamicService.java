@@ -59,7 +59,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         Map<String, Object> map = new HashMap<>();
 
-        SOAPEnvelope responseEnvelope = null;
+        SOAPEnvelope responseEnvelope;
 
         try {
             Document doc = xmlUtil.convertToDocument(messageContext.getEnvelope());
@@ -74,7 +74,13 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     map = getPendingDocumentIds(doc, inMessageContext);
                     break;
                 case "GetDocument":
-                    map = getDocument(doc, inMessageContext);
+                    map = getDocument(doc);
+                    break;
+                case "UpdateTraces":
+                    map = updateTraces(doc);
+                    break;
+                case "GetTraces":
+                    map = getTraces(doc);
                     break;
                 default:
                     log.error(ErrorCommonUtil.getInfoToLog(
@@ -84,8 +90,8 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             log.error(e);
         }
         responseEnvelope = ResponseUtil.buildResultEnvelope(inMessageContext, map, soapAction);
-
         try {
+            messageContext.setDoingSWA(true);
             messageContext.setEnvelope(responseEnvelope);
         } catch (AxisFault axisFault) {
             axisFault.printStackTrace();
@@ -93,7 +99,59 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         return true;
     }
 
-    private Map<String, Object> getDocument(Document doc, org.apache.axis2.context.MessageContext inMessageContext) {
+    private Map<String, Object> getTraces(Document doc) {
+        Map<String, Object> map = new HashMap<>();
+
+        Report report;
+
+        List<Error> errorList = new ArrayList<>();
+
+        Document bodyChildDocument;
+
+        try {
+
+        } catch (Exception e) {
+            log.error("Error when get traces " + e.getMessage());
+            errorList.add(new Error("M.GetTraces", "Error when process get traces " + e.getMessage()));
+
+            report = new Report(false, new ErrorList(errorList));
+
+            bodyChildDocument = xmlUtil.convertEntityToDocument(
+                    Report.class, report);
+            map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+        }
+        return map;
+    }
+
+    private Map<String, Object> updateTraces(Document doc) {
+        Map<String, Object> map = new HashMap<>();
+
+        Report report;
+
+        List<Error> errorList = new ArrayList<>();
+
+        Document bodyChildDocument;
+
+        long documentId = 0L;
+
+        try {
+
+
+        } catch (Exception e){
+            log.error("Error when update traces " + e.getMessage());
+            errorList.add(new Error("M.UpdateTraces", "Error when process get update " + e.getMessage()));
+
+            report = new Report(false, new ErrorList(errorList));
+
+            bodyChildDocument = xmlUtil.convertEntityToDocument(
+                    Report.class, report);
+            map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+        }
+        return map;
+    }
+
+
+    private Map<String, Object> getDocument(Document doc) {
 
         Map<String, Object> map = new HashMap<>();
         List<Error> errors = new ArrayList<>();
@@ -167,13 +225,11 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
                 List<Attachment> attachmentsByEntity = attachmentService.getAttachmentsByDocumentId(documentId);
 
-                MimeUtil.setOutputSWA(true, inMessageContext);
-
                 // get saved doc in cache
                 String savedDocStr = RedisUtil.getInstance().get(RedisKey
                         .getKey(String.valueOf(documentId), RedisKey.GET_ENVELOP_FILE), String.class);
                 Document savedDoc = null;
-                if(savedDocStr != null){
+                if (savedDocStr != null) {
                     savedDoc = xmlUtil.getDocumentFromFile(new ByteArrayInputStream(savedDocStr.getBytes(StandardCharsets.UTF_8)));
                 }
 
@@ -206,6 +262,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 // remove pending document
                 this.removePendingDocumentId(organId, documentId);
             } catch (Exception e) {
+                log.error("Error when update traces " + e.getMessage());
                 errorList.add(new Error("M.GetDocument", "Error when process get document " + e.getMessage()));
 
                 report = new Report(false, new ErrorList(errorList));
