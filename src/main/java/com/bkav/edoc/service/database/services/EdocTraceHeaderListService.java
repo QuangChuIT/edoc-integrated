@@ -3,6 +3,7 @@ package com.bkav.edoc.service.database.services;
 import com.bkav.edoc.service.database.daoimpl.*;
 import com.bkav.edoc.service.database.entity.EdocDocument;
 import com.bkav.edoc.service.database.entity.EdocTraceHeaderList;
+import com.bkav.edoc.service.entity.edxml.Business;
 import com.bkav.edoc.service.entity.edxml.TraceHeader;
 import com.bkav.edoc.service.entity.edxml.TraceHeaderList;
 import org.apache.commons.logging.Log;
@@ -11,6 +12,8 @@ import org.hibernate.Session;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EdocTraceHeaderListService {
     private EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
@@ -57,6 +60,42 @@ public class EdocTraceHeaderListService {
             traceHeaderListDaoImpl.closeCurrentSession();
         }
         return true;
+    }
+
+    /**
+     * get trace header list by doc id
+     * @param documentId
+     * @return
+     */
+    public TraceHeaderList getTraceHeaderListByDocId(long documentId) {
+        traceHeaderListDaoImpl.openCurrentSession();
+
+        TraceHeaderList traceHeaderList = null;
+        // get list trace
+        List<EdocTraceHeaderList> list = traceHeaderListDaoImpl.getTraceHeaderListByDocId(documentId);
+        if(list != null && list.size() > 0) {
+            traceHeaderList = new TraceHeaderList();
+            Business business = new Business();
+            List<TraceHeader> traceHeaders = new ArrayList<>();
+            for(EdocTraceHeaderList edocTraceHeader: list) {
+                // add trace header
+                TraceHeader traceHeader = new TraceHeader();
+                traceHeader.setOrganId(edocTraceHeader.getOrganDomain());
+                traceHeader.setTimeStamp(edocTraceHeader.getTimeStamp());
+                traceHeaders.add(traceHeader);
+                // set business
+                business.setBusinessDocReason(edocTraceHeader.getBusinessDocReason());
+                if(edocTraceHeader.getBusinessDocType() != null) {
+                    business.setBusinessDocType(edocTraceHeader.getBusinessDocType().ordinal());
+                }
+                business.setPaper(edocTraceHeader.getPaper());
+            }
+            traceHeaderList.setTraceHeaders(traceHeaders);
+            traceHeaderList.setBusiness(business);
+        }
+
+        traceHeaderListDaoImpl.closeCurrentSession();
+        return traceHeaderList;
     }
 
     private static final Log log = LogFactory.getLog(EdocTraceHeaderListService.class);

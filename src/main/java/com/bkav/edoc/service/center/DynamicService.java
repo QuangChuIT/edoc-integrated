@@ -6,6 +6,7 @@ import com.bkav.edoc.service.commonutil.XmlChecker;
 import com.bkav.edoc.service.database.services.EdocAttachmentService;
 import com.bkav.edoc.service.database.services.EdocDocumentService;
 import com.bkav.edoc.service.database.services.EdocNotificationService;
+import com.bkav.edoc.service.database.services.EdocTraceHeaderListService;
 import com.bkav.edoc.service.entity.edxml.*;
 import com.bkav.edoc.service.entity.edxml.Error;
 import com.bkav.edoc.service.kernel.util.GetterUtil;
@@ -42,6 +43,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     private final EdocDocumentService documentService = new EdocDocumentService();
     private final EdocNotificationService notificationService = new EdocNotificationService();
     private final EdocAttachmentService attachmentService = new EdocAttachmentService();
+    private final EdocTraceHeaderListService traceHeaderListService = new EdocTraceHeaderListService();
 
     private final ArchiveMime archiveMime = new ArchiveMime();
 
@@ -162,11 +164,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     messageHeader = documentService.getDocumentById(documentId);
 
                     // TODO: Get Trace for edXML Message in here
-                    TraceHeaderList traceHeaderList = null;/*
-                     * globalUtil
-                     * .getTraceByDocId
-                     * (documentId);
-                     */
+                    TraceHeaderList traceHeaderList = traceHeaderListService.getTraceHeaderListByDocId(documentId);
 
                     headerEntity.setMessageHeader(messageHeader);
                     headerEntity.setTraceHeaderList(traceHeaderList);
