@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.ManagedLifecycle;
 import org.apache.synapse.MessageContext;
+import org.apache.synapse.SynapseLog;
 import org.apache.synapse.core.SynapseEnvironment;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
@@ -54,6 +55,16 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         log.info("--------------- eDoc mediator invoker by class mediator ---------------");
 
         org.apache.axis2.context.MessageContext inMessageContext = ((Axis2MessageContext) messageContext).getAxis2MessageContext();
+
+        SynapseLog synLog = getLog(messageContext);
+
+        if (synLog.isTraceOrDebugEnabled()) {
+            synLog.traceOrDebug("Start : Log mediator");
+
+            if (synLog.isTraceTraceEnabled()) {
+                synLog.traceTrace("Message : " + messageContext.getEnvelope());
+            }
+        }
 
         String soapAction = inMessageContext.getSoapAction();
 
@@ -90,12 +101,15 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             log.error(e);
         }
         responseEnvelope = ResponseUtil.buildResultEnvelope(inMessageContext, map, soapAction);
+        if (synLog.isTraceOrDebugEnabled()) {
+            synLog.traceOrDebug("End : eDoc Mediator");
+        }
         try {
             inMessageContext.setEnvelope(responseEnvelope);
         } catch (AxisFault axisFault) {
             axisFault.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     private Map<String, Object> getTraces(Document envelop) {
@@ -205,8 +219,8 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 if (!acceptToDocument) {
                     errors.add(new Error(
                             "M.DOCUMENT",
-                            "van-ban-nay-khong-nam-trong-pham-vi-cua-xac-thuc-hien-tai"));
-                    errorList.add(new Error("Error", "Van ban khong ton tai"));
+                            "Not allow with document !!!!"));
+                    errorList.add(new Error("Error", "Document does not exist !!!!"));
 
                     report = new Report(false, new ErrorList(errorList));
 
@@ -365,7 +379,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                             , messageHeader.getCode().getCodeNotation(), messageHeader.getPromulgationInfo().getPromulgationDate()
                             , messageHeader.getFrom().getOrganId(), messageHeader.getTo(), attachmentNames)) {
 
-                        errorList.add(new Error("M.Exist", "Van ban da ton tai tren he thong"));
+                        errorList.add(new Error("M.Exist", "Document is exist on ESB !!!!"));
                         report = new Report(false, new ErrorList(errorList));
 
                         bodyChildDocument = xmlUtil.convertEntityToDocument(
