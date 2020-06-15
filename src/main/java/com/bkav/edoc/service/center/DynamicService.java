@@ -91,8 +91,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         }
         responseEnvelope = ResponseUtil.buildResultEnvelope(inMessageContext, map, soapAction);
         try {
-            messageContext.setDoingSWA(true);
-            messageContext.setEnvelope(responseEnvelope);
+            inMessageContext.setEnvelope(responseEnvelope);
         } catch (AxisFault axisFault) {
             axisFault.printStackTrace();
         }
@@ -207,10 +206,9 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     errors.add(new Error(
                             "M.DOCUMENT",
                             "van-ban-nay-khong-nam-trong-pham-vi-cua-xac-thuc-hien-tai"));
-                    report = new Report(false, new ErrorList(errors));
                     errorList.add(new Error("Error", "Van ban khong ton tai"));
-                    report = new Report(false, new ErrorList(errorList));
 
+                    report = new Report(false, new ErrorList(errorList));
 
                     Document bodyChildDocument = xmlUtil
                             .convertEntityToDocument(Report.class, report);
