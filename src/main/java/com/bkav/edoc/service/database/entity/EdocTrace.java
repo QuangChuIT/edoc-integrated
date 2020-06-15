@@ -17,15 +17,33 @@ public class EdocTrace {
     private String website;
     private String toOrganDomain;
     private String code;
-    private String handlerName;
+    private String staffName;
     private String comment;
     private Date promulgationDate;
     private String department;
     private Integer statusCode;
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
+    }
+
     private Boolean enable;
     private String staffEmail;
     private String staffMobile;
+    private String edxmlDocumentId;
     private EdocDocument document;
+
+    public String getEdxmlDocumentId() {
+        return edxmlDocumentId;
+    }
+
+    public void setEdxmlDocumentId(String edxmlDocumentId) {
+        this.edxmlDocumentId = edxmlDocumentId;
+    }
 
     public Long getTraceId() {
         return traceId;
@@ -131,14 +149,6 @@ public class EdocTrace {
         this.code = code;
     }
 
-    public String getHandlerName() {
-        return handlerName;
-    }
-
-    public void setHandlerName(String handlerName) {
-        this.handlerName = handlerName;
-    }
-
     public String getComment() {
         return comment;
     }
@@ -171,7 +181,7 @@ public class EdocTrace {
         this.statusCode = statusCode;
     }
 
-    public Boolean isEnable() {
+    public Boolean getEnable() {
         return enable;
     }
 

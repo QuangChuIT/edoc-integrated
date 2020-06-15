@@ -4,10 +4,7 @@ import com.bkav.edoc.service.commonutil.Checker;
 import com.bkav.edoc.service.commonutil.ErrorCommonUtil;
 import com.bkav.edoc.service.commonutil.XmlChecker;
 import com.bkav.edoc.service.database.entity.EdocAttachment;
-import com.bkav.edoc.service.database.services.EdocAttachmentService;
-import com.bkav.edoc.service.database.services.EdocDocumentService;
-import com.bkav.edoc.service.database.services.EdocNotificationService;
-import com.bkav.edoc.service.database.services.EdocTraceHeaderListService;
+import com.bkav.edoc.service.database.services.*;
 import com.bkav.edoc.service.entity.edxml.*;
 import com.bkav.edoc.service.entity.edxml.Error;
 import com.bkav.edoc.service.kernel.util.GetterUtil;
@@ -48,6 +45,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     private final EdocNotificationService notificationService = new EdocNotificationService();
     private final EdocAttachmentService attachmentService = new EdocAttachmentService();
     private final EdocTraceHeaderListService traceHeaderListService = new EdocTraceHeaderListService();
+    private final EdocTraceService traceService = new EdocTraceService();
 
     private final String SEPARATOR = File.separator;
     private final ArchiveMime archiveMime = new ArchiveMime();
@@ -101,16 +99,20 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         return true;
     }
 
-    private Map<String, Object> getTraces(Document doc) {
+    private Map<String, Object> getTraces(Document envelop) {
         Map<String, Object> map = new HashMap<>();
 
-        Report report;
+        Report report = null;
+
+        Status status = null;
 
         List<Error> errorList = new ArrayList<>();
 
         Document bodyChildDocument;
 
         try {
+            // Extract MessageHeader
+            status = extractMime.getStatus(envelop);
 
         } catch (Exception e) {
             log.error("Error when get traces " + e.getMessage());
@@ -125,10 +127,12 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         return map;
     }
 
-    private Map<String, Object> updateTraces(Document doc) {
+    private Map<String, Object> updateTraces(Document envelop) {
         Map<String, Object> map = new HashMap<>();
 
         Report report;
+
+        Status status = null;
 
         List<Error> errorList = new ArrayList<>();
 
@@ -137,8 +141,16 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         long documentId = 0L;
 
         try {
-
-
+            // Extract MessageHeader
+            status = extractMime.getStatus(envelop);
+            // update trace
+            if(!traceService.updateTrace(status)) {
+                errorList.add(new Error("M.updateTrace", "Error when process update trace"));
+                report = new Report(false, new ErrorList(errorList));
+                bodyChildDocument = xmlUtil.convertEntityToDocument(
+                        Report.class, report);
+                map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+            }
         } catch (Exception e){
             log.error("Error when update traces " + e.getMessage());
             errorList.add(new Error("M.UpdateTraces", "Error when process get update " + e.getMessage()));

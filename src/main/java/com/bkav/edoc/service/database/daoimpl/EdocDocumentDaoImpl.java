@@ -2,6 +2,7 @@ package com.bkav.edoc.service.database.daoimpl;
 
 import com.bkav.edoc.service.database.dao.EdocDocumentDao;
 import com.bkav.edoc.service.database.entity.EdocDocument;
+import com.bkav.edoc.service.database.entity.EdocDynamicContact;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -28,5 +29,19 @@ public class EdocDocumentDaoImpl extends RootDaoImpl<EdocDocument, Long> impleme
         List<String> selectedAttachmentNames = query.list();
 
         return selectedAttachmentNames.containsAll(attachmentNames);
+    }
+
+    public EdocDocument searchDocumentByOrganDomainAndCode(String toOrganDomain, String code) {
+        Session currentSession = getCurrentSession();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ed FROM EdocDocument ed where ed.toOrganDomain like :toOrganDomain and concat(ed.codeNumber, '/', ed.codeNotation) = :code");
+        Query query = currentSession.createQuery(sql.toString());
+        query.setString("toOrganDomain","%"+toOrganDomain+"%");
+        query.setString("code", code);
+        List<EdocDocument> result = query.list();
+        if(result != null && result.size() > 0) {
+            return result.get(0);
+        }
+        return null;
     }
 }

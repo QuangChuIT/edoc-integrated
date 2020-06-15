@@ -156,6 +156,109 @@ public class ExtractMime {
     }
 
     /**
+     * @param envelopDoc
+     * @return
+     * @throws Exception
+     */
+    public Status getStatus(Document envelopDoc) throws Exception {
+        org.jdom2.Document jdomEnvDoc = XmlUtil.convertFromDom(envelopDoc);
+
+        Element rootElement = jdomEnvDoc.getRootElement();
+
+        Namespace envNs = xmlUtil.getEnvelopeNS(rootElement);
+
+        Element headerNode = getSingerElement(rootElement, "Body", envNs);
+
+        Element statusNode = headerNode.getChild("Status");
+        Status status = new Status();
+
+        ResponseFor responseFor = getResponseForStatus(statusNode);
+        status.setResponseFor(responseFor);
+
+        From from = getFromInTrace(statusNode);
+        status.setFrom(from);
+
+        StaffInfo staffInfo = getStaffInfo(statusNode);
+
+        status.setStaffInfo(staffInfo);
+
+        String description = statusNode.getChildText("Description");
+        status.setDescription(description);
+
+        String documentId = statusNode.getChildText("DocumentId");
+        status.setDocumentId(documentId);
+
+        String statusCode = statusNode.getChildText("StatusCode");
+
+        status.setStatusCode(statusCode);
+
+        String timeStamp = statusNode.getChildText("Timestamp");
+
+        status.setTimeStamp(timeStamp);
+
+        return status;
+    }
+
+    private From getFromInTrace(Element traceNode) throws Exception {
+        From from = new From();
+
+        Element fromNode = traceNode.getChild("From");
+
+        from.setOrganId(fromNode.getChildText("OrganId"));
+
+        from.setOrganInCharge(fromNode.getChildText("OrganizationInCharge"));
+
+        from.setOrganName(fromNode.getChildText("OrganName"));
+
+        from.setOrganAdd(fromNode.getChildText("OrganAdd",
+                EdXmlConstant.EDXML_NS));
+
+        from.setEmail(fromNode.getChildText("Email"));
+
+        from.setTelephone(fromNode.getChildText("Telephone",
+                EdXmlConstant.EDXML_NS));
+
+        from.setFax(fromNode.getChildText("Fax"));
+
+        from.setWebsite(fromNode.getChildText("Website"));
+        return from;
+    }
+
+    public ResponseFor getResponseForStatus(Element statusNode) {
+        ResponseFor responseFor = new ResponseFor();
+        Element responseForNode = statusNode.getChild("ResponseFor");
+
+        responseFor.setCode(responseForNode.getChildText("Code"));
+
+        responseFor.setOrganId(responseForNode.getChildText("OrganId"));
+
+        responseFor.setPromulgationDate(responseForNode
+                .getChildText("PromulgationDate"));
+
+        return responseFor;
+    }
+
+    /**
+     *
+     * @param statusNode
+     * @return
+     * @throws Exception
+     */
+    public StaffInfo getStaffInfo(Element statusNode) throws Exception {
+        StaffInfo staffInfo = new StaffInfo();
+
+        Element staffInfoNode = statusNode.getChild("StaffInfo");
+        staffInfo.setDepartment(staffInfoNode.getChildText("Department"));
+
+        staffInfo.setStaff(staffInfoNode.getChildText("Staff"));
+
+        staffInfo.setEmail(staffInfoNode.getChildText("Email"));
+
+        staffInfo.setMobile(staffInfoNode.getChildText("Mobile"));
+        return staffInfo;
+    }
+
+    /**
      * @param envelopeDoc
      * @return
      * @throws Exception
