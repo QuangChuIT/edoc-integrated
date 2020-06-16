@@ -46,11 +46,9 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     private final EdocNotificationService notificationService = new EdocNotificationService();
     private final EdocAttachmentService attachmentService = new EdocAttachmentService();
     private final EdocTraceHeaderListService traceHeaderListService = new EdocTraceHeaderListService();
-<<<<<<< HEAD
-=======
+
     private final EdocTraceService traceService = new EdocTraceService();
 
->>>>>>> ee38ac62e30e5b29c4c7d6389cd2f1a498e3d80c
     private final String SEPARATOR = File.separator;
     private final ArchiveMime archiveMime = new ArchiveMime();
 
@@ -108,11 +106,12 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             synLog.traceOrDebug("End : eDoc Mediator");
         }
         try {
+            inMessageContext.setDoingSwA(true);
             inMessageContext.setEnvelope(responseEnvelope);
         } catch (AxisFault axisFault) {
             axisFault.printStackTrace();
         }
-        return false;
+        return true;
     }
 
     private Map<String, Object> getTraces(Document envelop) {
