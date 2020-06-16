@@ -171,7 +171,7 @@ public class ArchiveMime {
 
                     dataAttSize += value.length;
 
-                    // Tao referen tren body
+                    // Create reference on body
                     Reference reference = new Reference();
                     reference.setHref("cid:" + contentId);
                     reference.setId(contentId);
@@ -211,7 +211,7 @@ public class ArchiveMime {
 
     }
 
-    private AttachmentGlobalUtil attGlobalUtil = new AttachmentGlobalUtil();
-    private XmlUtil xmlUtil = new XmlUtil();
+    private final AttachmentGlobalUtil attGlobalUtil = new AttachmentGlobalUtil();
+    private final XmlUtil xmlUtil = new XmlUtil();
     private static final Log log = LogFactory.getLog(ArchiveMime.class);
 }
