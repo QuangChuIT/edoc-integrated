@@ -46,10 +46,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     private final EdocNotificationService notificationService = new EdocNotificationService();
     private final EdocAttachmentService attachmentService = new EdocAttachmentService();
     private final EdocTraceHeaderListService traceHeaderListService = new EdocTraceHeaderListService();
-<<<<<<< HEAD
 
-=======
->>>>>>> 356405708341c3d1f871126cb7c97e7662e3d0ab
     private final EdocTraceService traceService = new EdocTraceService();
 
     private final String SEPARATOR = File.separator;
@@ -105,9 +102,6 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             log.error(e);
         }
         responseEnvelope = ResponseUtil.buildResultEnvelope(inMessageContext, map, soapAction);
-        if (synLog.isTraceOrDebugEnabled()) {
-            synLog.traceOrDebug("End : eDoc Mediator");
-        }
         try {
             inMessageContext.setDoingSwA(true);
             inMessageContext.setEnvelope(responseEnvelope);
@@ -162,14 +156,14 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             // Extract MessageHeader
             status = extractMime.getStatus(envelop);
             // update trace
-            if(!traceService.updateTrace(status)) {
+            if (!traceService.updateTrace(status)) {
                 errorList.add(new Error("M.updateTrace", "Error when process update trace"));
                 report = new Report(false, new ErrorList(errorList));
                 bodyChildDocument = xmlUtil.convertEntityToDocument(
                         Report.class, report);
                 map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Error when update traces " + e.getMessage());
             errorList.add(new Error("M.UpdateTraces", "Error when process get update " + e.getMessage()));
 
@@ -212,7 +206,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 allowObj = RedisUtil.getInstance().get(RedisKey.getKey(organId
                         + documentId, RedisKey.CHECK_ALLOW_KEY), Boolean.class);
                 if (allowObj != null) {
-                    acceptToDocument = (Boolean)allowObj;
+                    acceptToDocument = (Boolean) allowObj;
                 } else {
                     acceptToDocument = notificationService.checkAllowWithDocument(String.valueOf(documentId), organId);
 
@@ -408,8 +402,23 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 // save envelop file to cache
                 saveEnvelopeFileCache(envelop, strDocumentId.toString());
 
+                bodyChildDocument = xmlUtil.convertEntityToDocument(Report.class,
+                        report);
+
+                Document docIdResponseElm = xmlUtil.getSendResponseDocId(strDocumentId
+                        .toString());
+
+                map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+                map.put(StringPool.SEND_DOCUMENT_RESPONSE_ID_KEY, docIdResponseElm);
             } catch (Exception e) {
                 log.error(e);
+                errorList.add(new Error("M.SendDocument", "Error when send document to esb " + e.getMessage()));
+
+                report = new Report(false, new ErrorList(errorList));
+
+                bodyChildDocument = xmlUtil.convertEntityToDocument(Report.class, report);
+
+                map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
             }
         }
         return map;
@@ -429,7 +438,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         String organId = extractMime.getOrganId(doc, EdXmlConstant.GET_PENDING_DOCUMENT);
 
-        if(organId == null || organId.isEmpty()) {
+        if (organId == null || organId.isEmpty()) {
             List<Error> errorList = new ArrayList<>();
             errorList.add(new Error("M.OrganId", "OrganId is required."));
             Report report = new Report(false, new ErrorList(errorList));

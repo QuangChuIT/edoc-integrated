@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ResponseUtil {
-    private static final XmlUtil xmlUtil = new XmlUtil();
 
     /**
      * Takes a map containing key value pairs and maps those key-value pairs in to tag-value pairs within an
@@ -181,7 +180,7 @@ public class ResponseUtil {
                 }
             }
         } catch (Exception e) {
-            _log.error(e);
+            _log.error("Error build response envelop with soap action " + soapAction);
         }
 
         return responseEnvelope;
