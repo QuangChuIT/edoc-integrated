@@ -30,15 +30,9 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.w3c.dom.Document;
 
-
-/**
- * @author QuangCV
- *
- */
 public class ExtractMime {
 
-    public Attachment getAttachment(String name, DataHandler input)
-            throws XPathExpressionException, XMLStreamException {
+    public Attachment getAttachment(String name, DataHandler input) {
         Attachment attachment = new Attachment();
         attachment.setName(name);
         String contentType = input.getContentType();

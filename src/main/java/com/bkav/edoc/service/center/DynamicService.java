@@ -48,7 +48,6 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     private final EdocNotificationService notificationService = new EdocNotificationService();
     private final EdocAttachmentService attachmentService = new EdocAttachmentService();
     private final EdocTraceHeaderListService traceHeaderListService = new EdocTraceHeaderListService();
-
     private final String SEPARATOR = File.separator;
     private final ArchiveMime archiveMime = new ArchiveMime();
 
@@ -278,11 +277,11 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         Map<String, Object> map = new HashMap<>();
 
-        List<Error> errorList = new ArrayList<Error>();
+        List<Error> errorList = new ArrayList<>();
 
-        List<Attachment> attachmentsEntity = new ArrayList<Attachment>();
+        List<Attachment> attachmentsEntity;
 
-        MessageHeader messageHeader = null;
+        MessageHeader messageHeader;
 
         Document bodyChildDocument = null;
 
@@ -392,7 +391,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
      */
     public Map<String, Object> getPendingDocumentIds(Document doc, org.apache.axis2.context.MessageContext messageContext) {
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         Document responseDocument = null;
 
@@ -505,6 +504,5 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     private static final ExtractMime extractMime = new ExtractMime();
     private static final Checker checker = new Checker();
     private static final AttachmentUtil attachmentUtil = new AttachmentUtil();
-
     private static final XmlUtil xmlUtil = new XmlUtil();
 }
