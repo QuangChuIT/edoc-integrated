@@ -46,7 +46,10 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
     private final EdocNotificationService notificationService = new EdocNotificationService();
     private final EdocAttachmentService attachmentService = new EdocAttachmentService();
     private final EdocTraceHeaderListService traceHeaderListService = new EdocTraceHeaderListService();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 356405708341c3d1f871126cb7c97e7662e3d0ab
     private final EdocTraceService traceService = new EdocTraceService();
 
     private final String SEPARATOR = File.separator;
@@ -209,7 +212,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 allowObj = RedisUtil.getInstance().get(RedisKey.getKey(organId
                         + documentId, RedisKey.CHECK_ALLOW_KEY), Boolean.class);
                 if (allowObj != null) {
-                    acceptToDocument = true;
+                    acceptToDocument = (Boolean)allowObj;
                 } else {
                     acceptToDocument = notificationService.checkAllowWithDocument(String.valueOf(documentId), organId);
 
@@ -426,6 +429,17 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         String organId = extractMime.getOrganId(doc, EdXmlConstant.GET_PENDING_DOCUMENT);
 
+        if(organId == null || organId.isEmpty()) {
+            List<Error> errorList = new ArrayList<>();
+            errorList.add(new Error("M.OrganId", "OrganId is required."));
+            Report report = new Report(false, new ErrorList(errorList));
+            Document bodyChildDocument = xmlUtil.convertEntityToDocument(
+                    Report.class, report);
+            map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+
+            return map;
+        }
+
         // TODO: Cache
         List obj = RedisUtil.getInstance().get(RedisKey.getKey(organId, RedisKey.GET_PENDING_KEY), List.class);
         if (obj != null) {
@@ -507,7 +521,6 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         if (obj != null) {
             List<Long> oldDocumentIds = CommonUtil.convertToListLong(obj);
-            ;
             oldDocumentIds.remove(documentId);
 
             RedisUtil.getInstance().set(RedisKey.getKey(domain,
