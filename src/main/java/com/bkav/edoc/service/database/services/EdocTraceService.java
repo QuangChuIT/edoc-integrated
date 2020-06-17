@@ -5,7 +5,6 @@ import com.bkav.edoc.service.database.daoimpl.EdocTraceDaoImpl;
 import com.bkav.edoc.service.database.entity.EdocDocument;
 import com.bkav.edoc.service.database.entity.EdocTrace;
 import com.bkav.edoc.service.entity.edxml.Status;
-import com.bkav.edoc.service.entity.edxml.To;
 import com.bkav.edoc.service.redis.RedisKey;
 import com.bkav.edoc.service.redis.RedisUtil;
 import org.apache.commons.logging.Log;

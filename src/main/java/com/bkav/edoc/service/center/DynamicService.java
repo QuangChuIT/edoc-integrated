@@ -56,7 +56,6 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
     public boolean mediate(MessageContext messageContext) {
         log.info("--------------- eDoc mediator invoker by class mediator ---------------");
-
         org.apache.axis2.context.MessageContext inMessageContext = ((Axis2MessageContext) messageContext).getAxis2MessageContext();
 
         SynapseLog synLog = getLog(messageContext);
@@ -188,13 +187,15 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             // Extract MessageHeader
             status = extractMime.getStatus(envelop);
             // update trace
-            if (!traceService.updateTrace(status)) {
+            if(!traceService.updateTrace(status)) {
                 errorList.add(new Error("M.updateTrace", "Error when process update trace"));
                 report = new Report(false, new ErrorList(errorList));
-                bodyChildDocument = xmlUtil.convertEntityToDocument(
-                        Report.class, report);
-                map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
+            } else{
+                report = new Report(true, new ErrorList(errorList));
             }
+            bodyChildDocument = xmlUtil.convertEntityToDocument(
+                    Report.class, report);
+            map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
         } catch (Exception e) {
             log.error("Error when update traces " + e.getMessage());
             errorList.add(new Error("M.UpdateTraces", "Error when process get update " + e.getMessage()));

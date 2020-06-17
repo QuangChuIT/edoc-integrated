@@ -34,9 +34,9 @@ public class EdocDocumentDaoImpl extends RootDaoImpl<EdocDocument, Long> impleme
     public EdocDocument searchDocumentByOrganDomainAndCode(String toOrganDomain, String code) {
         Session currentSession = getCurrentSession();
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT ed FROM EdocDocument ed where ed.toOrganDomain like :toOrganDomain and concat(ed.codeNumber, '/', ed.codeNotation) = :code");
+        sql.append("SELECT ed FROM EdocDocument ed where ed.fromOrganDomain = :fromOrganDomain and concat(ed.codeNumber, '/', ed.codeNotation) = :code");
         Query query = currentSession.createQuery(sql.toString());
-        query.setString("toOrganDomain","%"+toOrganDomain+"%");
+        query.setString("fromOrganDomain",toOrganDomain);
         query.setString("code", code);
         List<EdocDocument> result = query.list();
         if(result != null && result.size() > 0) {
