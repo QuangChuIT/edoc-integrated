@@ -189,6 +189,47 @@ public class Mapper {
 		return attachmentEntity;
 	}
 
+	public List<Status> traceInfoToStatusEntity(List<EdocTrace> traces) {
+		List<Status> result = new ArrayList<>();
+		if(traces == null || traces.size() == 0) return null;
+		for(EdocTrace trace: traces) {
+			Status status = new Status();
+
+			status.setDescription(trace.getComment());
+			status.setStatusCode(String.valueOf(trace.getStatusCode()));
+			if(trace.getTimeStamp() != null) {
+				status.setTimeStamp(trace.getTimeStamp().toString());
+			}
+			From from = new From();
+			from.setOrganId(trace.getFromOrganDomain());
+			from.setOrganAdd(trace.getOrganAdd());
+			from.setOrganName(trace.getOrganName());
+			from.setEmail(trace.getEmail());
+			from.setFax(trace.getFax());
+			from.setTelephone(trace.getTelephone());
+			from.setWebsite(trace.getWebsite());
+			from.setOrganInCharge(trace.getOrganizationInCharge());
+			status.setFrom(from);
+			ResponseFor responseFor = new ResponseFor();
+			responseFor.setOrganId(trace.getToOrganDomain());
+			responseFor.setCode(trace.getCode());
+			responseFor.setDocumentId(trace.getEdxmlDocumentId());
+			if(trace.getPromulgationDate() != null) {
+				responseFor.setPromulgationDate(trace.getPromulgationDate().toString());
+			}
+			status.setResponseFor(responseFor);
+			StaffInfo staffInfo = new StaffInfo();
+			staffInfo.setDepartment(trace.getDepartment());
+			staffInfo.setEmail(trace.getEmail());
+			staffInfo.setMobile(trace.getStaffMobile());
+			staffInfo.setStaff(trace.getStaffName());
+			status.setStaffInfo(staffInfo);
+
+			result.add(status);
+		}
+		return result;
+	}
+
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
 			"dd/MM/yyyy");
 	private static final AttachmentGlobalUtil _attGlobal = new AttachmentGlobalUtil();

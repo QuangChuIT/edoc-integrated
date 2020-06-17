@@ -179,8 +179,8 @@ public class ExtractMime {
         String description = statusNode.getChildText("Description");
         status.setDescription(description);
 
-        String documentId = statusNode.getChildText("DocumentId");
-        status.setDocumentId(documentId);
+//        String documentId = statusNode.getChildText("DocumentId");
+//        status.setDocumentId(documentId);
 
         String statusCode = statusNode.getChildText("StatusCode");
 
@@ -228,6 +228,8 @@ public class ExtractMime {
 
         responseFor.setPromulgationDate(responseForNode
                 .getChildText("PromulgationDate"));
+
+        responseFor.setDocumentId(responseForNode.getChildText("DocumentId"));
 
         return responseFor;
     }

@@ -5,5 +5,6 @@ import com.bkav.edoc.service.database.entity.EdocTrace;
 import java.util.List;
 
 public interface EdocTraceDao {
-    public List<EdocTrace> getTraceByDocumentId(long documentId);
+    public  List<EdocTrace> getEdocTracesByOrganId(String responseForOrganId);
+    public void disableEdocTrace(long traceId);
 }

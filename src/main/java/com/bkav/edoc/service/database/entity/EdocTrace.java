@@ -35,7 +35,7 @@ public class EdocTrace {
     private String staffEmail;
     private String staffMobile;
     private String edxmlDocumentId;
-    private EdocDocument document;
+    private transient EdocDocument document;
 
     public String getEdxmlDocumentId() {
         return edxmlDocumentId;

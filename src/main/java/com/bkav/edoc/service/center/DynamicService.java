@@ -4,6 +4,7 @@ import com.bkav.edoc.service.commonutil.Checker;
 import com.bkav.edoc.service.commonutil.ErrorCommonUtil;
 import com.bkav.edoc.service.commonutil.XmlChecker;
 import com.bkav.edoc.service.database.entity.EdocAttachment;
+import com.bkav.edoc.service.database.entity.EdocTrace;
 import com.bkav.edoc.service.database.services.*;
 import com.bkav.edoc.service.entity.edxml.*;
 import com.bkav.edoc.service.entity.edxml.Error;
@@ -51,6 +52,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
     private final String SEPARATOR = File.separator;
     private final ArchiveMime archiveMime = new ArchiveMime();
+    private final Mapper mapper = new Mapper();
 
     public boolean mediate(MessageContext messageContext) {
         log.info("--------------- eDoc mediator invoker by class mediator ---------------");
@@ -116,16 +118,46 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         Report report = null;
 
+        Document responseDocument = null;
+
         Status status = null;
 
         List<Error> errorList = new ArrayList<>();
 
+        List<EdocTrace> traces = null;
+
         Document bodyChildDocument;
 
         try {
-            // Extract MessageHeader
-            status = extractMime.getStatus(envelop);
+            String organId = extractMime.getOrganId(envelop, EdXmlConstant.GET_TRACE);
+            if (organId == null || organId.isEmpty()) {
+                errorList.add(new Error("M.OrganId", "OrganId is required."));
+                report = new Report(false, new ErrorList(errorList));
+                bodyChildDocument = xmlUtil.convertEntityToDocument(
+                        Report.class, report);
+                map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
 
+                return map;
+            }
+
+            // get trace
+            traces = traceService.getEdocTracesByOrganId(organId);
+            if(traces == null) {
+                traces = new ArrayList<>();
+            }
+            // disable traces after get traces
+            traceService.disableEdocTrace(traces);
+
+            List<Status> statuses = mapper.traceInfoToStatusEntity(traces);
+            GetTraceResponse response = new ResponseUtil().createGetTraceResponse(statuses);
+
+            try {
+                responseDocument = xmlUtil.convertEntityToDocument(GetTraceResponse.class, response);
+            } catch (Exception ex) {
+                log.error(ex);
+            }
+
+            map.put(StringPool.CHILD_BODY_KEY, responseDocument);
         } catch (Exception e) {
             log.error("Error when get traces " + e.getMessage());
             errorList.add(new Error("M.GetTraces", "Error when process get traces " + e.getMessage()));

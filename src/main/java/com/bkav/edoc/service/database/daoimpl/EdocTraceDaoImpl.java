@@ -12,13 +12,24 @@ public class EdocTraceDaoImpl extends RootDaoImpl<EdocTrace, Long> implements Ed
         super(EdocTrace.class);
     }
 
-    public List<EdocTrace> getTraceByDocumentId(long documentId) {
+    public  List<EdocTrace> getEdocTracesByOrganId(String responseForOrganId) {
         Session currentSession = getCurrentSession();
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT et FROM EdocTrace et where et.document.id=:documentId");
+        sql.append("SELECT et FROM EdocTrace et where et.toOrganDomain=:responseForOrganId and et.enable=:enable order by et.timeStamp DESC");
         Query query = currentSession.createQuery(sql.toString());
-        query.setLong("documentId", documentId);
+        query.setString("responseForOrganId", responseForOrganId);
+        query.setBoolean("enable", true);
         List<EdocTrace> result = query.list();
         return result;
+    }
+
+    public void disableEdocTrace(long traceId) {
+        Session currentSession = getCurrentSession();
+        StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE edoc_trace SET enable=:enable where trace_id=:traceId");
+        Query query = currentSession.createSQLQuery(sql.toString());
+        query.setBoolean("enable", false);
+        query.setLong("traceId", traceId);
+        query.executeUpdate();
     }
 }

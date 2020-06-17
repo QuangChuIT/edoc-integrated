@@ -10,6 +10,8 @@ public class RedisKey {
 
     public final static String GET_PENDING_KEY = "GetPendingDocument_";
 
+    public final static String GET_TRACE_KEY = "GetTrace_";
+
     public final static String GET_ENVELOP_FILE = "GetEnvelopFile_";
 
     public final static String CHECK_ALLOW_KEY = "CheckAllowDocument_";

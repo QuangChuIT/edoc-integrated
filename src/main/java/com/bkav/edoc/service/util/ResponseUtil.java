@@ -1,6 +1,8 @@
 package com.bkav.edoc.service.util;
 
 import com.bkav.edoc.service.entity.edxml.GetPendingDocumentIDResponse;
+import com.bkav.edoc.service.entity.edxml.GetTraceResponse;
+import com.bkav.edoc.service.entity.edxml.Status;
 import com.bkav.edoc.service.mineutil.XmlUtil;
 import com.bkav.edoc.service.resource.StringPool;
 import org.apache.axiom.attachments.Attachments;
@@ -189,6 +191,10 @@ public class ResponseUtil {
     public GetPendingDocumentIDResponse createGetPendingDocumentIDResponse(
             List<Long> documentIds) {
 		return new GetPendingDocumentIDResponse(documentIds);
+    }
+
+    public GetTraceResponse createGetTraceResponse(List<Status> statuses) {
+        return new GetTraceResponse(statuses);
     }
 
     private final static Log _log = LogFactory.getLog(ResponseUtil.class);

@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Status", propOrder = { "responseFor", "from", "description",
-		"timeStamp", "statusCode", "staffInfo", "documentId" })
+		"timeStamp", "statusCode", "staffInfo" })
 public class Status {
 
 	@XmlElement(name = "ResponseFor", required = true)
@@ -56,8 +56,6 @@ public class Status {
 	protected String statusCode;
 	@XmlElement(name = "StaffInfo", required = true)
 	protected StaffInfo staffInfo;
-	@XmlElement(name = "documentId", required = true)
-	protected String documentId;
 
 	/**
 	 * Gets the value of the responseFor property.
@@ -185,26 +183,4 @@ public class Status {
 		this.staffInfo = value;
 	}
 
-	/**
-	 * Gets the value of the documentId property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getDocumentId() {
-		return documentId;
-	}
-
-	/**
-	 * Sets the value of the documentId property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setDocumentId(String documentId) {
-		this.documentId = documentId;
-	}
-
-	
 }

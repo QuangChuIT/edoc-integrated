@@ -41,6 +41,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "From", propOrder = {
     "organId",
+    "organName",
+    "organInCharge",
     "organAdd",
     "email",
     "telephone",

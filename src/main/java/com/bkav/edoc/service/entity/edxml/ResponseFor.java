@@ -39,7 +39,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ResponseFor", propOrder = {
     "organId",
     "code",
-    "promulgationDate"
+    "promulgationDate",
+    "documentId"
 })
 public class ResponseFor {
 
@@ -49,6 +50,16 @@ public class ResponseFor {
     protected String code;
     @XmlElement(name = "PromulgationDate", required = true)
     protected String promulgationDate;
+    @XmlElement(name = "DocumentId", required = false)
+    protected String documentId;
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
 
     /**
      * Gets the value of the organId property.
