@@ -1,7 +1,6 @@
 package com.bkav.edoc.service.center;
 
 import com.bkav.edoc.service.commonutil.Checker;
-import com.bkav.edoc.service.commonutil.ErrorCommonUtil;
 import com.bkav.edoc.service.commonutil.XmlChecker;
 import com.bkav.edoc.service.database.entity.EdocAttachment;
 import com.bkav.edoc.service.database.entity.EdocTrace;
@@ -56,6 +55,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
     public boolean mediate(MessageContext messageContext) {
         log.info("--------------- eDoc mediator invoker by class mediator ---------------");
+
         org.apache.axis2.context.MessageContext inMessageContext = ((Axis2MessageContext) messageContext).getAxis2MessageContext();
 
         SynapseLog synLog = getLog(messageContext);
@@ -96,11 +96,10 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     map = getTraces(doc);
                     break;
                 default:
-                    log.error(ErrorCommonUtil.getInfoToLog(
-                            "Can't define soap envelop", DynamicService.class));
+                    log.error("Soap action not define !!!!!!!");
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error("Error when process eDoc mediator !!!!!!!!!!!!!!!!!!!");
         }
         responseEnvelope = ResponseUtil.buildResultEnvelope(inMessageContext, map, soapAction);
         try {
@@ -131,9 +130,12 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             String organId = extractMime.getOrganId(envelop, EdXmlConstant.GET_TRACE);
             if (organId == null || organId.isEmpty()) {
                 errorList.add(new Error("M.OrganId", "OrganId is required."));
+
                 report = new Report(false, new ErrorList(errorList));
+
                 bodyChildDocument = xmlUtil.convertEntityToDocument(
                         Report.class, report);
+
                 map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
 
                 return map;
@@ -141,7 +143,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
             // get trace
             traces = traceService.getEdocTracesByOrganId(organId);
-            if(traces == null) {
+            if (traces == null) {
                 traces = new ArrayList<>();
             }
             // disable traces after get traces
@@ -153,10 +155,11 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             try {
                 responseDocument = xmlUtil.convertEntityToDocument(GetTraceResponse.class, response);
             } catch (Exception ex) {
-                log.error(ex);
+                log.error("Error when build response for get traces !!!!! " + ex.getMessage());
             }
 
             map.put(StringPool.CHILD_BODY_KEY, responseDocument);
+
         } catch (Exception e) {
             log.error("Error when get traces " + e.getMessage());
             errorList.add(new Error("M.GetTraces", "Error when process get traces " + e.getMessage()));
@@ -165,6 +168,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
             bodyChildDocument = xmlUtil.convertEntityToDocument(
                     Report.class, report);
+
             map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
         }
         return map;
@@ -187,14 +191,18 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             // Extract MessageHeader
             status = extractMime.getStatus(envelop);
             // update trace
-            if(!traceService.updateTrace(status)) {
+            if (!traceService.updateTrace(status)) {
+
                 errorList.add(new Error("M.updateTrace", "Error when process update trace"));
+
                 report = new Report(false, new ErrorList(errorList));
-            } else{
+
+            } else {
                 report = new Report(true, new ErrorList(errorList));
             }
             bodyChildDocument = xmlUtil.convertEntityToDocument(
                     Report.class, report);
+
             map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
         } catch (Exception e) {
             log.error("Error when update traces " + e.getMessage());
@@ -231,7 +239,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
         if (documentId > 0L && organId != null && !organId.isEmpty()) {
 
             try {
-                // Check quyen voi van ban
+                // Check permission with document
                 boolean acceptToDocument = false;
 
                 // TODO: Cache
