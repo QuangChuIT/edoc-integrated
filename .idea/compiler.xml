@@ -6,8 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="edoc-mediator" />
         <module name="edoc-integrated" />
+        <module name="edoc-mediator" />
       </profile>
     </annotationProcessing>
   </component>

@@ -2,7 +2,6 @@ package com.bkav.edoc.service.database.daoimpl;
 
 import com.bkav.edoc.service.database.dao.EdocDocumentDao;
 import com.bkav.edoc.service.database.entity.EdocDocument;
-import com.bkav.edoc.service.database.entity.EdocDynamicContact;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 

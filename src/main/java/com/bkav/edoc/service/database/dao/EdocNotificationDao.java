@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface EdocNotificationDao {
-    public List<Long> getDocumentIdsByOrganId(String organId);
-    public boolean checkAllowWithDocument(String documentId, String organId);
-    public void setNotificationTaken(String documentId, String organId) throws SQLException;
+    List<Long> getDocumentIdsByOrganId(String organId);
+    boolean checkAllowWithDocument(String documentId, String organId);
+    void setNotificationTaken(String documentId, String organId) throws SQLException;
 }
