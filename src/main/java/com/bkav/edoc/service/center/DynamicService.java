@@ -141,7 +141,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
             // get trace
             traces = traceService.getEdocTracesByOrganId(organId);
-            if(traces == null) {
+            if (traces == null) {
                 traces = new ArrayList<>();
             }
             // disable traces after get traces
@@ -187,10 +187,10 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             // Extract MessageHeader
             status = extractMime.getStatus(envelop);
             // update trace
-            if(!traceService.updateTrace(status)) {
+            if (!traceService.updateTrace(status)) {
                 errorList.add(new Error("M.updateTrace", "Error when process update trace"));
                 report = new Report(false, new ErrorList(errorList));
-            } else{
+            } else {
                 report = new Report(true, new ErrorList(errorList));
             }
             bodyChildDocument = xmlUtil.convertEntityToDocument(
