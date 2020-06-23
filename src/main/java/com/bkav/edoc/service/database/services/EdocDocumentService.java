@@ -279,6 +279,22 @@ public class EdocDocumentService {
         return check;
     }
 
+    public boolean checkExistDocument(String edXmlDocumentId) {
+        documentDaoImpl.openCurrentSession();
+
+        boolean check = documentDaoImpl.checkExistDocument(edXmlDocumentId);
+
+        documentDaoImpl.closeCurrentSession();
+        return check;
+    }
+
+    public boolean checkNewDocument(TraceHeaderList traceHeaderList) {
+        // get business doc type
+        long businessDocType = traceHeaderList.getBusiness().getBusinessDocType();
+        // with new document, business doc type = 0
+        return businessDocType == 0;
+    }
+
     /**
      * save document to cache for get document
      *

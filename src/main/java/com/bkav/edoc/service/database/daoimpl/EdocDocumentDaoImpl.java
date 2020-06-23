@@ -30,6 +30,19 @@ public class EdocDocumentDaoImpl extends RootDaoImpl<EdocDocument, Long> impleme
         return selectedAttachmentNames.containsAll(attachmentNames);
     }
 
+    public boolean checkExistDocument(String edXmlDocumentId) {
+        Session currentSession = getCurrentSession();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ed.documentId FROM EdocDocument ed where ed.edXMLDocId=:edXMLDocId");
+        Query query = currentSession.createQuery(sql.toString());
+        query.setString("edXMLDocId", edXmlDocumentId);
+        List result = query.list();
+        if (result == null || result.size() == 0) {
+            return false;
+        }
+        return true;
+    }
+
     public EdocDocument searchDocumentByOrganDomainAndCode(String toOrganDomain, String code) {
         Session currentSession = getCurrentSession();
         StringBuilder sql = new StringBuilder();

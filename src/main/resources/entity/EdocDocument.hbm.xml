@@ -30,6 +30,8 @@
         <property name="visible" type="boolean" column="visible"/>
         <one-to-one name="documentDetail" class="com.bkav.edoc.service.database.entity.EdocDocumentDetail"
                     cascade="save-update"></one-to-one>
+        <one-to-one name="traceHeaderList" class="com.bkav.edoc.service.database.entity.EdocTraceHeaderList"
+                    cascade="save-update"></one-to-one>
         <many-to-one name="priority" class="com.bkav.edoc.service.database.entity.EdocPriority" fetch="select">
             <column name="priority_id" />
         </many-to-one>
@@ -46,13 +48,6 @@
                 <column name="DOC_ID"/>
             </key>
             <one-to-many class="com.bkav.edoc.service.database.entity.EdocTrace" />
-        </set>
-        <set name="traceHeaderList" table="edoc_trace_header_list"
-             inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="DOC_ID"/>
-            </key>
-            <one-to-many class="com.bkav.edoc.service.database.entity.EdocTraceHeaderList" />
         </set>
         <set name="attachments" table="edoc_attachment"
              inverse="true" lazy="true" fetch="select">

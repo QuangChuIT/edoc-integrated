@@ -16,7 +16,7 @@ public class TraceHeaderList {
 
 	/**
 	 * @param traceHeaders
-	 * @param business
+	 * @param bussiness
 	 */
 	public TraceHeaderList(List<TraceHeader> traceHeaders, Business bussiness) {
 		super();

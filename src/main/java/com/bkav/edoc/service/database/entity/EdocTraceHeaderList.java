@@ -1,16 +1,16 @@
 package com.bkav.edoc.service.database.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class EdocTraceHeaderList {
 
     public enum BusinessDocType {
-        REVOKE, NEW, UPDATE, REPLACE
+        NEW, REVOKE, UPDATE, REPLACE
     }
 
-    private Long traceId;
-    private String organDomain;
-    private Date timeStamp;
+    private Long documentId;
     private BusinessDocType businessDocType;
     private String businessDocReason;
     private Integer paper;
@@ -19,29 +19,22 @@ public class EdocTraceHeaderList {
     private String mobile;
     private String email;
     private EdocDocument document;
+    private Set<EdocTraceHeader> traceHeaders = new HashSet<>();
 
-    public Long getTraceId() {
-        return traceId;
+    public Set<EdocTraceHeader> getTraceHeaders() {
+        return traceHeaders;
     }
 
-    public void setTraceId(Long traceId) {
-        this.traceId = traceId;
+    public void setTraceHeaders(Set<EdocTraceHeader> traceHeaders) {
+        this.traceHeaders = traceHeaders;
     }
 
-    public String getOrganDomain() {
-        return organDomain;
+    public Long getDocumentId() {
+        return documentId;
     }
 
-    public void setOrganDomain(String organDomain) {
-        this.organDomain = organDomain;
-    }
-
-    public Date getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(Date timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setDocumentId(Long documentId) {
+        this.documentId = documentId;
     }
 
     public BusinessDocType getBusinessDocType() {

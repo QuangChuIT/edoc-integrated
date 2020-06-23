@@ -94,6 +94,19 @@ public class MessageHeader {
     protected int steeringType;
     @XmlElement(name = "DocumentId", required = true)
     protected String documentId;
+    @XmlElement(name = "ResponseFor", required = false)
+    protected List<ResponseFor> responseFor;
+
+    public List<ResponseFor> getResponseFor() {
+        if (responseFor == null) {
+            responseFor = new ArrayList<ResponseFor>();
+        }
+        return this.responseFor;
+    }
+
+    public void setResponseFor(List<ResponseFor> responseFor) {
+        this.responseFor = responseFor;
+    }
 
     /**
      * Gets the value of the from property.

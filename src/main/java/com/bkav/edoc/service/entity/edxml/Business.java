@@ -3,6 +3,9 @@
  */
 package com.bkav.edoc.service.entity.edxml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author quangcv
  *
@@ -16,8 +19,38 @@ public class Business {
 	
 	private long paper;
 
+	private StaffInfo staffInfo;
+
+	private List<ReplacementInfo> replacementInfoList = new ArrayList<>();
+
+	private BussinessDocumentInfo bussinessDocumentInfo;
+
+	public BussinessDocumentInfo getBussinessDocumentInfo() {
+		return bussinessDocumentInfo;
+	}
+
+	public void setBussinessDocumentInfo(BussinessDocumentInfo bussinessDocumentInfo) {
+		this.bussinessDocumentInfo = bussinessDocumentInfo;
+	}
+
+	public List<ReplacementInfo> getReplacementInfoList() {
+		return replacementInfoList;
+	}
+
+	public void setReplacementInfoList(List<ReplacementInfo> replacementInfoList) {
+		this.replacementInfoList = replacementInfoList;
+	}
+
+	public StaffInfo getStaffInfo() {
+		return staffInfo;
+	}
+
+	public void setStaffInfo(StaffInfo staffInfo) {
+		this.staffInfo = staffInfo;
+	}
+
 	public Business(String documentId, long businessDocType,
-			String businessDocReason, long paper) {
+					String businessDocReason, long paper) {
 		this.documentId = documentId;
 		this.businessDocType = businessDocType;
 		this.businessDocReason = businessDocReason;

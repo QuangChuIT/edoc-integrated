@@ -413,11 +413,10 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
                 boolean enableCheckExist = GetterUtil.get(PropsUtil.get("eDoc.service.sendDocument.checkExist.enable"), false);
 
-                if (enableCheckExist) {
+                // only check exist with new document
+                if (enableCheckExist && documentService.checkNewDocument(traceHeaderList)) {
                     // check exist document
-                    if (documentService.checkExistDocument(messageHeader.getSubject(), messageHeader.getCode().getCodeNumber()
-                            , messageHeader.getCode().getCodeNotation(), messageHeader.getPromulgationInfo().getPromulgationDate()
-                            , messageHeader.getFrom().getOrganId(), messageHeader.getTo(), attachmentNames)) {
+                    if (documentService.checkExistDocument(messageHeader.getDocumentId())) {
 
                         errorList.add(new Error("M.Exist", "Document is exist on ESB !!!!"));
                         report = new Report(false, new ErrorList(errorList));

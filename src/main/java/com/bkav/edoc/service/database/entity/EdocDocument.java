@@ -33,7 +33,7 @@ public class EdocDocument {
     private String fromOrganDomain;
     private Boolean visible;
     private EdocDocumentDetail documentDetail;
-    private Set<EdocTraceHeaderList> traceHeaderList = new HashSet<>();
+    private EdocTraceHeaderList traceHeaderList;
     private EdocPriority priority;
     private Set<EdocNotification> notifications = new HashSet<>();
     private Set<EdocTrace> traces = new HashSet<>();
@@ -147,6 +147,14 @@ public class EdocDocument {
         return sentDate;
     }
 
+    public EdocTraceHeaderList getTraceHeaderList() {
+        return traceHeaderList;
+    }
+
+    public void setTraceHeaderList(EdocTraceHeaderList traceHeaderList) {
+        this.traceHeaderList = traceHeaderList;
+    }
+
     public void setSentDate(Date sentDate) {
         this.sentDate = sentDate;
     }
@@ -173,14 +181,6 @@ public class EdocDocument {
 
     public void setVisible(Boolean visible) {
         this.visible = visible;
-    }
-
-    public Set<EdocTraceHeaderList> getTraceHeaderList() {
-        return traceHeaderList;
-    }
-
-    public void setTraceHeaderList(Set<EdocTraceHeaderList> traceHeaderList) {
-        this.traceHeaderList = traceHeaderList;
     }
 
     public EdocDocumentDetail getDocumentDetail() {

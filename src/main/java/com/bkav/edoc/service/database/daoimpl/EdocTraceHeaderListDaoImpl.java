@@ -12,13 +12,16 @@ public class EdocTraceHeaderListDaoImpl extends RootDaoImpl<EdocTraceHeaderList,
         super(EdocTraceHeaderList.class);
     }
 
-    public List<EdocTraceHeaderList> getTraceHeaderListByDocId(long documentId) {
+    public EdocTraceHeaderList getTraceHeaderListByDocId(long documentId) {
         Session currentSession = getCurrentSession();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT eth FROM EdocTraceHeaderList eth where eth.document.id=:documentId");
         Query query = currentSession.createQuery(sql.toString());
         query.setLong("documentId", documentId);
         List<EdocTraceHeaderList> result = query.list();
-        return result;
+        if(result != null && result.size() > 0) {
+            return result.get(0);
+        }
+        return null;
     }
 }

@@ -218,6 +218,21 @@ public class ExtractMime {
         return from;
     }
 
+    public ResponseFor getResponseForMessageHeader(Element responseForNode) {
+        ResponseFor responseFor = new ResponseFor();
+
+        responseFor.setCode(responseForNode.getChildText("Code"));
+
+        responseFor.setOrganId(responseForNode.getChildText("OrganId"));
+
+        responseFor.setPromulgationDate(responseForNode
+                .getChildText("PromulgationDate"));
+
+        responseFor.setDocumentId(responseForNode.getChildText("DocumentId"));
+
+        return responseFor;
+    }
+
     public ResponseFor getResponseForStatus(Element statusNode) {
         ResponseFor responseFor = new ResponseFor();
         Element responseForNode = statusNode.getChild("ResponseFor");
@@ -318,6 +333,9 @@ public class ExtractMime {
 
         messageHeader.setDocumentId(edxmlDocumentId);
 
+        List<ResponseFor> responseFors = GetResponseForsMessageHeader(messageHeaderNode);
+        messageHeader.setResponseFor(responseFors);
+
         return messageHeader;
     }
 
@@ -338,6 +356,29 @@ public class ExtractMime {
         }
 
         return tos;
+
+    }
+
+    /**
+     * @param messageHeaderNode
+     * @return
+     * @throws Exception
+     */
+    public List<ResponseFor> GetResponseForsMessageHeader(Element messageHeaderNode) throws Exception {
+
+        List<ResponseFor> responseFors = new ArrayList<ResponseFor>();
+
+        List<Element> responseForNodes = getMultiElement(messageHeaderNode, "ResponseFor",
+                EdXmlConstant.EDXML_NS);
+
+        // check null
+        if(responseForNodes == null) return null;
+
+        for (Element responseForNode : responseForNodes) {
+            responseFors.add(getResponseForMessageHeader(responseForNode));
+        }
+
+        return responseFors;
 
     }
 
@@ -744,6 +785,83 @@ public class ExtractMime {
         }
 
         return results;
+    }
+
+    private Business GetBusiness(Element traceListNode) throws Exception {
+
+        Business business = new Business();
+
+        Element businessInfoNode = getSingerElement(traceListNode,"Bussiness", EdXmlConstant.EDXML_NS);
+
+        business.setBusinessDocType(Long.parseLong(businessInfoNode.getChildText("BussinessDocType", EdXmlConstant.EDXML_NS)));
+
+        business.setBusinessDocReason(businessInfoNode.getChildText("BussinessDocReason", EdXmlConstant.EDXML_NS));
+
+        business.setPaper(Long.parseLong(businessInfoNode.getChildText("Paper", EdXmlConstant.EDXML_NS)));
+
+        business.setDocumentId(businessInfoNode.getChildText("DocumentId", EdXmlConstant.EDXML_NS));
+
+        // get staff info
+        StaffInfo staffInfo = getStaffInfo(businessInfoNode);
+        business.setStaffInfo(staffInfo);
+
+        // get replacement info
+        List<ReplacementInfo> replacementInfoList = getReplacementInfos(businessInfoNode);
+        business.setReplacementInfoList(replacementInfoList);
+
+        // get bussiness document info
+
+        return business;
+    }
+
+    public BussinessDocumentInfo getBussinessDocumentInfo(Element businessNode) throws Exception {
+        Element bussinessDocumentInfoNode = businessNode.getChild("BussinessDocumentInfo");
+        if(bussinessDocumentInfoNode == null) return null;
+
+        // todo
+
+        return null;
+    }
+
+    /**
+     *
+     * @param businessNode
+     * @return
+     * @throws Exception
+     */
+    public List<ReplacementInfo> getReplacementInfos(Element businessNode) throws Exception {
+        Element replacementInfoListNode = businessNode.getChild("ReplacementInfoList");
+        if (replacementInfoListNode == null) return null;
+
+        List<ReplacementInfo> replacementInfos = new ArrayList<ReplacementInfo>();
+
+        List<Element> replacementInfoForNodes = getMultiElement(replacementInfoListNode, "ReplacementInfo",
+                EdXmlConstant.EDXML_NS);
+
+        for (Element replacementInfoNode : replacementInfoForNodes) {
+            replacementInfos.add(getReplacementInfo(replacementInfoNode));
+        }
+
+        return replacementInfos;
+    }
+
+    public ReplacementInfo getReplacementInfo(Element replacementInfoNode) {
+        ReplacementInfo replacementInfo = new ReplacementInfo();
+
+        replacementInfo.setDocumentId(replacementInfoNode.getChildText("DocumentId"));
+
+        List<String> organIdList = new ArrayList<>();
+
+        Element organIdListNode = getSingerElement(replacementInfoNode, "OrganIdList", EdXmlConstant.EDXML_NS);
+        List<Element> organIdNodes = getMultiElement(organIdListNode, "OrganId",
+                EdXmlConstant.EDXML_NS);
+        for(Element organIdNode: organIdNodes) {
+            organIdList.add(organIdNode.getTextTrim());
+        }
+
+        replacementInfo.setOrganIdList(organIdList);
+
+        return replacementInfo;
     }
 
     private Calendar cal;
