@@ -10,6 +10,7 @@ import com.bkav.edoc.service.redis.RedisKey;
 import com.bkav.edoc.service.redis.RedisUtil;
 import com.bkav.edoc.service.util.AttachmentGlobalUtil;
 import com.bkav.edoc.service.util.PropsUtil;
+import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -35,6 +36,7 @@ public class EdocDocumentService {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
             "dd/MM/yyyy");
     private Mapper mapper = new Mapper();
+    private Gson gson = new Gson();
 
     public EdocDocumentService() {
 
@@ -87,8 +89,11 @@ public class EdocDocumentService {
             return false;
         }
 
+        // get bussiness info
+        String bussinessInfo = getBussinessInfo(messageHeader, traces);
+
         // Insert Trace Header List
-        if (!traceHeaderListService.addTraceHeaderList(traces, docId)) {
+        if (!traceHeaderListService.addTraceHeaderList(traces, bussinessInfo, docId)) {
             return false;
         }
         // Insert vao bang Attachment
@@ -148,6 +153,36 @@ public class EdocDocumentService {
         savePendingDocumentCache(messageHeader.getTo(), docId);
 
         return true;
+    }
+
+    /**
+     * get bussiness info
+     * @param messageHeader
+     * @param traceHeaderList
+     * @return
+     */
+    private String getBussinessInfo(MessageHeader messageHeader, TraceHeaderList traceHeaderList) {
+        if(traceHeaderList.getBussiness() == null) return null;
+        String bussinessInfo = null;
+        // check bussiness doc type
+        long bussinessDocType = traceHeaderList.getBussiness().getBussinessDocType();
+        if(bussinessDocType == EdocTraceHeaderList.BussinessDocType.REVOKE.ordinal()) {
+            // get response for
+            List<ResponseFor> responseFors = messageHeader.getResponseFors();
+            bussinessInfo = gson.toJson(responseFors);
+        }
+        else if(bussinessDocType == EdocTraceHeaderList.BussinessDocType.UPDATE.ordinal()) {
+            // get bussiness document info
+            BussinessDocumentInfo bussinessDocumentInfo = traceHeaderList.getBussiness().getBussinessDocumentInfo();
+            bussinessInfo = gson.toJson(bussinessDocumentInfo);
+        }
+        else if(bussinessDocType == EdocTraceHeaderList.BussinessDocType.REPLACE.ordinal()) {
+            // get replacement info
+            List<ReplacementInfo> replacementInfoList = traceHeaderList.getBussiness().getReplacementInfoList();
+            bussinessInfo = gson.toJson(replacementInfoList);
+        }
+
+        return bussinessInfo;
     }
 
     /**
@@ -289,10 +324,10 @@ public class EdocDocumentService {
     }
 
     public boolean checkNewDocument(TraceHeaderList traceHeaderList) {
-        // get business doc type
-        long businessDocType = traceHeaderList.getBusiness().getBusinessDocType();
-        // with new document, business doc type = 0
-        return businessDocType == 0;
+        // get bussiness doc type
+        long bussinessDocType = traceHeaderList.getBussiness().getBussinessDocType();
+        // with new document, bussiness doc type = 0
+        return bussinessDocType == 0;
     }
 
     /**

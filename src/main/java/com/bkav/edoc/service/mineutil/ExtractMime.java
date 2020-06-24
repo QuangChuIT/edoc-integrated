@@ -143,8 +143,10 @@ public class ExtractMime {
 
         TraceHeaderList traceList = new TraceHeaderList();
 
-        traceList
-                .setTraceHeaders(GetTraceList(traceHeaderListNode, isByHeader));
+        traceList.setTraceHeaders(GetTraceList(traceHeaderListNode, isByHeader));
+        if(isByHeader) {
+            traceList.setBussiness(GetBussiness(traceHeaderListNode));
+        }
 
         return traceList;
     }
@@ -334,7 +336,7 @@ public class ExtractMime {
         messageHeader.setDocumentId(edxmlDocumentId);
 
         List<ResponseFor> responseFors = GetResponseForsMessageHeader(messageHeaderNode);
-        messageHeader.setResponseFor(responseFors);
+        messageHeader.setResponseFors(responseFors);
 
         return messageHeader;
     }
@@ -787,50 +789,73 @@ public class ExtractMime {
         return results;
     }
 
-    private Business GetBusiness(Element traceListNode) throws Exception {
+    private Bussiness GetBussiness(Element traceListNode) throws Exception {
 
-        Business business = new Business();
+        Bussiness bussiness = new Bussiness();
 
-        Element businessInfoNode = getSingerElement(traceListNode,"Bussiness", EdXmlConstant.EDXML_NS);
+        Element bussinessInfoNode = getSingerElement(traceListNode,"Bussiness", EdXmlConstant.EDXML_NS);
 
-        business.setBusinessDocType(Long.parseLong(businessInfoNode.getChildText("BussinessDocType", EdXmlConstant.EDXML_NS)));
+        bussiness.setBussinessDocType(Long.parseLong(bussinessInfoNode.getChildText("BussinessDocType", EdXmlConstant.EDXML_NS)));
 
-        business.setBusinessDocReason(businessInfoNode.getChildText("BussinessDocReason", EdXmlConstant.EDXML_NS));
+        bussiness.setBussinessDocReason(bussinessInfoNode.getChildText("BussinessDocReason", EdXmlConstant.EDXML_NS));
 
-        business.setPaper(Long.parseLong(businessInfoNode.getChildText("Paper", EdXmlConstant.EDXML_NS)));
+        bussiness.setPaper(Long.parseLong(bussinessInfoNode.getChildText("Paper", EdXmlConstant.EDXML_NS)));
 
-        business.setDocumentId(businessInfoNode.getChildText("DocumentId", EdXmlConstant.EDXML_NS));
+        bussiness.setDocumentId(bussinessInfoNode.getChildText("DocumentId", EdXmlConstant.EDXML_NS));
 
         // get staff info
-        StaffInfo staffInfo = getStaffInfo(businessInfoNode);
-        business.setStaffInfo(staffInfo);
+        StaffInfo staffInfo = getStaffInfo(bussinessInfoNode);
+        bussiness.setStaffInfo(staffInfo);
 
         // get replacement info
-        List<ReplacementInfo> replacementInfoList = getReplacementInfos(businessInfoNode);
-        business.setReplacementInfoList(replacementInfoList);
+        List<ReplacementInfo> replacementInfoList = getReplacementInfos(bussinessInfoNode);
+        bussiness.setReplacementInfoList(replacementInfoList);
 
         // get bussiness document info
+        BussinessDocumentInfo bussinessDocumentInfo = getBussinessDocumentInfo(bussinessInfoNode);
+        bussiness.setBussinessDocumentInfo(bussinessDocumentInfo);
 
-        return business;
+        return bussiness;
     }
 
-    public BussinessDocumentInfo getBussinessDocumentInfo(Element businessNode) throws Exception {
-        Element bussinessDocumentInfoNode = businessNode.getChild("BussinessDocumentInfo");
+    public BussinessDocumentInfo getBussinessDocumentInfo(Element bussinessNode) throws Exception {
+        Element bussinessDocumentInfoNode = bussinessNode.getChild("BussinessDocumentInfo");
         if(bussinessDocumentInfoNode == null) return null;
 
         // todo
+        BussinessDocumentInfo bussinessDocumentInfo = new BussinessDocumentInfo();
+        bussinessDocumentInfo.setDocumentInfo(bussinessDocumentInfoNode.getChildText("DocumentInfo", EdXmlConstant.EDXML_NS));
+        bussinessDocumentInfo.setDocumentReceiver(bussinessDocumentInfoNode.getChildText("DocumentReceiver", EdXmlConstant.EDXML_NS));
 
-        return null;
+        Element receiverListNode = getSingerElement(bussinessDocumentInfoNode, "ReceiverList", EdXmlConstant.EDXML_NS);
+        List<Element> receiverNodes = getMultiElement(receiverListNode, "Receiver", EdXmlConstant.EDXML_NS);
+
+        List<Receiver> receivers = new ArrayList<>();
+        for (Element receiverNode : receiverNodes) {
+            receivers.add(getReceiver(receiverNode));
+        }
+        bussinessDocumentInfo.setReceiverList(receivers);
+
+        return bussinessDocumentInfo;
+    }
+
+    public Receiver getReceiver(Element receiverNode) {
+        Receiver receiver = new Receiver();
+
+        receiver.setOrganId(receiverNode.getChildText("OrganId", EdXmlConstant.EDXML_NS));
+        receiver.setReceiverType(Long.parseLong(receiverNode.getChildText("ReceiverType", EdXmlConstant.EDXML_NS)));
+
+        return receiver;
     }
 
     /**
      *
-     * @param businessNode
+     * @param bussinessNode
      * @return
      * @throws Exception
      */
-    public List<ReplacementInfo> getReplacementInfos(Element businessNode) throws Exception {
-        Element replacementInfoListNode = businessNode.getChild("ReplacementInfoList");
+    public List<ReplacementInfo> getReplacementInfos(Element bussinessNode) throws Exception {
+        Element replacementInfoListNode = bussinessNode.getChild("ReplacementInfoList");
         if (replacementInfoListNode == null) return null;
 
         List<ReplacementInfo> replacementInfos = new ArrayList<ReplacementInfo>();

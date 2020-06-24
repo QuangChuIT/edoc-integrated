@@ -6,13 +6,13 @@ import java.util.Set;
 
 public class EdocTraceHeaderList {
 
-    public enum BusinessDocType {
+    public enum BussinessDocType {
         NEW, REVOKE, UPDATE, REPLACE
     }
 
     private Long documentId;
-    private BusinessDocType businessDocType;
-    private String businessDocReason;
+    private BussinessDocType bussinessDocType;
+    private String bussinessDocReason;
     private Integer paper;
     private String department;
     private String staff;
@@ -20,6 +20,15 @@ public class EdocTraceHeaderList {
     private String email;
     private EdocDocument document;
     private Set<EdocTraceHeader> traceHeaders = new HashSet<>();
+    private String bussinessInfo;
+
+    public String getBussinessInfo() {
+        return bussinessInfo;
+    }
+
+    public void setBussinessInfo(String bussinessInfo) {
+        this.bussinessInfo = bussinessInfo;
+    }
 
     public Set<EdocTraceHeader> getTraceHeaders() {
         return traceHeaders;
@@ -37,20 +46,20 @@ public class EdocTraceHeaderList {
         this.documentId = documentId;
     }
 
-    public BusinessDocType getBusinessDocType() {
-        return businessDocType;
+    public BussinessDocType getBussinessDocType() {
+        return bussinessDocType;
     }
 
-    public void setBusinessDocType(BusinessDocType businessDocType) {
-        this.businessDocType = businessDocType;
+    public void setBussinessDocType(BussinessDocType bussinessDocType) {
+        this.bussinessDocType = bussinessDocType;
     }
 
-    public String getBusinessDocReason() {
-        return businessDocReason;
+    public String getBussinessDocReason() {
+        return bussinessDocReason;
     }
 
-    public void setBusinessDocReason(String businessDocReason) {
-        this.businessDocReason = businessDocReason;
+    public void setBussinessDocReason(String bussinessDocReason) {
+        this.bussinessDocReason = bussinessDocReason;
     }
 
     public Integer getPaper() {

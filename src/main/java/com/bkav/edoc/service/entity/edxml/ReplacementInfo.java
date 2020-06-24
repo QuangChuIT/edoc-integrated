@@ -1,10 +1,11 @@
 package com.bkav.edoc.service.entity.edxml;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReplacementInfo {
     private String documentId;
-    private List<String> organIdList;
+    private List<String> organIdList = new ArrayList<>();
 
     public String getDocumentId() {
         return documentId;

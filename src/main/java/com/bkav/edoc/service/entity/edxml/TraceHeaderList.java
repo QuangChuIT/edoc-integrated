@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.bkav.edoc.service.entity.edxml;
 
@@ -7,25 +7,27 @@ import java.util.List;
 
 /**
  * @author QuangCV
- * 
+ *
  */
 public class TraceHeaderList {
 	private List<TraceHeader> traceHeaders;
-	
-	private Business business;
+
+	private Bussiness bussiness;
+
+	private String bussinessInfo;
 
 	/**
 	 * @param traceHeaders
 	 * @param bussiness
 	 */
-	public TraceHeaderList(List<TraceHeader> traceHeaders, Business bussiness) {
+	public TraceHeaderList(List<TraceHeader> traceHeaders, Bussiness bussiness) {
 		super();
 		this.traceHeaders = traceHeaders;
-		this.business = business;
+		this.bussiness = bussiness;
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public TraceHeaderList() {
 		super();
@@ -46,17 +48,24 @@ public class TraceHeaderList {
 	}
 
 	/**
-	 * @return the business
+	 * @return the bussiness
 	 */
-	public Business getBusiness() {
-		return business;
+	public Bussiness getBussiness() {
+		return bussiness;
 	}
 
 	/**
-	 * @param business the business to set
+	 * @param bussiness the bussiness to set
 	 */
-	public void setBusiness(Business business) {
-		this.business = business;
+	public void setBussiness(Bussiness bussiness) {
+		this.bussiness = bussiness;
 	}
-	
+
+	public String getBussinessInfo() {
+		return bussinessInfo;
+	}
+
+	public void setBussinessInfo(String bussinessInfo) {
+		this.bussinessInfo = bussinessInfo;
+	}
 }

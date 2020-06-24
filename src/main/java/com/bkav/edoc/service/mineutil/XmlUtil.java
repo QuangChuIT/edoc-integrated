@@ -36,6 +36,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import com.bkav.edoc.service.commonutil.Checker;
+import com.bkav.edoc.service.database.entity.EdocTraceHeaderList;
 import com.bkav.edoc.service.entity.edxml.*;
 import com.bkav.edoc.service.entity.soapenv.Body;
 import com.bkav.edoc.service.entity.soapenv.Header;
@@ -555,7 +556,126 @@ public class XmlUtil {
             nodes.add(traceHeader);
         }
 
+        // get bussiness node
+        OMElement bussinessNode = getBussinessChild(traceHeaderList, ns);
+        nodes.add(bussinessNode);
+
         return nodes;
+    }
+
+    private OMElement getBussinessChild(TraceHeaderList traceHeaderList, OMNamespace ns) {
+        OMFactory factoryOM = OMAbstractFactory.getOMFactory();
+
+        Bussiness bussiness = traceHeaderList.getBussiness();
+
+        OMElement bussinessNode = factoryOM.createOMElement("Bussiness", ns);
+
+        OMElement bussinessDocTypeNode = factoryOM.createOMElement("BussinessDocType", ns);
+        bussinessDocTypeNode.setText(String.valueOf(bussiness.getBussinessDocType()));
+        bussinessNode.addChild(bussinessDocTypeNode);
+
+        OMElement bussinessDocReasonNode = factoryOM.createOMElement("BussinessDocReason", ns);
+        bussinessDocReasonNode.setText(bussiness.getBussinessDocReason());
+        bussinessNode.addChild(bussinessDocReasonNode);
+
+        OMElement paperNode = factoryOM.createOMElement("Paper", ns);
+        paperNode.setText(String.valueOf(bussiness.getPaper()));
+        bussinessNode.addChild(paperNode);
+
+        // staff info
+        OMElement staffInfoNode = getStaffInfoNode(bussiness.getStaffInfo(), ns);
+        bussinessNode.addChild(staffInfoNode);
+
+        // replacement info list
+        if(bussiness.getBussinessDocType() == EdocTraceHeaderList.BussinessDocType.REPLACE.ordinal()) {
+            OMElement replacementInfoListNode = getReplacementInfoListNode(bussiness.getReplacementInfoList(), ns);
+            bussinessNode.addChild(replacementInfoListNode);
+        }
+        else if(bussiness.getBussinessDocType() == EdocTraceHeaderList.BussinessDocType.UPDATE.ordinal()) {
+            OMElement bussinessDocumentInfoNode = getBussinessDocumentInfoNode(bussiness.getBussinessDocumentInfo(), ns);
+            bussinessNode.addChild(bussinessDocumentInfoNode);
+        }
+
+        return bussinessNode;
+    }
+
+    private OMElement getReplacementInfoListNode(List<ReplacementInfo> replacementInfoList, OMNamespace ns) {
+        OMFactory factoryOM = OMAbstractFactory.getOMFactory();
+
+        OMElement replacementInfoListNode = factoryOM.createOMElement("ReplacementInfoList", ns);
+
+        for(ReplacementInfo replacementInfo: replacementInfoList) {
+            OMElement replacementInfoNode = factoryOM.createOMElement("ReplacementInfo", ns);
+
+            OMElement documentIdNode = factoryOM.createOMElement("DocumentId", ns);
+            documentIdNode.setText(replacementInfo.getDocumentId());
+            replacementInfoNode.addChild(documentIdNode);
+
+            OMElement organIdListNode = factoryOM.createOMElement("OrganIdList", ns);
+            for(String organId: replacementInfo.getOrganIdList()) {
+                OMElement organIdNode = factoryOM.createOMElement("OrganId", ns);
+                organIdNode.setText(organId);
+                organIdListNode.addChild(organIdNode);
+            }
+            replacementInfoNode.addChild(organIdListNode);
+        }
+
+        return replacementInfoListNode;
+    }
+
+    private OMElement getBussinessDocumentInfoNode(BussinessDocumentInfo bussinessDocumentInfo, OMNamespace ns) {
+        OMFactory factoryOM = OMAbstractFactory.getOMFactory();
+
+        OMElement bussinessDocumentInfoNode = factoryOM.createOMElement("BussinessDocumentInfo", ns);
+
+        OMElement documentInfoNode = factoryOM.createOMElement("DocumentInfo", ns);
+        documentInfoNode.setText(bussinessDocumentInfo.getDocumentInfo());
+        bussinessDocumentInfoNode.addChild(documentInfoNode);
+
+        OMElement documentReceiverNode = factoryOM.createOMElement("DocumentReceiver", ns);
+        documentReceiverNode.setText(bussinessDocumentInfo.getDocumentReceiver());
+        bussinessDocumentInfoNode.addChild(documentReceiverNode);
+
+        OMElement receiverListNode = factoryOM.createOMElement("ReceiverList", ns);
+        for(Receiver receiver: bussinessDocumentInfo.getReceiverList()) {
+            OMElement receiverNode = factoryOM.createOMElement("Receiver", ns);
+
+            OMElement receiverTypeNode = factoryOM.createOMElement("ReceiverType", ns);
+            receiverTypeNode.setText(String.valueOf(receiver.getReceiverType()));
+            receiverNode.addChild(receiverTypeNode);
+
+            OMElement organIdNode = factoryOM.createOMElement("OrganId", ns);
+            organIdNode.setText(String.valueOf(receiver.getOrganId()));
+            receiverNode.addChild(organIdNode);
+
+            receiverListNode.addChild(receiverNode);
+        }
+        bussinessDocumentInfoNode.addChild(receiverListNode);
+
+        return bussinessDocumentInfoNode;
+    }
+
+    private OMElement getStaffInfoNode(StaffInfo staffInfo, OMNamespace ns) {
+        OMFactory factoryOM = OMAbstractFactory.getOMFactory();
+        OMElement staffInfoNode = factoryOM.createOMElement("StaffInfo", ns);
+
+        OMElement departmentNode = factoryOM.createOMElement("Department", ns);
+        departmentNode.setText(staffInfo.getDepartment());
+        staffInfoNode.addChild(departmentNode);
+
+        OMElement staffNode = factoryOM.createOMElement("Staff", ns);
+        staffNode.setText(staffInfo.getStaff());
+        staffInfoNode.addChild(staffNode);
+
+        OMElement mobileNode = factoryOM.createOMElement("Mobile", ns);
+        mobileNode.setText(staffInfo.getMobile());
+        staffInfoNode.addChild(mobileNode);
+
+        OMElement emailNode = factoryOM.createOMElement("Email", ns);
+        emailNode.setText(staffInfo.getEmail());
+        staffInfoNode.addChild(emailNode);
+
+        return staffInfoNode;
     }
 
     /**
@@ -1751,6 +1871,51 @@ public class XmlUtil {
 
             nodes.add(otherInfo);
         }
+
+        // get response for revoke document
+        if (checker.checkAllowElement(allowElements,
+                StringPool.MESSAGE_HEADER_RESPONSE_FOR) || allowAll) {
+
+            // generate response for nodes
+            List<ResponseFor> responseFors = currentHeader.getResponseFors();
+            for (ResponseFor item : responseFors) {
+                OMElement responseFor = factoryOM.createOMElement("ResponseFor", ns);
+
+                if (checker.checkAllowElement(allowElements,
+                        StringPool.RESPONSE_FOR_ORGAN_ID) || allowAll) {
+                    OMElement organId = factoryOM.createOMElement("OrganId",
+                            ns);
+                    organId.setText(item.getOrganId());
+                    responseFor.addChild(organId);
+                }
+
+                if (checker.checkAllowElement(allowElements,
+                        StringPool.RESPONSE_FOR_CODE) || allowAll) {
+                    OMElement code = factoryOM.createOMElement(
+                            "Code", ns);
+                    code.setText(item.getCode());
+                    responseFor.addChild(code);
+                }
+
+                if (checker.checkAllowElement(allowElements,
+                        StringPool.RESPONSE_FOR_PROMULGATION_DATE) || allowAll) {
+                    OMElement promulgationDate = factoryOM.createOMElement(
+                            "PromulgationDate", ns);
+                    promulgationDate.setText(item.getPromulgationDate());
+                    responseFor.addChild(promulgationDate);
+                }
+
+                if (checker.checkAllowElement(allowElements,
+                        StringPool.RESPONSE_FOR_DOCUMENT_ID) || allowAll) {
+                    OMElement documentId = factoryOM.createOMElement("DocumentId", ns);
+                    documentId.setText(item.getDocumentId());
+                    responseFor.addChild(documentId);
+                }
+
+                nodes.add(responseFor);
+            }
+        }
+
         return nodes;
     }
 

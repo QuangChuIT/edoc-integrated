@@ -98,8 +98,9 @@ public class StringPool {
 	 public static String MESSAGE_HEADER_AUTHOR = "MessageHeader-SignerInfo";	 
 	 public static String MESSAGE_HEADER_RESPONSE_DATE = "MessageHeader-DueDate";	 
 	 public static String MESSAGE_HEADER_TOPLACES = "MessageHeader-ToPlaces";	 
-	 public static String MESSAGE_HEADER_OTHERINFO = "MessageHeader-OtherInfo";	 
-	 
+	 public static String MESSAGE_HEADER_OTHERINFO = "MessageHeader-OtherInfo";
+	public static String MESSAGE_HEADER_RESPONSE_FOR = "MessageHeader-ResponseFor";
+
 	 public static String FROM_ORGAN_ID = "From-OrganId";
 	 public static String FROM_ORGAN_NAME = "From-OrganName";
 	 public static String FROM_ORGAN_IN_CHARGE = "From-OrganInCharge";
@@ -117,7 +118,12 @@ public class StringPool {
 	 public static String TO_FAX = "To-Fax";
 	 public static String TO_WEBSITE = "To-Website";
 	 public static String TO_DUE_DATE = "To-DueDate";
-	 
+
+	public static String RESPONSE_FOR_ORGAN_ID = "ResponseFor-OrganId";
+	public static String RESPONSE_FOR_CODE = "ResponseFor-Code";
+	public static String RESPONSE_FOR_PROMULGATION_DATE = "ResponseFor-PromulgationDate";
+	public static String RESPONSE_FOR_DOCUMENT_ID = "ResponseFor-DocumentId";
+
 	 public static String CODE_NUMBER = "Code-CodeNumber"; 
 	 public static String CODE_NOTATION = "Code-CodeNotation";
 	 

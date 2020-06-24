@@ -312,6 +312,9 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     // TODO: Get Trace for edXML Message in here
                     TraceHeaderList traceHeaderList = traceHeaderListService.getTraceHeaderListByDocId(documentId);
 
+                    // parse business info
+                    mapper.parseBussinessInfo(messageHeader, traceHeaderList);
+
                     headerEntity.setMessageHeader(messageHeader);
                     headerEntity.setTraceHeaderList(traceHeaderList);
                     envelopeByEntity.setHeader(headerEntity);

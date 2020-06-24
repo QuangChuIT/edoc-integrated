@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.bkav.edoc.service.entity.edxml;
 
@@ -10,13 +10,13 @@ import java.util.List;
  * @author quangcv
  *
  */
-public class Business {
+public class Bussiness {
 	private String documentId;
-	
-	private long businessDocType;
-	
-	private String businessDocReason;
-	
+
+	private long bussinessDocType;
+
+	private String bussinessDocReason;
+
 	private long paper;
 
 	private StaffInfo staffInfo;
@@ -49,16 +49,16 @@ public class Business {
 		this.staffInfo = staffInfo;
 	}
 
-	public Business(String documentId, long businessDocType,
-					String businessDocReason, long paper) {
+	public Bussiness(String documentId, long bussinessDocType,
+					 String bussinessDocReason, long paper) {
 		this.documentId = documentId;
-		this.businessDocType = businessDocType;
-		this.businessDocReason = businessDocReason;
+		this.bussinessDocType = bussinessDocType;
+		this.bussinessDocReason = bussinessDocReason;
 		this.paper = paper;
 	}
 
-	public Business() {
-	
+	public Bussiness() {
+
 	}
 
 	/**
@@ -76,31 +76,31 @@ public class Business {
 	}
 
 	/**
-	 * @return the businessDocType
+	 * @return the bussinessDocType
 	 */
-	public long getBusinessDocType() {
-		return businessDocType;
+	public long getBussinessDocType() {
+		return bussinessDocType;
 	}
 
 	/**
-	 * @param businessDocType the businessDocType to set
+	 * @param bussinessDocType the bussinessDocType to set
 	 */
-	public void setBusinessDocType(long businessDocType) {
-		this.businessDocType = businessDocType;
+	public void setBussinessDocType(long bussinessDocType) {
+		this.bussinessDocType = bussinessDocType;
 	}
 
 	/**
-	 * @return the businessDocReason
+	 * @return the bussinessDocReason
 	 */
-	public String getBusinessDocReason() {
-		return businessDocReason;
+	public String getBussinessDocReason() {
+		return bussinessDocReason;
 	}
 
 	/**
-	 * @param businessDocReason the businessDocReason to set
+	 * @param bussinessDocReason the bussinessDocReason to set
 	 */
-	public void setBusinessDocReason(String businessDocReason) {
-		this.businessDocReason = businessDocReason;
+	public void setBussinessDocReason(String bussinessDocReason) {
+		this.bussinessDocReason = bussinessDocReason;
 	}
 
 	/**
@@ -116,6 +116,6 @@ public class Business {
 	public void setPaper(long paper) {
 		this.paper = paper;
 	}
-	
-	
+
+
 }

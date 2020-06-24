@@ -95,17 +95,17 @@ public class MessageHeader {
     @XmlElement(name = "DocumentId", required = true)
     protected String documentId;
     @XmlElement(name = "ResponseFor", required = false)
-    protected List<ResponseFor> responseFor;
+    protected List<ResponseFor> responseFors;
 
-    public List<ResponseFor> getResponseFor() {
-        if (responseFor == null) {
-            responseFor = new ArrayList<ResponseFor>();
+    public List<ResponseFor> getResponseFors() {
+        if (responseFors == null) {
+            responseFors = new ArrayList<ResponseFor>();
         }
-        return this.responseFor;
+        return this.responseFors;
     }
 
-    public void setResponseFor(List<ResponseFor> responseFor) {
-        this.responseFor = responseFor;
+    public void setResponseFors(List<ResponseFor> responseFors) {
+        this.responseFors = responseFors;
     }
 
     /**

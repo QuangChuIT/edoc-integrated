@@ -6,6 +6,7 @@ package com.bkav.edoc.service.mineutil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -14,10 +15,15 @@ import com.bkav.edoc.service.database.services.EdocDynamicContactService;
 import com.bkav.edoc.service.entity.edxml.*;
 import com.bkav.edoc.service.resource.StringPool;
 import com.bkav.edoc.service.util.AttachmentGlobalUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import org.json.JSONObject;
 
 public class Mapper {
 
 	private static EdocDynamicContactService dynamicContactService = new EdocDynamicContactService();
+
+	private Gson gson = new Gson();
 
 	public Mapper() {
 
@@ -187,6 +193,29 @@ public class Mapper {
 		attachmentEntity.setContentType(attachment.getType());
 
 		return attachmentEntity;
+	}
+
+	public void parseBussinessInfo(MessageHeader messageHeader, TraceHeaderList traceHeaderList) {
+		String bussinessInfo = traceHeaderList.getBussinessInfo();
+		if(bussinessInfo == null || bussinessInfo.isEmpty()) return;
+		// check bussiness doc type
+		if(traceHeaderList.getBussiness().getBussinessDocType() == EdocTraceHeaderList.BussinessDocType.REVOKE.ordinal()) {
+			// when revoke document, get response for to set into header
+			Type responseForListType = new TypeToken<ArrayList<ResponseFor>>(){}.getType();
+			ArrayList<ResponseFor> responseForArray = gson.fromJson(bussinessInfo, responseForListType);
+			messageHeader.setResponseFors(responseForArray);
+		}
+		else if(traceHeaderList.getBussiness().getBussinessDocType() == EdocTraceHeaderList.BussinessDocType.REPLACE.ordinal()) {
+			// when replace document, get replacement info set to trace header list
+			Type replacementInfoListType = new TypeToken<ArrayList<ReplacementInfo>>(){}.getType();
+			ArrayList<ReplacementInfo> replacementInfoArray = gson.fromJson(bussinessInfo, replacementInfoListType);
+			traceHeaderList.getBussiness().setReplacementInfoList(replacementInfoArray);
+		}
+		else if(traceHeaderList.getBussiness().getBussinessDocType() == EdocTraceHeaderList.BussinessDocType.UPDATE.ordinal()) {
+			// when update document, get bussiness document info set to trace header list
+			BussinessDocumentInfo bussinessDocumentInfo = gson.fromJson(bussinessInfo, BussinessDocumentInfo.class);
+			traceHeaderList.getBussiness().setBussinessDocumentInfo(bussinessDocumentInfo);
+		}
 	}
 
 	public List<Status> traceInfoToStatusEntity(List<EdocTrace> traces) {
