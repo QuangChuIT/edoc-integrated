@@ -618,6 +618,8 @@ public class XmlUtil {
                 organIdListNode.addChild(organIdNode);
             }
             replacementInfoNode.addChild(organIdListNode);
+
+            replacementInfoListNode.addChild(replacementInfoNode);
         }
 
         return replacementInfoListNode;
@@ -1785,8 +1787,11 @@ public class XmlUtil {
             OMElement responseDate = factoryOM.createOMElement("DueDate", ns);
 //            String dateStr = currentHeader.getResponseDate();
             String dateStr = currentHeader.getDueDate();
-            responseDate.setText(dateStr.isEmpty() ? StringPool.DEFAULT_DATE
-                    : dateStr);
+            if(dateStr == null || dateStr.isEmpty()) {
+                responseDate.setText("");
+            } else {
+                responseDate.setText(dateStr);
+            }
             nodes.add(responseDate);
         }
 

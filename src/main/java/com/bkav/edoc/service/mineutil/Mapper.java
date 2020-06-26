@@ -115,9 +115,10 @@ public class Mapper {
 //		author.setFunction(detail.getAuthorFunction().isEmpty() ? StringPool.DEFAULT_STRING
 //				: detail.getAuthorFunction());
 //		messageHeader.setAuthor(author);
-
-		messageHeader.setDueDate(dateFormat.format(detail
-				.getDueDate()));
+		if(detail.getDueDate() != null) {
+			messageHeader.setDueDate(dateFormat.format(detail
+					.getDueDate()));
+		}
 
 		String[] placeStrs = detail.getToPlaces().split("#");
 		List<String> places = new ArrayList<String>();

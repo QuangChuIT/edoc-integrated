@@ -20,4 +20,5 @@ public class EdXmlConstant {
     public static final String GET_PENDING_DOCUMENT = "GetPendingDocumentIdsRequest";
     public static final String GET_DOCUMENT = "GetDocumentRequest";
     public static final String GET_TRACE = "GetTraces";
+    public static final String CONFIRM_RECEIVED_REQUEST = "ConfirmReceived";
 }

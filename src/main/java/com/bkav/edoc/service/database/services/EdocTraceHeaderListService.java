@@ -64,6 +64,7 @@ public class EdocTraceHeaderListService {
                     traceHeader.setOrganDomain(trace.getOrganId());
                     traceHeader.setTimeStamp(trace.getTimeStamp());
                     traceHeader.setTraceHeaderList(edocTraceHeaderList);
+                    traceHeaderDaoImpl.setCurrentSession(currentSession);
                     traceHeaderDaoImpl.persist(traceHeader);
                 }
             }

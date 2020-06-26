@@ -95,6 +95,8 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 case "GetTraces":
                     map = getTraces(doc);
                     break;
+                case "ConfirmReceived":
+                    map = confirmReceived(doc);
                 default:
                     log.error("Soap action not define !!!!!!!");
             }
@@ -171,6 +173,48 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
             map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
         }
+        return map;
+    }
+
+    private Map<String, Object> confirmReceived(Document envelop) {
+        Map<String, Object> map = new HashMap<>();
+
+        Report report = null;
+
+        List<Error> errorList = new ArrayList<>();
+
+        Document bodyChildDocument;
+
+        try {
+            String organId = extractMime.getOrganId(envelop, EdXmlConstant.CONFIRM_RECEIVED_REQUEST);
+            if (organId == null || organId.isEmpty()) {
+                errorList.add(new Error("M.OrganId", "OrganId is required."));
+            }
+
+            long documentId = xmlUtil.getDocumentId(envelop);
+            if (documentId == 0) {
+                errorList.add(new Error("M.DocumentId", "DocumentId is required."));
+            }
+
+            if(errorList.isEmpty()) {
+                // remove pending document
+                this.removePendingDocumentId(organId, documentId);
+            }
+        } catch (Exception e) {
+            log.error("Error when confirm received " + e.getMessage());
+            errorList.add(new Error("M.ConfirmReceived", "Error when process confirm received " + e.getMessage()));
+        }
+
+        if(!errorList.isEmpty()) {
+            report = new Report(false, new ErrorList(errorList));
+        }
+        else  {
+            report = new Report(true, new ErrorList(errorList));
+        }
+
+        bodyChildDocument = xmlUtil.convertEntityToDocument(
+                Report.class, report);
+        map.put(StringPool.CHILD_BODY_KEY, bodyChildDocument);
         return map;
     }
 
@@ -323,9 +367,6 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     map = archiveMime.createMime(envelopeByEntity,
                             attachmentsByEntity, attachmentObj);
                 }
-
-                // remove pending document
-                this.removePendingDocumentId(organId, documentId);
             } catch (Exception e) {
                 log.error("Error when update traces " + e.getMessage());
                 errorList.add(new Error("M.GetDocument", "Error when process get document " + e.getMessage()));

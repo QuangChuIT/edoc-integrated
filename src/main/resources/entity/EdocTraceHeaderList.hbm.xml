@@ -27,7 +27,7 @@
         <set name="traceHeaders" table="edoc_trace_header"
              inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="TRACE_ID"/>
+                <column name="document_id"/>
             </key>
             <one-to-many class="com.bkav.edoc.service.database.entity.EdocTraceHeader" />
         </set>

@@ -38,6 +38,7 @@ public class HibernateUtil {
             configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocPriority.hbm.xml"));
             configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocAttachment.hbm.xml"));
             configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocDynamicContact.hbm.xml"));
+            configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocTraceHeader.hbm.xml"));
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
             return configuration.buildSessionFactory(serviceRegistry);
         }

@@ -150,7 +150,7 @@ public class ArchiveMime {
                     String contentId = RandomUtil.randomId();
 
                     String contentType = MimeTypesUtil
-                            .getContentType(attachment.getName());
+                            .getMimeType(attachment.getName());
 
                     // TODO: Replace by CommonIO
                     // String base64String = new

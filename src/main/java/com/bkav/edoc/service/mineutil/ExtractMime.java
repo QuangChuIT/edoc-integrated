@@ -223,14 +223,14 @@ public class ExtractMime {
     public ResponseFor getResponseForMessageHeader(Element responseForNode) {
         ResponseFor responseFor = new ResponseFor();
 
-        responseFor.setCode(responseForNode.getChildText("Code"));
+        responseFor.setCode(responseForNode.getChildText("Code", EdXmlConstant.EDXML_NS));
 
-        responseFor.setOrganId(responseForNode.getChildText("OrganId"));
+        responseFor.setOrganId(responseForNode.getChildText("OrganId", EdXmlConstant.EDXML_NS));
 
         responseFor.setPromulgationDate(responseForNode
-                .getChildText("PromulgationDate"));
+                .getChildText("PromulgationDate", EdXmlConstant.EDXML_NS));
 
-        responseFor.setDocumentId(responseForNode.getChildText("DocumentId"));
+        responseFor.setDocumentId(responseForNode.getChildText("DocumentId", EdXmlConstant.EDXML_NS));
 
         return responseFor;
     }
@@ -268,6 +268,20 @@ public class ExtractMime {
         staffInfo.setEmail(staffInfoNode.getChildText("Email"));
 
         staffInfo.setMobile(staffInfoNode.getChildText("Mobile"));
+        return staffInfo;
+    }
+
+    public StaffInfo getBussinessStaffInfo(Element bussinessNode) throws Exception {
+        StaffInfo staffInfo = new StaffInfo();
+
+        Element staffInfoNode = getSingerElement(bussinessNode,"StaffInfo", EdXmlConstant.EDXML_NS);
+        staffInfo.setDepartment(staffInfoNode.getChildText("Department", EdXmlConstant.EDXML_NS));
+
+        staffInfo.setStaff(staffInfoNode.getChildText("Staff", EdXmlConstant.EDXML_NS));
+
+        staffInfo.setEmail(staffInfoNode.getChildText("Email", EdXmlConstant.EDXML_NS));
+
+        staffInfo.setMobile(staffInfoNode.getChildText("Mobile", EdXmlConstant.EDXML_NS));
         return staffInfo;
     }
 
@@ -804,7 +818,7 @@ public class ExtractMime {
         bussiness.setDocumentId(bussinessInfoNode.getChildText("DocumentId", EdXmlConstant.EDXML_NS));
 
         // get staff info
-        StaffInfo staffInfo = getStaffInfo(bussinessInfoNode);
+        StaffInfo staffInfo = getBussinessStaffInfo(bussinessInfoNode);
         bussiness.setStaffInfo(staffInfo);
 
         // get replacement info
@@ -819,7 +833,7 @@ public class ExtractMime {
     }
 
     public BussinessDocumentInfo getBussinessDocumentInfo(Element bussinessNode) throws Exception {
-        Element bussinessDocumentInfoNode = bussinessNode.getChild("BussinessDocumentInfo");
+        Element bussinessDocumentInfoNode = getSingerElement(bussinessNode,"BussinessDocumentInfo", EdXmlConstant.EDXML_NS);
         if(bussinessDocumentInfoNode == null) return null;
 
         // todo
@@ -855,7 +869,7 @@ public class ExtractMime {
      * @throws Exception
      */
     public List<ReplacementInfo> getReplacementInfos(Element bussinessNode) throws Exception {
-        Element replacementInfoListNode = bussinessNode.getChild("ReplacementInfoList");
+        Element replacementInfoListNode = getSingerElement(bussinessNode,"ReplacementInfoList", EdXmlConstant.EDXML_NS);
         if (replacementInfoListNode == null) return null;
 
         List<ReplacementInfo> replacementInfos = new ArrayList<ReplacementInfo>();
@@ -873,7 +887,7 @@ public class ExtractMime {
     public ReplacementInfo getReplacementInfo(Element replacementInfoNode) {
         ReplacementInfo replacementInfo = new ReplacementInfo();
 
-        replacementInfo.setDocumentId(replacementInfoNode.getChildText("DocumentId"));
+        replacementInfo.setDocumentId(replacementInfoNode.getChildText("DocumentId", EdXmlConstant.EDXML_NS));
 
         List<String> organIdList = new ArrayList<>();
 

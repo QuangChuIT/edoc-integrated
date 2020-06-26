@@ -14,9 +14,13 @@
 
 package com.bkav.edoc.service.kernel.util;
 
+import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
 import java.io.InputStream;
 
+import java.net.FileNameMap;
+import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.Set;
 
 /**
@@ -82,6 +86,12 @@ public class MimeTypesUtil {
 	 */
 	public static String getContentType(String fileName) {
 		return getMimeTypes().getContentType(fileName);
+	}
+
+	public static String getMimeType(String fileUrl) throws java.io.IOException
+	{
+		MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
+		return mimeTypesMap.getContentType(fileUrl);
 	}
 
 	/**
