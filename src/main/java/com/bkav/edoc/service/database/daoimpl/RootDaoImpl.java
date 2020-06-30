@@ -23,7 +23,7 @@ public abstract class RootDaoImpl<T, Id extends Serializable> implements RootDao
         return currentSession;
     }
 
-    public Session openCurrentSessionwithTransaction() {
+    public Session openCurrentSessionWithTransaction() {
         currentSession = getSessionFactory().openSession();
         currentTransaction = currentSession.beginTransaction();
         return currentSession;
@@ -33,7 +33,7 @@ public abstract class RootDaoImpl<T, Id extends Serializable> implements RootDao
         currentSession.close();
     }
 
-    public void closeCurrentSessionwithTransaction() {
+    public void closeCurrentSessionWithTransaction() {
         currentTransaction.commit();
         currentSession.close();
     }

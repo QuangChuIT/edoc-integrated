@@ -725,8 +725,8 @@ public class XmlUtil {
             try {
                 documentId = Long.parseLong(strData);
             } catch (Exception ex) {
-                _log.error(ex);
-                documentId = 0l;
+                _log.error("Error when parse documentId String to long cause: " + ex.getMessage());
+                documentId = 0L;
             }
         }
         return documentId;
@@ -745,7 +745,7 @@ public class XmlUtil {
                 codeNumber = Long.parseLong(strData);
             } catch (Exception ex) {
                 _log.error(ex);
-                codeNumber = 0l;
+                codeNumber = 0L;
             }
         }
         return codeNumber;
@@ -896,7 +896,7 @@ public class XmlUtil {
      * @throws NumberFormatException
      * @throws XMLStreamException
      */
-    public long getDocumntId(XMLStreamReader reader)
+    public long getDocumentId(XMLStreamReader reader)
             throws NumberFormatException, XMLStreamException {
         if (reader == null)
             return 0L;

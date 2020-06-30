@@ -120,8 +120,6 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
 
         Document responseDocument = null;
 
-        Status status = null;
-
         List<Error> errorList = new ArrayList<>();
 
         List<EdocTrace> traces = null;
