@@ -81,8 +81,6 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 case "SendDocument":
                     map = sendDocument(doc, inMessageContext);
                     break;
-                case "GetListDocument":
-                    break;
                 case "GetPendingDocumentIds":
                     map = getPendingDocumentIds(doc, inMessageContext);
                     break;
@@ -194,7 +192,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                 errorList.add(new Error("M.DocumentId", "DocumentId is required."));
             }
 
-            if(errorList.isEmpty()) {
+            if (errorList.isEmpty()) {
                 // remove pending document
                 this.removePendingDocumentId(organId, documentId);
             }
@@ -203,10 +201,9 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
             errorList.add(new Error("M.ConfirmReceived", "Error when process confirm received " + e.getMessage()));
         }
 
-        if(!errorList.isEmpty()) {
+        if (!errorList.isEmpty()) {
             report = new Report(false, new ErrorList(errorList));
-        }
-        else  {
+        } else {
             report = new Report(true, new ErrorList(errorList));
         }
 

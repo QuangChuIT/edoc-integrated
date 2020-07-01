@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.bkav.edoc.service.entity.edxml;
 
@@ -10,35 +10,35 @@ import java.util.List;
  *
  */
 public class StatusList {
-	private List<Status> status;
+    private List<Status> status;
 
-	/**
-	 * @param traces
-	 */
-	public StatusList(List<Status> status) {
-		this.status = status;
-	}
+    /**
+     * @param status
+     */
+    public StatusList(List<Status> status) {
+        this.status = status;
+    }
 
-	/**
-	 * 
-	 */
-	public StatusList() {
-		super();
-	}
+    /**
+     *
+     */
+    public StatusList() {
+        super();
+    }
 
-	/**
-	 * @return the status
-	 */
-	public List<Status> getStatus() {
-		return status;
-	}
+    /**
+     * @return the status
+     */
+    public List<Status> getStatus() {
+        return status;
+    }
 
-	/**
-	 * @param status
-	 *            the status to set
-	 */
-	public void setStatus(List<Status> status) {
-		this.status = status;
-	}
+    /**
+     * @param status
+     *            the status to set
+     */
+    public void setStatus(List<Status> status) {
+        this.status = status;
+    }
 
 }

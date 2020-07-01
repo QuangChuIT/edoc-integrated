@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for Header complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Header">
  *   &lt;complexContent>
@@ -32,14 +32,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Header", propOrder = {
-    "messageHeader",
-    "traceHeaderList",
-    "errorList"
+        "messageHeader",
+        "traceHeaderList",
+        "errorList"
 })
 public class Header {
 
@@ -52,11 +50,9 @@ public class Header {
 
     /**
      * Gets the value of the messageHeader property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link MessageHeader }
-     *     
+     *
+     * @return possible object is
+     * {@link MessageHeader }
      */
     public MessageHeader getMessageHeader() {
         return messageHeader;
@@ -64,11 +60,9 @@ public class Header {
 
     /**
      * Sets the value of the messageHeader property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link MessageHeader }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link MessageHeader }
      */
     public void setMessageHeader(MessageHeader value) {
         this.messageHeader = value;
@@ -76,11 +70,9 @@ public class Header {
 
     /**
      * Gets the value of the traceHeaderList property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TraceHeaderList }
-     *     
+     *
+     * @return possible object is
+     * {@link TraceHeaderList }
      */
     public TraceHeaderList getTraceHeaderList() {
         return traceHeaderList;
@@ -88,11 +80,9 @@ public class Header {
 
     /**
      * Sets the value of the traceHeaderList property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TraceHeaderList }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link TraceHeaderList }
      */
     public void setTraceHeaderList(TraceHeaderList value) {
         this.traceHeaderList = value;
@@ -100,11 +90,9 @@ public class Header {
 
     /**
      * Gets the value of the errorList property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ErrorList }
-     *     
+     *
+     * @return possible object is
+     * {@link ErrorList }
      */
     public ErrorList getErrorList() {
         return errorList;
@@ -112,11 +100,9 @@ public class Header {
 
     /**
      * Sets the value of the errorList property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ErrorList }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ErrorList }
      */
     public void setErrorList(ErrorList value) {
         this.errorList = value;

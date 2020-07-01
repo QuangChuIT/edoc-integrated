@@ -48,10 +48,10 @@ public class EdocDocumentDaoImpl extends RootDaoImpl<EdocDocument, Long> impleme
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ed FROM EdocDocument ed where ed.fromOrganDomain = :fromOrganDomain and concat(ed.codeNumber, '/', ed.codeNotation) = :code");
         Query query = currentSession.createQuery(sql.toString());
-        query.setString("fromOrganDomain",toOrganDomain);
+        query.setString("fromOrganDomain", toOrganDomain);
         query.setString("code", code);
         List<EdocDocument> result = query.list();
-        if(result != null && result.size() > 0) {
+        if (result != null && result.size() > 0) {
             return result.get(0);
         }
         return null;

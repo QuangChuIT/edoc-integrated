@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for Author complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Author">
  *   &lt;complexContent>
@@ -32,14 +32,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Author", propOrder = {
-    "competence",
-    "function",
-    "fullName"
+        "competence",
+        "function",
+        "fullName"
 })
 public class Author {
 
@@ -52,11 +50,9 @@ public class Author {
 
     /**
      * Gets the value of the competence property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getCompetence() {
         return competence;
@@ -64,11 +60,9 @@ public class Author {
 
     /**
      * Sets the value of the competence property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setCompetence(String value) {
         this.competence = value;
@@ -76,11 +70,9 @@ public class Author {
 
     /**
      * Gets the value of the function property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getFunction() {
         return function;
@@ -88,11 +80,9 @@ public class Author {
 
     /**
      * Sets the value of the function property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setFunction(String value) {
         this.function = value;
@@ -100,11 +90,9 @@ public class Author {
 
     /**
      * Gets the value of the fullName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getFullName() {
         return fullName;
@@ -112,11 +100,9 @@ public class Author {
 
     /**
      * Sets the value of the fullName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setFullName(String value) {
         this.fullName = value;

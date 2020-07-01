@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -30,171 +30,170 @@ import java.util.Set;
  */
 public class ObjectGraphUtil {
 
-	public static void walkObjectGraph(Object object, Visitor visitor) {
-		Queue<Object> queue = new LinkedList<>();
+    public static void walkObjectGraph(Object object, Visitor visitor) {
+        Queue<Object> queue = new LinkedList<>();
 
-		queue.offer(object);
+        queue.offer(object);
 
-		Set<Object> visitedObjects = Collections.newSetFromMap(
-			new IdentityHashMap<>());
+        Set<Object> visitedObjects = Collections.newSetFromMap(
+                new IdentityHashMap<>());
 
-		while ((object = queue.poll()) != null) {
-			if (!visitedObjects.add(object)) {
-				continue;
-			}
+        while ((object = queue.poll()) != null) {
+            if (!visitedObjects.add(object)) {
+                continue;
+            }
 
-			Class<?> clazz = object.getClass();
+            Class<?> clazz = object.getClass();
 
-			if (clazz.isArray()) {
-				clazz = clazz.getComponentType();
+            if (clazz.isArray()) {
+                clazz = clazz.getComponentType();
 
-				if (clazz.isPrimitive()) {
-					continue;
-				}
+                if (clazz.isPrimitive()) {
+                    continue;
+                }
 
-				for (int i = 0; i < Array.getLength(object); i++) {
-					Object element = Array.get(object, i);
+                for (int i = 0; i < Array.getLength(object); i++) {
+                    Object element = Array.get(object, i);
 
-					if (element != null) {
-						queue.offer(element);
-					}
-				}
+                    if (element != null) {
+                        queue.offer(element);
+                    }
+                }
 
-				continue;
-			}
+                continue;
+            }
 
-			while (clazz != null) {
-				for (Field field : clazz.getDeclaredFields()) {
-					if (Modifier.isStatic(field.getModifiers())) {
-						continue;
-					}
+            while (clazz != null) {
+                for (Field field : clazz.getDeclaredFields()) {
+                    if (Modifier.isStatic(field.getModifiers())) {
+                        continue;
+                    }
 
-					field.setAccessible(true);
+                    field.setAccessible(true);
 
-					try {
-						Object value = visitor.visit(field, object);
+                    try {
+                        Object value = visitor.visit(field, object);
 
-						Class<?> type = field.getType();
+                        Class<?> type = field.getType();
 
-						if ((value != null) && !type.isPrimitive()) {
-							queue.offer(value);
-						}
-					}
-					catch (Exception exception) {
-						ReflectionUtil.throwException(exception);
-					}
-				}
+                        if ((value != null) && !type.isPrimitive()) {
+                            queue.offer(value);
+                        }
+                    } catch (Exception exception) {
+                        ReflectionUtil.throwException(exception);
+                    }
+                }
 
-				clazz = clazz.getSuperclass();
-			}
-		}
-	}
+                clazz = clazz.getSuperclass();
+            }
+        }
+    }
 
-	public abstract static class AnnotatedFieldMappingVisitor
-		implements Visitor {
+    public abstract static class AnnotatedFieldMappingVisitor
+            implements Visitor {
 
-		public AnnotatedFieldMappingVisitor(
-			Set<Class<?>> linkedClasses,
-			Set<Class<? extends Annotation>> annotationClasses,
-			Set<Class<?>> fieldTypeClasses) {
+        public AnnotatedFieldMappingVisitor(
+                Set<Class<?>> linkedClasses,
+                Set<Class<? extends Annotation>> annotationClasses,
+                Set<Class<?>> fieldTypeClasses) {
 
-			_linkedClasses = linkedClasses;
-			_annotationClasses = annotationClasses;
-			_fieldTypeClasses = fieldTypeClasses;
-		}
+            _linkedClasses = linkedClasses;
+            _annotationClasses = annotationClasses;
+            _fieldTypeClasses = fieldTypeClasses;
+        }
 
-		@Override
-		public Object visit(Field field, Object target) throws Exception {
-			Object value = field.get(target);
+        @Override
+        public Object visit(Field field, Object target) throws Exception {
+            Object value = field.get(target);
 
-			if ((value == null) || !isLinkedClass(field.getDeclaringClass())) {
-				return null;
-			}
+            if ((value == null) || !isLinkedClass(field.getDeclaringClass())) {
+                return null;
+            }
 
-			if (!hasAnnotation(field.getAnnotations()) ||
-				!isFieldTypeClass(field.getType())) {
+            if (!hasAnnotation(field.getAnnotations()) ||
+                    !isFieldTypeClass(field.getType())) {
 
-				return value;
-			}
+                return value;
+            }
 
-			field = ReflectionUtil.unfinalField(field);
+            field = ReflectionUtil.unfinalField(field);
 
-			field.set(target, mapValue(field, value));
+            field.set(target, mapValue(field, value));
 
-			return null;
-		}
+            return null;
+        }
 
-		protected abstract Object doMap(Field field, Object value);
+        protected abstract Object doMap(Field field, Object value);
 
-		protected boolean hasAnnotation(Annotation[] annotations) {
-			for (Annotation annotation : annotations) {
-				for (Class<? extends Annotation> annotationClass :
-						_annotationClasses) {
+        protected boolean hasAnnotation(Annotation[] annotations) {
+            for (Annotation annotation : annotations) {
+                for (Class<? extends Annotation> annotationClass :
+                        _annotationClasses) {
 
-					if (annotationClass.isInstance(annotation)) {
-						return true;
-					}
-				}
-			}
+                    if (annotationClass.isInstance(annotation)) {
+                        return true;
+                    }
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		protected boolean isFieldTypeClass(Class<?> clazz) {
-			Class<?> componentType = clazz;
-			Class<?> currentComponentType = clazz.getComponentType();
+        protected boolean isFieldTypeClass(Class<?> clazz) {
+            Class<?> componentType = clazz;
+            Class<?> currentComponentType = clazz.getComponentType();
 
-			while (currentComponentType != null) {
-				componentType = currentComponentType;
+            while (currentComponentType != null) {
+                componentType = currentComponentType;
 
-				currentComponentType = currentComponentType.getComponentType();
-			}
+                currentComponentType = currentComponentType.getComponentType();
+            }
 
-			for (Class<?> fieldTypeClass : _fieldTypeClasses) {
-				if (fieldTypeClass.isAssignableFrom(componentType)) {
-					return true;
-				}
-			}
+            for (Class<?> fieldTypeClass : _fieldTypeClasses) {
+                if (fieldTypeClass.isAssignableFrom(componentType)) {
+                    return true;
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		protected boolean isLinkedClass(Class<?> clazz) {
-			for (Class<?> linkedClass : _linkedClasses) {
-				if (linkedClass.isAssignableFrom(clazz)) {
-					return true;
-				}
-			}
+        protected boolean isLinkedClass(Class<?> clazz) {
+            for (Class<?> linkedClass : _linkedClasses) {
+                if (linkedClass.isAssignableFrom(clazz)) {
+                    return true;
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		protected Object mapValue(Field field, Object value) {
-			for (Class<?> fieldTypeClass : _fieldTypeClasses) {
-				if (fieldTypeClass.isInstance(value)) {
-					return doMap(field, value);
-				}
-			}
+        protected Object mapValue(Field field, Object value) {
+            for (Class<?> fieldTypeClass : _fieldTypeClasses) {
+                if (fieldTypeClass.isInstance(value)) {
+                    return doMap(field, value);
+                }
+            }
 
-			value = ReflectionUtil.arrayClone(value);
+            value = ReflectionUtil.arrayClone(value);
 
-			for (int i = 0; i < Array.getLength(value); i++) {
-				Array.set(value, i, mapValue(field, Array.get(value, i)));
-			}
+            for (int i = 0; i < Array.getLength(value); i++) {
+                Array.set(value, i, mapValue(field, Array.get(value, i)));
+            }
 
-			return value;
-		}
+            return value;
+        }
 
-		private final Set<Class<? extends Annotation>> _annotationClasses;
-		private final Set<Class<?>> _fieldTypeClasses;
-		private final Set<Class<?>> _linkedClasses;
+        private final Set<Class<? extends Annotation>> _annotationClasses;
+        private final Set<Class<?>> _fieldTypeClasses;
+        private final Set<Class<?>> _linkedClasses;
 
-	}
+    }
 
-	public interface Visitor {
+    public interface Visitor {
 
-		public Object visit(Field field, Object target) throws Exception;
+        public Object visit(Field field, Object target) throws Exception;
 
-	}
+    }
 
 }

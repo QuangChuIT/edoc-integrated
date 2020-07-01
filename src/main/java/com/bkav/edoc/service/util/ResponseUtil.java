@@ -190,7 +190,7 @@ public class ResponseUtil {
 
     public GetPendingDocumentIDResponse createGetPendingDocumentIDResponse(
             List<Long> documentIds) {
-		return new GetPendingDocumentIDResponse(documentIds);
+        return new GetPendingDocumentIDResponse(documentIds);
     }
 
     public GetTraceResponse createGetTraceResponse(List<Status> statuses) {

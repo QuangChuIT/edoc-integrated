@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -29,65 +29,64 @@ import java.util.Objects;
  */
 public class PathHolder implements Serializable {
 
-	public PathHolder(Path path) {
-		this(path.toString());
-	}
+    public PathHolder(Path path) {
+        this(path.toString());
+    }
 
-	public PathHolder(String pathString) {
-		_pathString = pathString;
-	}
+    public PathHolder(String pathString) {
+        _pathString = pathString;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
 
-		if (!(obj instanceof PathHolder)) {
-			return false;
-		}
+        if (!(obj instanceof PathHolder)) {
+            return false;
+        }
 
-		PathHolder pathHolder = (PathHolder)obj;
+        PathHolder pathHolder = (PathHolder) obj;
 
-		if (Objects.equals(toString(), pathHolder.toString())) {
-			return true;
-		}
+        if (Objects.equals(toString(), pathHolder.toString())) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public Path getPath() {
-		return Paths.get(toString());
-	}
+    public Path getPath() {
+        return Paths.get(toString());
+    }
 
-	@Override
-	public int hashCode() {
-		String toString = toString();
+    @Override
+    public int hashCode() {
+        String toString = toString();
 
-		return toString.hashCode();
-	}
+        return toString.hashCode();
+    }
 
-	@Override
-	public String toString() {
-		if (_toString != null) {
-			return _toString;
-		}
+    @Override
+    public String toString() {
+        if (_toString != null) {
+            return _toString;
+        }
 
-		if (_separatorChar == File.separatorChar) {
-			_toString = _pathString;
-		}
-		else {
-			_toString = StringUtil.replace(
-				_pathString, _separatorChar, File.separatorChar);
-		}
+        if (_separatorChar == File.separatorChar) {
+            _toString = _pathString;
+        } else {
+            _toString = StringUtil.replace(
+                    _pathString, _separatorChar, File.separatorChar);
+        }
 
-		return _toString;
-	}
+        return _toString;
+    }
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String _pathString;
-	private final char _separatorChar = File.separatorChar;
-	private transient String _toString;
+    private final String _pathString;
+    private final char _separatorChar = File.separatorChar;
+    private transient String _toString;
 
 }

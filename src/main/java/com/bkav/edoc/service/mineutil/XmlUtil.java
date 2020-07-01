@@ -73,11 +73,11 @@ import com.bkav.edoc.service.commonutil.ErrorCommonUtil;
 import com.bkav.edoc.service.resource.EdXmlConstant;
 import com.bkav.edoc.service.resource.StringPool;
 
-
 public class XmlUtil {
 
-    private static ExtractMime extractMine = new ExtractMime();
-    private XpathUtil xpathUtil = new XpathUtil();
+    private static final ExtractMime extractMine = new ExtractMime();
+    private static final XpathUtil xpathUtil = new XpathUtil();
+
     /**
      * @param cls
      * @param obj
@@ -152,28 +152,28 @@ public class XmlUtil {
     public Document convertToDocument(SOAPEnvelope envelope) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
-		return getDocument(envelope, factory);
-	}
+        return getDocument(envelope, factory);
+    }
 
-	private Document getDocument(SOAPEnvelope envelope, DocumentBuilderFactory factory) {
-		try {
-			String str = envelope.toString();
-			InputStream is = new ByteArrayInputStream(str.getBytes("UTF8"));
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(is);
-			is.close();
-			return doc;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
-		}
-	}
+    private Document getDocument(SOAPEnvelope envelope, DocumentBuilderFactory factory) {
+        try {
+            String str = envelope.toString();
+            InputStream is = new ByteArrayInputStream(str.getBytes("UTF8"));
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(is);
+            is.close();
+            return doc;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
-	public Document convertToDocument(SOAPEnvelope envelope, boolean awareNS) {
+    public Document convertToDocument(SOAPEnvelope envelope, boolean awareNS) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(awareNS);
-		return getDocument(envelope, factory);
-	}
+        return getDocument(envelope, factory);
+    }
 
     public static SOAPEnvelope getFromDocument(Document envelopeDoc)
             throws Exception {
@@ -587,11 +587,10 @@ public class XmlUtil {
         businessNode.addChild(staffInfoNode);
 
         // replacement info list
-        if(business.getBusinessDocType() == EdocTraceHeaderList.BusinessDocType.REPLACE.ordinal()) {
+        if (business.getBusinessDocType() == EdocTraceHeaderList.BusinessDocType.REPLACE.ordinal()) {
             OMElement replacementInfoListNode = getReplacementInfoListNode(business.getReplacementInfoList(), ns);
             businessNode.addChild(replacementInfoListNode);
-        }
-        else if(business.getBusinessDocType() == EdocTraceHeaderList.BusinessDocType.UPDATE.ordinal()) {
+        } else if (business.getBusinessDocType() == EdocTraceHeaderList.BusinessDocType.UPDATE.ordinal()) {
             OMElement businessDocumentInfoNode = getBusinessDocumentInfoNode(business.getBusinessDocumentInfo(), ns);
             businessNode.addChild(businessDocumentInfoNode);
         }
@@ -604,7 +603,7 @@ public class XmlUtil {
 
         OMElement replacementInfoListNode = factoryOM.createOMElement("ReplacementInfoList", ns);
 
-        for(ReplacementInfo replacementInfo: replacementInfoList) {
+        for (ReplacementInfo replacementInfo : replacementInfoList) {
             OMElement replacementInfoNode = factoryOM.createOMElement("ReplacementInfo", ns);
 
             OMElement documentIdNode = factoryOM.createOMElement("DocumentId", ns);
@@ -612,7 +611,7 @@ public class XmlUtil {
             replacementInfoNode.addChild(documentIdNode);
 
             OMElement organIdListNode = factoryOM.createOMElement("OrganIdList", ns);
-            for(String organId: replacementInfo.getOrganIdList()) {
+            for (String organId : replacementInfo.getOrganIdList()) {
                 OMElement organIdNode = factoryOM.createOMElement("OrganId", ns);
                 organIdNode.setText(organId);
                 organIdListNode.addChild(organIdNode);
@@ -639,7 +638,7 @@ public class XmlUtil {
         businessDocumentInfoNode.addChild(documentReceiverNode);
 
         OMElement receiverListNode = factoryOM.createOMElement("ReceiverList", ns);
-        for(Receiver receiver: businessDocumentInfo.getReceiverList()) {
+        for (Receiver receiver : businessDocumentInfo.getReceiverList()) {
             OMElement receiverNode = factoryOM.createOMElement("Receiver", ns);
 
             OMElement receiverTypeNode = factoryOM.createOMElement("ReceiverType", ns);
@@ -1555,7 +1554,7 @@ public class XmlUtil {
             List<To> tos = currentHeader.getTo();
             String strDueDate = currentHeader.getDueDate();
             boolean isCreateDueDate = false;
-            if(strDueDate != null && !strDueDate.isEmpty()){
+            if (strDueDate != null && !strDueDate.isEmpty()) {
                 isCreateDueDate = true;
             }
             for (To item : tos) {
@@ -1618,11 +1617,11 @@ public class XmlUtil {
 
                 if (checker.checkAllowElement(allowElements,
                         StringPool.TO_DUE_DATE) || allowAll) {
-                    if(strDueDate != null && strDueDate.length() > 0){
-                            OMElement toDueDate = factoryOM.createOMElement("DueDate",
-                                    ns);
-                            toDueDate.setText(strDueDate);
-                            to.addChild(toDueDate);
+                    if (strDueDate != null && strDueDate.length() > 0) {
+                        OMElement toDueDate = factoryOM.createOMElement("DueDate",
+                                ns);
+                        toDueDate.setText(strDueDate);
+                        to.addChild(toDueDate);
                     }
                 }
 
@@ -1787,7 +1786,7 @@ public class XmlUtil {
             OMElement responseDate = factoryOM.createOMElement("DueDate", ns);
 //            String dateStr = currentHeader.getResponseDate();
             String dateStr = currentHeader.getDueDate();
-            if(dateStr == null || dateStr.isEmpty()) {
+            if (dateStr == null || dateStr.isEmpty()) {
                 responseDate.setText("");
             } else {
                 responseDate.setText(dateStr);

@@ -77,7 +77,7 @@ public abstract class RootDaoImpl<T, Id extends Serializable> implements RootDao
 
     @SuppressWarnings("unchecked")
     public List<T> findAll() {
-        List<T> books = (List<T>) getCurrentSession().createQuery("from "+ clazz.getName()).list();
+        List<T> books = (List<T>) getCurrentSession().createQuery("from " + clazz.getName()).list();
         return books;
     }
 

@@ -51,7 +51,7 @@ public class RedisUtil {
 
     public <T> T get(String key, Class<T> classOfT) {
         String json = jedisClient.get(key);
-        T object= gson.fromJson(json, classOfT);
+        T object = gson.fromJson(json, classOfT);
         return object;
     }
 
@@ -74,8 +74,7 @@ public class RedisUtil {
                 return true;
             else
                 return false;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             _log.error("Error when clear all cached !!! " + e.getMessage());
             return false;
         }

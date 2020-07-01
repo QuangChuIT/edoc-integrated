@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -96,450 +96,436 @@ import java.util.Arrays;
  */
 public class Serializer {
 
-	public Serializer() {
-		BufferQueue bufferQueue = _getBufferQueue();
+    public Serializer() {
+        BufferQueue bufferQueue = _getBufferQueue();
 
-		buffer = bufferQueue.dequeue();
-	}
+        buffer = bufferQueue.dequeue();
+    }
 
-	public ByteBuffer toByteBuffer() {
-		ByteBuffer byteBuffer = ByteBuffer.wrap(Arrays.copyOf(buffer, index));
+    public ByteBuffer toByteBuffer() {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(Arrays.copyOf(buffer, index));
 
-		if (buffer.length <= THREADLOCAL_BUFFER_SIZE_LIMIT) {
-			BufferQueue bufferQueue = _getBufferQueue();
+        if (buffer.length <= THREADLOCAL_BUFFER_SIZE_LIMIT) {
+            BufferQueue bufferQueue = _getBufferQueue();
 
-			bufferQueue.enqueue(buffer);
-		}
+            bufferQueue.enqueue(buffer);
+        }
 
-		buffer = null;
+        buffer = null;
 
-		return byteBuffer;
-	}
+        return byteBuffer;
+    }
 
-	public void writeBoolean(boolean b) {
-		BigEndianCodec.putBoolean(getBuffer(1), index++, b);
-	}
+    public void writeBoolean(boolean b) {
+        BigEndianCodec.putBoolean(getBuffer(1), index++, b);
+    }
 
-	public void writeByte(byte b) {
-		getBuffer(1)[index++] = b;
-	}
+    public void writeByte(byte b) {
+        getBuffer(1)[index++] = b;
+    }
 
-	public void writeChar(char c) {
-		BigEndianCodec.putChar(getBuffer(2), index, c);
+    public void writeChar(char c) {
+        BigEndianCodec.putChar(getBuffer(2), index, c);
 
-		index += 2;
-	}
+        index += 2;
+    }
 
-	public void writeDouble(double d) {
-		BigEndianCodec.putDouble(getBuffer(8), index, d);
+    public void writeDouble(double d) {
+        BigEndianCodec.putDouble(getBuffer(8), index, d);
 
-		index += 8;
-	}
+        index += 8;
+    }
 
-	public void writeFloat(float f) {
-		BigEndianCodec.putFloat(getBuffer(4), index, f);
+    public void writeFloat(float f) {
+        BigEndianCodec.putFloat(getBuffer(4), index, f);
 
-		index += 4;
-	}
+        index += 4;
+    }
 
-	public void writeInt(int i) {
-		BigEndianCodec.putInt(getBuffer(4), index, i);
+    public void writeInt(int i) {
+        BigEndianCodec.putInt(getBuffer(4), index, i);
 
-		index += 4;
-	}
-
-	public void writeLong(long l) {
-		BigEndianCodec.putLong(getBuffer(8), index, l);
-
-		index += 8;
-	}
-
-	public void writeObject(Serializable serializable) {
+        index += 4;
+    }
 
-		// The if block is ordered by frequency for better performance
+    public void writeLong(long l) {
+        BigEndianCodec.putLong(getBuffer(8), index, l);
 
-		if (serializable == null) {
-			writeByte(SerializationConstants.TC_NULL);
+        index += 8;
+    }
 
-			return;
-		}
-		else if (serializable instanceof Long) {
-			writeByte(SerializationConstants.TC_LONG);
-			writeLong((Long)serializable);
+    public void writeObject(Serializable serializable) {
 
-			return;
-		}
-		else if (serializable instanceof String) {
-			writeByte(SerializationConstants.TC_STRING);
-			writeString((String)serializable);
+        // The if block is ordered by frequency for better performance
 
-			return;
-		}
-		else if (serializable instanceof Integer) {
-			writeByte(SerializationConstants.TC_INTEGER);
-			writeInt((Integer)serializable);
+        if (serializable == null) {
+            writeByte(SerializationConstants.TC_NULL);
 
-			return;
-		}
-		else if (serializable instanceof Boolean) {
-			writeByte(SerializationConstants.TC_BOOLEAN);
-			writeBoolean((Boolean)serializable);
+            return;
+        } else if (serializable instanceof Long) {
+            writeByte(SerializationConstants.TC_LONG);
+            writeLong((Long) serializable);
 
-			return;
-		}
-		else if (serializable instanceof Class) {
-			Class<?> clazz = (Class<?>)serializable;
+            return;
+        } else if (serializable instanceof String) {
+            writeByte(SerializationConstants.TC_STRING);
+            writeString((String) serializable);
 
-			String contextName = ClassLoaderPool.getContextName(
-				clazz.getClassLoader());
+            return;
+        } else if (serializable instanceof Integer) {
+            writeByte(SerializationConstants.TC_INTEGER);
+            writeInt((Integer) serializable);
 
-			writeByte(SerializationConstants.TC_CLASS);
-			writeString(contextName);
-			writeString(clazz.getName());
+            return;
+        } else if (serializable instanceof Boolean) {
+            writeByte(SerializationConstants.TC_BOOLEAN);
+            writeBoolean((Boolean) serializable);
 
-			return;
-		}
-		else if (serializable instanceof Short) {
-			writeByte(SerializationConstants.TC_SHORT);
-			writeShort((Short)serializable);
+            return;
+        } else if (serializable instanceof Class) {
+            Class<?> clazz = (Class<?>) serializable;
 
-			return;
-		}
-		else if (serializable instanceof Character) {
-			writeByte(SerializationConstants.TC_CHARACTER);
-			writeChar((Character)serializable);
+            String contextName = ClassLoaderPool.getContextName(
+                    clazz.getClassLoader());
 
-			return;
-		}
-		else if (serializable instanceof Byte) {
-			writeByte(SerializationConstants.TC_BYTE);
-			writeByte((Byte)serializable);
+            writeByte(SerializationConstants.TC_CLASS);
+            writeString(contextName);
+            writeString(clazz.getName());
 
-			return;
-		}
-		else if (serializable instanceof Double) {
-			writeByte(SerializationConstants.TC_DOUBLE);
-			writeDouble((Double)serializable);
+            return;
+        } else if (serializable instanceof Short) {
+            writeByte(SerializationConstants.TC_SHORT);
+            writeShort((Short) serializable);
 
-			return;
-		}
-		else if (serializable instanceof Float) {
-			writeByte(SerializationConstants.TC_FLOAT);
-			writeFloat((Float)serializable);
+            return;
+        } else if (serializable instanceof Character) {
+            writeByte(SerializationConstants.TC_CHARACTER);
+            writeChar((Character) serializable);
 
-			return;
-		}
-		else {
-			writeByte(SerializationConstants.TC_OBJECT);
-		}
+            return;
+        } else if (serializable instanceof Byte) {
+            writeByte(SerializationConstants.TC_BYTE);
+            writeByte((Byte) serializable);
 
-		try {
-			ObjectOutputStream objectOutputStream =
-				new AnnotatedObjectOutputStream(new BufferOutputStream());
+            return;
+        } else if (serializable instanceof Double) {
+            writeByte(SerializationConstants.TC_DOUBLE);
+            writeDouble((Double) serializable);
 
-			objectOutputStream.writeObject(serializable);
+            return;
+        } else if (serializable instanceof Float) {
+            writeByte(SerializationConstants.TC_FLOAT);
+            writeFloat((Float) serializable);
 
-			objectOutputStream.flush();
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(
-				"Unable to write ordinary serializable object " + serializable,
-				ioException);
-		}
-	}
+            return;
+        } else {
+            writeByte(SerializationConstants.TC_OBJECT);
+        }
 
-	public void writeShort(short s) {
-		BigEndianCodec.putShort(getBuffer(2), index, s);
+        try {
+            ObjectOutputStream objectOutputStream =
+                    new AnnotatedObjectOutputStream(new BufferOutputStream());
 
-		index += 2;
-	}
+            objectOutputStream.writeObject(serializable);
 
-	public void writeString(String s) {
-		int length = s.length();
+            objectOutputStream.flush();
+        } catch (IOException ioException) {
+            throw new RuntimeException(
+                    "Unable to write ordinary serializable object " + serializable,
+                    ioException);
+        }
+    }
 
-		boolean asciiCode = true;
+    public void writeShort(short s) {
+        BigEndianCodec.putShort(getBuffer(2), index, s);
 
-		for (int i = 0; i < length; i++) {
-			char c = s.charAt(i);
+        index += 2;
+    }
 
-			if ((c == 0) || (c > 127)) {
-				asciiCode = false;
+    public void writeString(String s) {
+        int length = s.length();
 
-				break;
-			}
-		}
+        boolean asciiCode = true;
 
-		if (asciiCode) {
-			byte[] buffer = getBuffer(length + 5);
+        for (int i = 0; i < length; i++) {
+            char c = s.charAt(i);
 
-			BigEndianCodec.putBoolean(buffer, index++, asciiCode);
+            if ((c == 0) || (c > 127)) {
+                asciiCode = false;
 
-			BigEndianCodec.putInt(buffer, index, length);
+                break;
+            }
+        }
 
-			index += 4;
+        if (asciiCode) {
+            byte[] buffer = getBuffer(length + 5);
 
-			for (int i = 0; i < length; i++) {
-				char c = s.charAt(i);
+            BigEndianCodec.putBoolean(buffer, index++, asciiCode);
 
-				buffer[index++] = (byte)c;
-			}
-		}
-		else {
-			byte[] buffer = getBuffer(length * 2 + 5);
+            BigEndianCodec.putInt(buffer, index, length);
 
-			BigEndianCodec.putBoolean(buffer, index++, asciiCode);
+            index += 4;
 
-			BigEndianCodec.putInt(buffer, index, length);
+            for (int i = 0; i < length; i++) {
+                char c = s.charAt(i);
 
-			index += 4;
+                buffer[index++] = (byte) c;
+            }
+        } else {
+            byte[] buffer = getBuffer(length * 2 + 5);
 
-			for (int i = 0; i < length; i++) {
-				char c = s.charAt(i);
+            BigEndianCodec.putBoolean(buffer, index++, asciiCode);
 
-				BigEndianCodec.putChar(buffer, index, c);
+            BigEndianCodec.putInt(buffer, index, length);
 
-				index += 2;
-			}
-		}
-	}
+            index += 4;
 
-	public void writeTo(OutputStream outputStream) throws IOException {
-		outputStream.write(buffer, 0, index);
+            for (int i = 0; i < length; i++) {
+                char c = s.charAt(i);
 
-		if (buffer.length <= THREADLOCAL_BUFFER_SIZE_LIMIT) {
-			BufferQueue bufferQueue = _getBufferQueue();
+                BigEndianCodec.putChar(buffer, index, c);
 
-			bufferQueue.enqueue(buffer);
-		}
+                index += 2;
+            }
+        }
+    }
 
-		buffer = null;
-	}
+    public void writeTo(OutputStream outputStream) throws IOException {
+        outputStream.write(buffer, 0, index);
 
-	/**
-	 * Returns the required buffer length. This method is final so JIT can
-	 * perform an inline expansion.
-	 *
-	 * @param  ensureExtraSpace the extra byte space required to meet the
-	 *         buffer's minimum length
-	 * @return the buffer value
-	 */
-	protected final byte[] getBuffer(int ensureExtraSpace) {
-		int minSize = index + ensureExtraSpace;
+        if (buffer.length <= THREADLOCAL_BUFFER_SIZE_LIMIT) {
+            BufferQueue bufferQueue = _getBufferQueue();
 
-		if (minSize < 0) {
+            bufferQueue.enqueue(buffer);
+        }
 
-			// Cannot create byte[] with length longer than Integer.MAX_VALUE
+        buffer = null;
+    }
 
-			throw new OutOfMemoryError();
-		}
+    /**
+     * Returns the required buffer length. This method is final so JIT can
+     * perform an inline expansion.
+     *
+     * @param  ensureExtraSpace the extra byte space required to meet the
+     *         buffer's minimum length
+     * @return the buffer value
+     */
+    protected final byte[] getBuffer(int ensureExtraSpace) {
+        int minSize = index + ensureExtraSpace;
 
-		int oldSize = buffer.length;
+        if (minSize < 0) {
 
-		if (minSize > oldSize) {
-			int newSize = oldSize << 1;
+            // Cannot create byte[] with length longer than Integer.MAX_VALUE
 
-			if (newSize < minSize) {
+            throw new OutOfMemoryError();
+        }
 
-				// Overflow and insufficient growth protection
+        int oldSize = buffer.length;
 
-				newSize = minSize;
-			}
+        if (minSize > oldSize) {
+            int newSize = oldSize << 1;
 
-			buffer = Arrays.copyOf(buffer, newSize);
-		}
+            if (newSize < minSize) {
 
-		return buffer;
-	}
+                // Overflow and insufficient growth protection
 
-	protected static final int THREADLOCAL_BUFFER_COUNT_LIMIT;
+                newSize = minSize;
+            }
 
-	protected static final int THREADLOCAL_BUFFER_COUNT_MIN = 8;
+            buffer = Arrays.copyOf(buffer, newSize);
+        }
 
-	protected static final int THREADLOCAL_BUFFER_SIZE_LIMIT;
+        return buffer;
+    }
 
-	protected static final int THREADLOCAL_BUFFER_SIZE_MIN = 16 * 1024;
+    protected static final int THREADLOCAL_BUFFER_COUNT_LIMIT;
 
-	/**
-	 * Softens the local thread's pooled buffer memory.
-	 *
-	 * <p>
-	 * Technically, we should soften each pooled buffer individually to achieve
-	 * the best garbage collection (GC) interaction. However, that increases
-	 * complexity of pooled buffer access and also burdens the GC's {@link
-	 * SoftReference} process, hurting performance.
-	 * </p>
-	 *
-	 * <p>
-	 * Here, the entire ThreadLocal BufferQueue is softened. For threads that do
-	 * serializing often, its BufferQueue will most likely stay valid. For
-	 * threads that do serializing only occasionally, its BufferQueue will most
-	 * likely be released by GC.
-	 * </p>
-	 */
-	protected static final ThreadLocal<Reference<BufferQueue>>
-		bufferQueueThreadLocal = new CentralizedThreadLocal<>(false);
+    protected static final int THREADLOCAL_BUFFER_COUNT_MIN = 8;
 
-	static {
-		int threadLocalBufferCountLimit = Integer.getInteger(
-			Serializer.class.getName() + ".thread.local.buffer.count.limit", 0);
+    protected static final int THREADLOCAL_BUFFER_SIZE_LIMIT;
 
-		if (threadLocalBufferCountLimit < THREADLOCAL_BUFFER_COUNT_MIN) {
-			threadLocalBufferCountLimit = THREADLOCAL_BUFFER_COUNT_MIN;
-		}
+    protected static final int THREADLOCAL_BUFFER_SIZE_MIN = 16 * 1024;
 
-		THREADLOCAL_BUFFER_COUNT_LIMIT = threadLocalBufferCountLimit;
+    /**
+     * Softens the local thread's pooled buffer memory.
+     *
+     * <p>
+     * Technically, we should soften each pooled buffer individually to achieve
+     * the best garbage collection (GC) interaction. However, that increases
+     * complexity of pooled buffer access and also burdens the GC's {@link
+     * SoftReference} process, hurting performance.
+     * </p>
+     *
+     * <p>
+     * Here, the entire ThreadLocal BufferQueue is softened. For threads that do
+     * serializing often, its BufferQueue will most likely stay valid. For
+     * threads that do serializing only occasionally, its BufferQueue will most
+     * likely be released by GC.
+     * </p>
+     */
+    protected static final ThreadLocal<Reference<BufferQueue>>
+            bufferQueueThreadLocal = new CentralizedThreadLocal<>(false);
 
-		int threadLocalBufferSizeLimit = Integer.getInteger(
-			Serializer.class.getName() + ".thread.local.buffer.size.limit", 0);
+    static {
+        int threadLocalBufferCountLimit = Integer.getInteger(
+                Serializer.class.getName() + ".thread.local.buffer.count.limit", 0);
 
-		if (threadLocalBufferSizeLimit < THREADLOCAL_BUFFER_SIZE_MIN) {
-			threadLocalBufferSizeLimit = THREADLOCAL_BUFFER_SIZE_MIN;
-		}
+        if (threadLocalBufferCountLimit < THREADLOCAL_BUFFER_COUNT_MIN) {
+            threadLocalBufferCountLimit = THREADLOCAL_BUFFER_COUNT_MIN;
+        }
 
-		THREADLOCAL_BUFFER_SIZE_LIMIT = threadLocalBufferSizeLimit;
-	}
+        THREADLOCAL_BUFFER_COUNT_LIMIT = threadLocalBufferCountLimit;
 
-	protected byte[] buffer;
-	protected int index;
+        int threadLocalBufferSizeLimit = Integer.getInteger(
+                Serializer.class.getName() + ".thread.local.buffer.size.limit", 0);
 
-	protected static class BufferNode {
+        if (threadLocalBufferSizeLimit < THREADLOCAL_BUFFER_SIZE_MIN) {
+            threadLocalBufferSizeLimit = THREADLOCAL_BUFFER_SIZE_MIN;
+        }
 
-		public BufferNode(byte[] buffer) {
-			this.buffer = buffer;
-		}
+        THREADLOCAL_BUFFER_SIZE_LIMIT = threadLocalBufferSizeLimit;
+    }
 
-		protected byte[] buffer;
-		protected BufferNode next;
+    protected byte[] buffer;
+    protected int index;
 
-	}
+    protected static class BufferNode {
 
-	/**
-	 * Represents a descending <code>byte[]</code> queue ordered by array
-	 * length.
-	 *
-	 * <p>
-	 * The queue is small enough to simply use a linear scan search for
-	 * maintaining its order. The entire queue data is held by a {@link
-	 * SoftReference}, so when necessary, GC can release the whole buffer cache.
-	 * </p>
-	 */
-	protected static class BufferQueue {
+        public BufferNode(byte[] buffer) {
+            this.buffer = buffer;
+        }
 
-		public byte[] dequeue() {
-			if (headBufferNode == null) {
-				return new byte[THREADLOCAL_BUFFER_SIZE_MIN];
-			}
+        protected byte[] buffer;
+        protected BufferNode next;
 
-			BufferNode bufferNode = headBufferNode;
+    }
 
-			headBufferNode = headBufferNode.next;
+    /**
+     * Represents a descending <code>byte[]</code> queue ordered by array
+     * length.
+     *
+     * <p>
+     * The queue is small enough to simply use a linear scan search for
+     * maintaining its order. The entire queue data is held by a {@link
+     * SoftReference}, so when necessary, GC can release the whole buffer cache.
+     * </p>
+     */
+    protected static class BufferQueue {
 
-			// Help GC
+        public byte[] dequeue() {
+            if (headBufferNode == null) {
+                return new byte[THREADLOCAL_BUFFER_SIZE_MIN];
+            }
 
-			bufferNode.next = null;
+            BufferNode bufferNode = headBufferNode;
 
-			return bufferNode.buffer;
-		}
+            headBufferNode = headBufferNode.next;
 
-		public void enqueue(byte[] buffer) {
-			BufferNode bufferNode = new BufferNode(buffer);
+            // Help GC
 
-			if (headBufferNode == null) {
-				headBufferNode = bufferNode;
+            bufferNode.next = null;
 
-				count = 1;
+            return bufferNode.buffer;
+        }
 
-				return;
-			}
+        public void enqueue(byte[] buffer) {
+            BufferNode bufferNode = new BufferNode(buffer);
 
-			BufferNode previousBufferNode = null;
-			BufferNode currentBufferNode = headBufferNode;
+            if (headBufferNode == null) {
+                headBufferNode = bufferNode;
 
-			while ((currentBufferNode != null) &&
-				   (currentBufferNode.buffer.length >
-					   bufferNode.buffer.length)) {
+                count = 1;
 
-				previousBufferNode = currentBufferNode;
+                return;
+            }
 
-				currentBufferNode = currentBufferNode.next;
-			}
+            BufferNode previousBufferNode = null;
+            BufferNode currentBufferNode = headBufferNode;
 
-			if (previousBufferNode == null) {
-				bufferNode.next = headBufferNode;
+            while ((currentBufferNode != null) &&
+                    (currentBufferNode.buffer.length >
+                            bufferNode.buffer.length)) {
 
-				headBufferNode = bufferNode;
-			}
-			else {
-				bufferNode.next = currentBufferNode;
+                previousBufferNode = currentBufferNode;
 
-				previousBufferNode.next = bufferNode;
-			}
+                currentBufferNode = currentBufferNode.next;
+            }
 
-			if (++count > THREADLOCAL_BUFFER_COUNT_LIMIT) {
-				if (previousBufferNode == null) {
-					previousBufferNode = headBufferNode;
-				}
+            if (previousBufferNode == null) {
+                bufferNode.next = headBufferNode;
 
-				currentBufferNode = previousBufferNode.next;
+                headBufferNode = bufferNode;
+            } else {
+                bufferNode.next = currentBufferNode;
 
-				while (currentBufferNode.next != null) {
-					previousBufferNode = currentBufferNode;
-					currentBufferNode = currentBufferNode.next;
-				}
+                previousBufferNode.next = bufferNode;
+            }
 
-				// Dereference
+            if (++count > THREADLOCAL_BUFFER_COUNT_LIMIT) {
+                if (previousBufferNode == null) {
+                    previousBufferNode = headBufferNode;
+                }
 
-				previousBufferNode.next = null;
+                currentBufferNode = previousBufferNode.next;
 
-				// Help GC
+                while (currentBufferNode.next != null) {
+                    previousBufferNode = currentBufferNode;
+                    currentBufferNode = currentBufferNode.next;
+                }
 
-				currentBufferNode.buffer = null;
-				currentBufferNode.next = null;
-			}
-		}
+                // Dereference
 
-		protected int count;
-		protected BufferNode headBufferNode;
+                previousBufferNode.next = null;
 
-	}
+                // Help GC
 
-	protected class BufferOutputStream extends OutputStream {
+                currentBufferNode.buffer = null;
+                currentBufferNode.next = null;
+            }
+        }
 
-		@Override
-		public void write(byte[] bytes) {
-			write(bytes, 0, bytes.length);
-		}
+        protected int count;
+        protected BufferNode headBufferNode;
 
-		@Override
-		public void write(byte[] bytes, int offset, int length) {
-			System.arraycopy(bytes, offset, getBuffer(length), index, length);
+    }
 
-			index += length;
-		}
+    protected class BufferOutputStream extends OutputStream {
 
-		@Override
-		public void write(int b) {
-			getBuffer(1)[index++] = (byte)b;
-		}
+        @Override
+        public void write(byte[] bytes) {
+            write(bytes, 0, bytes.length);
+        }
 
-	}
+        @Override
+        public void write(byte[] bytes, int offset, int length) {
+            System.arraycopy(bytes, offset, getBuffer(length), index, length);
 
-	private BufferQueue _getBufferQueue() {
-		Reference<BufferQueue> reference = bufferQueueThreadLocal.get();
+            index += length;
+        }
 
-		BufferQueue bufferQueue = null;
+        @Override
+        public void write(int b) {
+            getBuffer(1)[index++] = (byte) b;
+        }
 
-		if (reference != null) {
-			bufferQueue = reference.get();
-		}
+    }
 
-		if (bufferQueue == null) {
-			bufferQueue = new BufferQueue();
+    private BufferQueue _getBufferQueue() {
+        Reference<BufferQueue> reference = bufferQueueThreadLocal.get();
 
-			bufferQueueThreadLocal.set(new SoftReference<>(bufferQueue));
-		}
+        BufferQueue bufferQueue = null;
 
-		return bufferQueue;
-	}
+        if (reference != null) {
+            bufferQueue = reference.get();
+        }
+
+        if (bufferQueue == null) {
+            bufferQueue = new BufferQueue();
+
+            bufferQueueThreadLocal.set(new SoftReference<>(bufferQueue));
+        }
+
+        return bufferQueue;
+    }
 
 }

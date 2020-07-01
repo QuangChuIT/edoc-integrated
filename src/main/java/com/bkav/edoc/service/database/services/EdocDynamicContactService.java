@@ -4,7 +4,7 @@ import com.bkav.edoc.service.database.daoimpl.EdocDynamicContactDaoImpl;
 import com.bkav.edoc.service.database.entity.EdocDynamicContact;
 
 public class EdocDynamicContactService {
-    private static EdocDynamicContactDaoImpl dynamicContactDaoImpl = new EdocDynamicContactDaoImpl();
+    private static final EdocDynamicContactDaoImpl dynamicContactDaoImpl = new EdocDynamicContactDaoImpl();
 
     public EdocDynamicContact getDynamicContactByDomain(String domain) {
         dynamicContactDaoImpl.openCurrentSession();

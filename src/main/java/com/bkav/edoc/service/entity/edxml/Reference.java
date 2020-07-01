@@ -17,11 +17,11 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>
  * Java class for Reference complex type.
- * 
+ *
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Reference">
  *   &lt;complexContent>
@@ -35,83 +35,76 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Reference", propOrder = { "attachment", "description" })
+@XmlType(name = "Reference", propOrder = {"attachmentName", "description"})
 public class Reference {
 
-	@XmlElement(name = "Description", required = true)
-	protected String description;
+    @XmlElement(name = "Description", required = true)
+    protected String description;
 
-	@XmlElement(name = "AttachmentName", required = true)
-	protected String attachmentName;
+    @XmlElement(name = "AttachmentName", required = true)
+    protected String attachmentName;
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	/**
-	 * Sets the value of the description property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setDescription(String value) {
-		this.description = value;
-	}
+    /**
+     * Sets the value of the description property.
+     *
+     * @param value allowed object is {@link String }
+     */
+    public void setDescription(String value) {
+        this.description = value;
+    }
 
-	/**
-	 * @return the attachment
-	 */
-	public String getAttachmentName() {
-		return attachmentName;
-	}
+    /**
+     * @return the attachment
+     */
+    public String getAttachmentName() {
+        return attachmentName;
+    }
 
-	/**
-	 * @param attachment
-	 *            the attachment to set
-	 */
-	public void setAttachmentName(String attachmentName) {
-		this.attachmentName = attachmentName;
-	}
-	
-	@XmlAttribute(required = true)
-	@XmlSchemaType(name = "anyURI")
-	protected String href;
+    /**
+     * @param attachmentName the attachment to set
+     */
+    public void setAttachmentName(String attachmentName) {
+        this.attachmentName = attachmentName;
+    }
 
-	/**
-	 * @return the href
-	 */
-	public String getHref() {
-		return href;
-	}
+    @XmlAttribute(required = true)
+    @XmlSchemaType(name = "anyURI")
+    protected String href;
 
-	/**
-	 * @param href
-	 *            the href to set
-	 */
-	public void setHref(String href) {
-		this.href = href;
-	}
+    /**
+     * @return the href
+     */
+    public String getHref() {
+        return href;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * @param href the href to set
+     */
+    public void setHref(String href) {
+        this.href = href;
+    }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
 
-	@XmlAttribute(required = true)
-	protected String id;
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @XmlAttribute(required = true)
+    protected String id;
 }

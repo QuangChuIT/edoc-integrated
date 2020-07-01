@@ -144,7 +144,7 @@ public class ExtractMime {
         TraceHeaderList traceList = new TraceHeaderList();
 
         traceList.setTraceHeaders(GetTraceList(traceHeaderListNode, isByHeader));
-        if(isByHeader) {
+        if (isByHeader) {
             traceList.setBusiness(GetBusiness(traceHeaderListNode));
         }
 
@@ -274,7 +274,7 @@ public class ExtractMime {
     public StaffInfo getBusinessStaffInfo(Element businessNode) throws Exception {
         StaffInfo staffInfo = new StaffInfo();
 
-        Element staffInfoNode = getSingerElement(businessNode,"StaffInfo", EdXmlConstant.EDXML_NS);
+        Element staffInfoNode = getSingerElement(businessNode, "StaffInfo", EdXmlConstant.EDXML_NS);
         staffInfo.setDepartment(staffInfoNode.getChildText("Department", EdXmlConstant.EDXML_NS));
 
         staffInfo.setStaff(staffInfoNode.getChildText("Staff", EdXmlConstant.EDXML_NS));
@@ -388,7 +388,7 @@ public class ExtractMime {
                 EdXmlConstant.EDXML_NS);
 
         // check null
-        if(responseForNodes == null) return null;
+        if (responseForNodes == null) return null;
 
         for (Element responseForNode : responseForNodes) {
             responseFors.add(getResponseForMessageHeader(responseForNode));
@@ -807,7 +807,7 @@ public class ExtractMime {
 
         Business business = new Business();
 
-        Element businessInfoNode = getSingerElement(traceListNode,"Business", EdXmlConstant.EDXML_NS);
+        Element businessInfoNode = getSingerElement(traceListNode, "Business", EdXmlConstant.EDXML_NS);
 
         business.setBusinessDocType(Long.parseLong(businessInfoNode.getChildText("BusinessDocType", EdXmlConstant.EDXML_NS)));
 
@@ -833,8 +833,8 @@ public class ExtractMime {
     }
 
     public BusinessDocumentInfo getBusinessDocumentInfo(Element businessNode) throws Exception {
-        Element businessDocumentInfoNode = getSingerElement(businessNode,"BusinessDocumentInfo", EdXmlConstant.EDXML_NS);
-        if(businessDocumentInfoNode == null) return null;
+        Element businessDocumentInfoNode = getSingerElement(businessNode, "BusinessDocumentInfo", EdXmlConstant.EDXML_NS);
+        if (businessDocumentInfoNode == null) return null;
 
         // todo
         BusinessDocumentInfo businessDocumentInfo = new BusinessDocumentInfo();
@@ -869,7 +869,7 @@ public class ExtractMime {
      * @throws Exception
      */
     public List<ReplacementInfo> getReplacementInfos(Element businessNode) throws Exception {
-        Element replacementInfoListNode = getSingerElement(businessNode,"ReplacementInfoList", EdXmlConstant.EDXML_NS);
+        Element replacementInfoListNode = getSingerElement(businessNode, "ReplacementInfoList", EdXmlConstant.EDXML_NS);
         if (replacementInfoListNode == null) return null;
 
         List<ReplacementInfo> replacementInfos = new ArrayList<ReplacementInfo>();
@@ -894,7 +894,7 @@ public class ExtractMime {
         Element organIdListNode = getSingerElement(replacementInfoNode, "OrganIdList", EdXmlConstant.EDXML_NS);
         List<Element> organIdNodes = getMultiElement(organIdListNode, "OrganId",
                 EdXmlConstant.EDXML_NS);
-        for(Element organIdNode: organIdNodes) {
+        for (Element organIdNode : organIdNodes) {
             organIdList.add(organIdNode.getTextTrim());
         }
 

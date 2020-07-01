@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for Body complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Body">
  *   &lt;complexContent>
@@ -30,12 +30,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Body", propOrder = {
-    "manifest"
+        "manifest"
 })
 public class Body {
 
@@ -44,11 +42,9 @@ public class Body {
 
     /**
      * Gets the value of the manifest property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Manifest }
-     *     
+     *
+     * @return possible object is
+     * {@link Manifest }
      */
     public Manifest getManifest() {
         return manifest;
@@ -56,11 +52,9 @@ public class Body {
 
     /**
      * Sets the value of the manifest property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Manifest }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Manifest }
      */
     public void setManifest(Manifest value) {
         this.manifest = value;

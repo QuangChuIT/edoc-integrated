@@ -1,7 +1,5 @@
 package com.bkav.edoc.service.database.entity;
 
-import com.bkav.edoc.service.entity.edxml.TraceHeaderList;
-
 import java.util.Date;
 
 public class EdocTraceHeader {

@@ -35,8 +35,8 @@ public class EdocDocumentService {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
             "dd/MM/yyyy");
-    private Mapper mapper = new Mapper();
-    private Gson gson = new Gson();
+    private final Mapper mapper = new Mapper();
+    private final Gson gson = new Gson();
 
     public EdocDocumentService() {
 

@@ -7,45 +7,45 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class ErrorCommonUtil {
-	public static String getInfoToLog(String msg, Class<?> class_) {
-		StringBuilder msgBuilder = new StringBuilder();
-		if (msg == null) {
-			
-			msg = StringPool.BLANK;
-			
-		}
+    public static String getInfoToLog(String msg, Class<?> class_) {
+        StringBuilder msgBuilder = new StringBuilder();
+        if (msg == null) {
 
-		Calendar cal = Calendar.getInstance(_LOCALE);
+            msg = StringPool.BLANK;
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd  HH:mm:ss");
+        }
 
-		msgBuilder.append(msg);
-		
-		StackTraceElement[] stackTraceElements = Thread.currentThread()
-				.getStackTrace();
+        Calendar cal = Calendar.getInstance(_LOCALE);
 
-		for (StackTraceElement stackTraceElement : stackTraceElements) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd  HH:mm:ss");
 
-			String classNameInStack = stackTraceElement.getClassName();
+        msgBuilder.append(msg);
 
-			String inputClassName = class_.getName();
+        StackTraceElement[] stackTraceElements = Thread.currentThread()
+                .getStackTrace();
 
-			if (classNameInStack.equals(inputClassName)) {
+        for (StackTraceElement stackTraceElement : stackTraceElements) {
 
-				msgBuilder.append("--");
-				msgBuilder.append("Method: ");
-				msgBuilder.append(stackTraceElement.getMethodName());
-				msgBuilder.append("--");
-				msgBuilder.append("Line Number: ");
-				msgBuilder.append(stackTraceElement.getLineNumber());
-				msgBuilder.append("--");
-				msgBuilder.append(dateFormat.format(cal.getTime()));
-	
-			}
-		}
+            String classNameInStack = stackTraceElement.getClassName();
 
-		return msgBuilder.toString();
-	}
-	
-	private static Locale _LOCALE = new Locale("vi", "VN");
+            String inputClassName = class_.getName();
+
+            if (classNameInStack.equals(inputClassName)) {
+
+                msgBuilder.append("--");
+                msgBuilder.append("Method: ");
+                msgBuilder.append(stackTraceElement.getMethodName());
+                msgBuilder.append("--");
+                msgBuilder.append("Line Number: ");
+                msgBuilder.append(stackTraceElement.getLineNumber());
+                msgBuilder.append("--");
+                msgBuilder.append(dateFormat.format(cal.getTime()));
+
+            }
+        }
+
+        return msgBuilder.toString();
+    }
+
+    private static Locale _LOCALE = new Locale("vi", "VN");
 }

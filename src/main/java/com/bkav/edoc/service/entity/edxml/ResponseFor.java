@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for ResponseFor complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="ResponseFor">
  *   &lt;complexContent>
@@ -32,15 +32,13 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ResponseFor", propOrder = {
-    "organId",
-    "code",
-    "promulgationDate",
-    "documentId"
+        "organId",
+        "code",
+        "promulgationDate",
+        "documentId"
 })
 public class ResponseFor {
 
@@ -63,11 +61,9 @@ public class ResponseFor {
 
     /**
      * Gets the value of the organId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getOrganId() {
         return organId;
@@ -75,11 +71,9 @@ public class ResponseFor {
 
     /**
      * Sets the value of the organId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setOrganId(String value) {
         this.organId = value;
@@ -87,11 +81,9 @@ public class ResponseFor {
 
     /**
      * Gets the value of the code property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getCode() {
         return code;
@@ -99,11 +91,9 @@ public class ResponseFor {
 
     /**
      * Sets the value of the code property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setCode(String value) {
         this.code = value;
@@ -111,11 +101,9 @@ public class ResponseFor {
 
     /**
      * Gets the value of the promulgationDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getPromulgationDate() {
         return promulgationDate;
@@ -123,11 +111,9 @@ public class ResponseFor {
 
     /**
      * Sets the value of the promulgationDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setPromulgationDate(String value) {
         this.promulgationDate = value;

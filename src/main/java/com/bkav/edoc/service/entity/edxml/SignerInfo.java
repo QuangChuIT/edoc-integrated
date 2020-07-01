@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for SignerInfo complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="SignerInfo">
  *   &lt;complexContent>
@@ -32,14 +32,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SignerInfo", propOrder = {
-    "competence",
-    "position",
-    "fullName"
+        "competence",
+        "position",
+        "fullName"
 })
 public class SignerInfo {
 
@@ -52,11 +50,9 @@ public class SignerInfo {
 
     /**
      * Gets the value of the competence property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getCompetence() {
         return competence;
@@ -64,11 +60,9 @@ public class SignerInfo {
 
     /**
      * Sets the value of the competence property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setCompetence(String value) {
         this.competence = value;
@@ -76,11 +70,9 @@ public class SignerInfo {
 
     /**
      * Gets the value of the position property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getPosition() {
         return position;
@@ -88,11 +80,9 @@ public class SignerInfo {
 
     /**
      * Sets the value of the position property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setPosition(String value) {
         this.position = value;
@@ -100,11 +90,9 @@ public class SignerInfo {
 
     /**
      * Gets the value of the fullName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getFullName() {
         return fullName;
@@ -112,11 +100,9 @@ public class SignerInfo {
 
     /**
      * Sets the value of the fullName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setFullName(String value) {
         this.fullName = value;

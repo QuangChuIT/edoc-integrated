@@ -30,7 +30,7 @@ public class PropsUtil {
     }
 
     public static String get(String key) {
-        if(prop.isEmpty()) {
+        if (prop.isEmpty()) {
             try {
                 prop = readPropertyFile();
             } catch (Exception e) {

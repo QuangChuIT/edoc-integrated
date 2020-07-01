@@ -5,7 +5,7 @@
 <hibernate-mapping>
     <class name="com.bkav.edoc.service.database.entity.EdocDocumentDetail" table="edoc_document_detail">
         <id name="documentId" type="java.lang.Long">
-            <column name="document_id" />
+            <column name="document_id"/>
             <generator class="foreign">
                 <param name="property">document</param>
             </generator>

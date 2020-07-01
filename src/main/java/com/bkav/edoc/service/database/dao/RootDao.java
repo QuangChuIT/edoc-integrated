@@ -3,7 +3,7 @@ package com.bkav.edoc.service.database.dao;
 import java.io.Serializable;
 import java.util.List;
 
-public interface RootDao <T, Id extends Serializable> {
+public interface RootDao<T, Id extends Serializable> {
 
     public void persist(T entity);
 

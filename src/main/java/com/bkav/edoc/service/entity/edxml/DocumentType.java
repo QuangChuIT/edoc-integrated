@@ -17,9 +17,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for DocumentType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="DocumentType">
  *   &lt;complexContent>
@@ -32,13 +32,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DocumentType", propOrder = {
-    "type",
-    "typeName"
+        "type",
+        "typeName"
 })
 public class DocumentType {
 
@@ -50,7 +48,6 @@ public class DocumentType {
 
     /**
      * Gets the value of the type property.
-     * 
      */
     public int getType() {
         return type;
@@ -58,7 +55,6 @@ public class DocumentType {
 
     /**
      * Sets the value of the type property.
-     * 
      */
     public void setType(int value) {
         this.type = value;
@@ -66,11 +62,9 @@ public class DocumentType {
 
     /**
      * Gets the value of the typeName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getTypeName() {
         return typeName;
@@ -78,11 +72,9 @@ public class DocumentType {
 
     /**
      * Sets the value of the typeName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setTypeName(String value) {
         this.typeName = value;

@@ -19,11 +19,11 @@ import com.bkav.edoc.service.entity.edxml.TraceHeaderList;
 /**
  * <p>
  * Java class for Header complex type.
- * 
+ *
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Header">
  *   &lt;complexContent>
@@ -35,51 +35,45 @@ import com.bkav.edoc.service.entity.edxml.TraceHeaderList;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Header", propOrder = { "messageHeader" })
+@XmlType(name = "Header", propOrder = {"messageHeader"})
 public class Header {
 
-	@XmlElement(name = "MessageHeader", required = true)
-	protected MessageHeader messageHeader;
-	private TraceHeaderList traceHeaderList;
+    @XmlElement(name = "MessageHeader", required = true)
+    protected MessageHeader messageHeader;
+    private TraceHeaderList traceHeaderList;
 
-	/**
-	 * Gets the value of the messageHeader property.
-	 * 
-	 * @return possible object is {@link MessageHeader }
-	 * 
-	 */
-	public MessageHeader getMessageHeader() {
-		return messageHeader;
-	}
+    /**
+     * Gets the value of the messageHeader property.
+     *
+     * @return possible object is {@link MessageHeader }
+     */
+    public MessageHeader getMessageHeader() {
+        return messageHeader;
+    }
 
-	/**
-	 * Sets the value of the messageHeader property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link MessageHeader }
-	 * 
-	 */
-	public void setMessageHeader(MessageHeader value) {
-		this.messageHeader = value;
-	}
+    /**
+     * Sets the value of the messageHeader property.
+     *
+     * @param value allowed object is {@link MessageHeader }
+     */
+    public void setMessageHeader(MessageHeader value) {
+        this.messageHeader = value;
+    }
 
-	/**
-	 * @return the traceHeaderList
-	 */
-	public TraceHeaderList getTraceHeaderList() {
-		return traceHeaderList;
-	}
+    /**
+     * @return the traceHeaderList
+     */
+    public TraceHeaderList getTraceHeaderList() {
+        return traceHeaderList;
+    }
 
-	/**
-	 * @param traceHeaderList
-	 *            the traceHeaderList to set
-	 */
-	public void setTraceHeaderList(TraceHeaderList traceHeaderList) {
-		this.traceHeaderList = traceHeaderList;
-	}
+    /**
+     * @param traceHeaderList the traceHeaderList to set
+     */
+    public void setTraceHeaderList(TraceHeaderList traceHeaderList) {
+        this.traceHeaderList = traceHeaderList;
+    }
 
 }

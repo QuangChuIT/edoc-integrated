@@ -14,14 +14,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EdocDocumentDetailService {
-    private EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
-    private EdocDocumentDetailDaoImpl documentDetailDaoImpl = new EdocDocumentDetailDaoImpl();
+    private final EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
+    private final EdocDocumentDetailDaoImpl documentDetailDaoImpl = new EdocDocumentDetailDaoImpl();
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
             "dd/MM/yyyy");
 
     /**
      * Add document detail
+     *
      * @param messageHeader
      * @param docId
      * @return
@@ -39,9 +40,10 @@ public class EdocDocumentDetailService {
             try {
                 dueDate = dateFormat.parse(messageHeader.getDueDate());
             } catch (ParseException e) {
+                log.error("Error when add document detail " + e.getMessage());
             }
 
-            StringBuffer toPlacesBuffer = new StringBuffer();
+            StringBuilder toPlacesBuffer = new StringBuilder();
             ToPlaces toPlaces = messageHeader.getToPlaces();
             for (int i = 0; i < toPlaces.getPlace().size(); i++) {
                 toPlacesBuffer.append(toPlaces.getPlace().get(i));
@@ -77,7 +79,7 @@ public class EdocDocumentDetailService {
             currentSession.getTransaction().commit();
         } catch (Exception e) {
             log.error(e);
-            if(currentSession != null) {
+            if (currentSession != null) {
                 currentSession.getTransaction().rollback();
             }
             return false;

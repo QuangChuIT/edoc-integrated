@@ -28,7 +28,7 @@ public class XmlChecker {
         Element headerNode = extractMime.getSingerElement(rootElement,
                 "Header", envNs);
 
-        if (!existTag(headerNode, new String[] { "MessageHeader" })) {
+        if (!existTag(headerNode, new String[]{"MessageHeader"})) {
             errorList.add(new Error("N.MessageHeader",
                     "MessageHeader can not be null"));
         } else {
@@ -217,7 +217,7 @@ public class XmlChecker {
                 errorList.add(new Error("N.MessageHeader.To.Website",
                         "Website address can not be null"));
             }
-            if(errorList.size() > 0){
+            if (errorList.size() > 0) {
                 break;
             }
         }

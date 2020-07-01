@@ -11,59 +11,57 @@ import com.bkav.edoc.service.resource.StringPool;
 
 
 @XmlRootElement(name = "Report", namespace = StringPool.TARGET_NAMESPACE)
-@XmlType(propOrder = { "isSuccess", "errorList" })
+@XmlType(propOrder = {"isSuccess", "errorList"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Report {
-	@XmlElement(name = "IsSuccess")
-	boolean isSuccess;
+    @XmlElement(name = "IsSuccess")
+    boolean isSuccess;
 
-	@XmlElement(name = "ErrorList")
-	ErrorList errorList;
+    @XmlElement(name = "ErrorList")
+    ErrorList errorList;
 
-	public Report(boolean isSuccess, ErrorList errorList) {
-		super();
-		
-		this.isSuccess = isSuccess;
+    public Report(boolean isSuccess, ErrorList errorList) {
+        super();
 
-		this.errorList = errorList == null ? new ErrorList() : errorList;
-	}
+        this.isSuccess = isSuccess;
 
-	public Report() {
-		
-		isSuccess = false;
-		
-		this.errorList = new ErrorList();
-	}
+        this.errorList = errorList == null ? new ErrorList() : errorList;
+    }
 
-	/**
-	 * @return the isSuccess
-	 */
-	public boolean isIsSuccess() {
-		return isSuccess;
-	}
+    public Report() {
 
-	/**
-	 * @param isSuccess
-	 *            the isSuccess to set
-	 */
-	public void setIsSuccess(boolean isSuccess) {
-		this.isSuccess = isSuccess;
-	}
+        isSuccess = false;
 
-	/**
-	 * @return the errorList
-	 */
-	public ErrorList getErrorList() {
-		return errorList;
-	}
+        this.errorList = new ErrorList();
+    }
 
-	/**
-	 * @param errorList the errorList to set
-	 */
-	public void setErrorList(ErrorList errorList) {
-		this.errorList = errorList;
-	}
+    /**
+     * @return the isSuccess
+     */
+    public boolean isIsSuccess() {
+        return isSuccess;
+    }
 
-	
+    /**
+     * @param isSuccess the isSuccess to set
+     */
+    public void setIsSuccess(boolean isSuccess) {
+        this.isSuccess = isSuccess;
+    }
+
+    /**
+     * @return the errorList
+     */
+    public ErrorList getErrorList() {
+        return errorList;
+    }
+
+    /**
+     * @param errorList the errorList to set
+     */
+    public void setErrorList(ErrorList errorList) {
+        this.errorList = errorList;
+    }
+
 
 }

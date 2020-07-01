@@ -20,9 +20,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * <p>Java class for MessageHeader complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="MessageHeader">
  *   &lt;complexContent>
@@ -46,24 +46,22 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MessageHeader", propOrder = {
-    "from",
-    "to",
-    "code",
-    "promulgationInfo",
-    "documentType",
-    "subject",
-    "content",
-    "signerInfo",
-    "dueDate",
-    "toPlaces",
-    "otherInfo",
-    "steeringType",
-    "documentId"
+        "from",
+        "to",
+        "code",
+        "promulgationInfo",
+        "documentType",
+        "subject",
+        "content",
+        "signerInfo",
+        "dueDate",
+        "toPlaces",
+        "otherInfo",
+        "steeringType",
+        "documentId"
 })
 public class MessageHeader {
 
@@ -110,11 +108,9 @@ public class MessageHeader {
 
     /**
      * Gets the value of the from property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link From }
-     *     
+     *
+     * @return possible object is
+     * {@link From }
      */
     public From getFrom() {
         return from;
@@ -122,11 +118,9 @@ public class MessageHeader {
 
     /**
      * Sets the value of the from property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link From }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link From }
      */
     public void setFrom(From value) {
         this.from = value;
@@ -134,25 +128,23 @@ public class MessageHeader {
 
     /**
      * Gets the value of the to property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the to property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getTo().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link To }
-     * 
-     * 
      */
     public List<To> getTo() {
         if (to == null) {
@@ -161,16 +153,15 @@ public class MessageHeader {
         return this.to;
     }
 
-    public void setTo(List<To> tos){
+    public void setTo(List<To> tos) {
         this.to = tos;
     }
+
     /**
      * Gets the value of the code property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Code }
-     *     
+     *
+     * @return possible object is
+     * {@link Code }
      */
     public Code getCode() {
         return code;
@@ -178,11 +169,9 @@ public class MessageHeader {
 
     /**
      * Sets the value of the code property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Code }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Code }
      */
     public void setCode(Code value) {
         this.code = value;
@@ -190,11 +179,9 @@ public class MessageHeader {
 
     /**
      * Gets the value of the promulgationInfo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PromulgationInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link PromulgationInfo }
      */
     public PromulgationInfo getPromulgationInfo() {
         return promulgationInfo;
@@ -202,11 +189,9 @@ public class MessageHeader {
 
     /**
      * Sets the value of the promulgationInfo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PromulgationInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link PromulgationInfo }
      */
     public void setPromulgationInfo(PromulgationInfo value) {
         this.promulgationInfo = value;
@@ -214,11 +199,9 @@ public class MessageHeader {
 
     /**
      * Gets the value of the documentType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DocumentType }
-     *     
+     *
+     * @return possible object is
+     * {@link DocumentType }
      */
     public DocumentType getDocumentType() {
         return documentType;
@@ -226,11 +209,9 @@ public class MessageHeader {
 
     /**
      * Sets the value of the documentType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DocumentType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link DocumentType }
      */
     public void setDocumentType(DocumentType value) {
         this.documentType = value;
@@ -238,11 +219,9 @@ public class MessageHeader {
 
     /**
      * Gets the value of the subject property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getSubject() {
         return subject;
@@ -250,11 +229,9 @@ public class MessageHeader {
 
     /**
      * Sets the value of the subject property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setSubject(String value) {
         this.subject = value;
@@ -262,11 +239,9 @@ public class MessageHeader {
 
     /**
      * Gets the value of the content property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getContent() {
         return content;
@@ -274,11 +249,9 @@ public class MessageHeader {
 
     /**
      * Sets the value of the content property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setContent(String value) {
         this.content = value;
@@ -286,11 +259,9 @@ public class MessageHeader {
 
     /**
      * Gets the value of the signerInfo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SignerInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link SignerInfo }
      */
     public SignerInfo getSignerInfo() {
         return signerInfo;
@@ -298,11 +269,9 @@ public class MessageHeader {
 
     /**
      * Sets the value of the signerInfo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SignerInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link SignerInfo }
      */
     public void setSignerInfo(SignerInfo value) {
         this.signerInfo = value;
@@ -310,11 +279,9 @@ public class MessageHeader {
 
     /**
      * Gets the value of the dueDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLGregorianCalendar }
      */
     public String getDueDate() {
         return dueDate;
@@ -322,11 +289,9 @@ public class MessageHeader {
 
     /**
      * Sets the value of the dueDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setDueDate(String value) {
         this.dueDate = value;
@@ -334,11 +299,9 @@ public class MessageHeader {
 
     /**
      * Gets the value of the toPlaces property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ToPlaces }
-     *     
+     *
+     * @return possible object is
+     * {@link ToPlaces }
      */
     public ToPlaces getToPlaces() {
         return toPlaces;
@@ -346,11 +309,9 @@ public class MessageHeader {
 
     /**
      * Sets the value of the toPlaces property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ToPlaces }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ToPlaces }
      */
     public void setToPlaces(ToPlaces value) {
         this.toPlaces = value;
@@ -358,11 +319,9 @@ public class MessageHeader {
 
     /**
      * Gets the value of the otherInfo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link OtherInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link OtherInfo }
      */
     public OtherInfo getOtherInfo() {
         return otherInfo;
@@ -370,11 +329,9 @@ public class MessageHeader {
 
     /**
      * Sets the value of the otherInfo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link OtherInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link OtherInfo }
      */
     public void setOtherInfo(OtherInfo value) {
         this.otherInfo = value;
@@ -382,7 +339,6 @@ public class MessageHeader {
 
     /**
      * Gets the value of the steeringType property.
-     * 
      */
     public int getSteeringType() {
         return steeringType;
@@ -390,7 +346,6 @@ public class MessageHeader {
 
     /**
      * Sets the value of the steeringType property.
-     * 
      */
     public void setSteeringType(int value) {
         this.steeringType = value;
@@ -398,11 +353,9 @@ public class MessageHeader {
 
     /**
      * Gets the value of the documentId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getDocumentId() {
         return documentId;
@@ -410,11 +363,9 @@ public class MessageHeader {
 
     /**
      * Sets the value of the documentId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setDocumentId(String value) {
         this.documentId = value;

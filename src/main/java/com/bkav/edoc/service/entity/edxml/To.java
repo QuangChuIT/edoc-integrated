@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for To complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="To">
  *   &lt;complexContent>
@@ -35,24 +35,16 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "To", propOrder = {
-    "organId",
-    "organAdd",
-    "email",
-    "telephone",
-    "fax",
-    "website"
+        "organId",
+        "organAdd",
+        "email",
+        "telephone",
+        "fax",
+        "website"
 })
-
-/*
- * modifiedDate 20/062018
- * TienNVg
- * Summary: Them truong duadate cho tung don vi
- * */
 public class To {
 
     @XmlElement(name = "OrganId", required = true)
@@ -71,25 +63,25 @@ public class To {
     protected String website;
 
     //protected String dueDate;
-    
-    public To(String organId, String organName, String organAdd, String email, String telephone, String fax, String website){
-    	this.organId = organId;
-    	this.organName = organName;
-    	this.organAdd = organAdd;
-    	this.email = email;
-    	this.telephone = telephone;
-    	this.fax = fax;
-    	this.website = website;
+
+    public To(String organId, String organName, String organAdd, String email, String telephone, String fax, String website) {
+        this.organId = organId;
+        this.organName = organName;
+        this.organAdd = organAdd;
+        this.email = email;
+        this.telephone = telephone;
+        this.fax = fax;
+        this.website = website;
     }
-    
-    public To(){}
+
+    public To() {
+    }
+
     /**
      * Gets the value of the organId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getOrganId() {
         return organId;
@@ -98,39 +90,36 @@ public class To {
 //    public String getDueDate(){
 //    	return dueDate;
 //    }
+
     /**
      * Sets the value of the organId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setOrganId(String value) {
         this.organId = value;
     }
 
     /**
-	 * @return the organName
-	 */
-	public String getOrganName() {
-		return organName;
-	}
+     * @return the organName
+     */
+    public String getOrganName() {
+        return organName;
+    }
 
-	/**
-	 * @param organName the organName to set
-	 */
-	public void setOrganName(String organName) {
-		this.organName = organName;
-	}
+    /**
+     * @param organName the organName to set
+     */
+    public void setOrganName(String organName) {
+        this.organName = organName;
+    }
 
-	/**
+    /**
      * Gets the value of the organAdd property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getOrganAdd() {
         return organAdd;
@@ -138,11 +127,9 @@ public class To {
 
     /**
      * Sets the value of the organAdd property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setOrganAdd(String value) {
         this.organAdd = value;
@@ -150,11 +137,9 @@ public class To {
 
     /**
      * Gets the value of the email property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getEmail() {
         return email;
@@ -162,11 +147,9 @@ public class To {
 
     /**
      * Sets the value of the email property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setEmail(String value) {
         this.email = value;
@@ -174,11 +157,9 @@ public class To {
 
     /**
      * Gets the value of the telephone property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getTelephone() {
         return telephone;
@@ -186,11 +167,9 @@ public class To {
 
     /**
      * Sets the value of the telephone property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setTelephone(String value) {
         this.telephone = value;
@@ -198,11 +177,9 @@ public class To {
 
     /**
      * Gets the value of the fax property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getFax() {
         return fax;
@@ -210,11 +187,9 @@ public class To {
 
     /**
      * Sets the value of the fax property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setFax(String value) {
         this.fax = value;
@@ -222,11 +197,9 @@ public class To {
 
     /**
      * Gets the value of the website property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getWebsite() {
         return website;
@@ -234,11 +207,9 @@ public class To {
 
     /**
      * Sets the value of the website property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setWebsite(String value) {
         this.website = value;

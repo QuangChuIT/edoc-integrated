@@ -22,11 +22,9 @@ public class RedisKey {
 
     public final static String GET_ATTACHMENT_BY_DOC_ID = "GetAttachmentByDocID_";
 
-    public final static String[] DEFAULT_SERVER = new String[] { "127.0.0.1:11211" };
+    public final static String[] DEFAULT_SERVER = new String[]{"127.0.0.1:11211"};
 
-    public final static String  SERVER_KEY = "edxml.service.memcached.address";
-
-    public static String getKey(String finalKey, String methodPrefixKey){
+    public static String getKey(String finalKey, String methodPrefixKey) {
         StringBuilder resultKey = new StringBuilder();
         resultKey.append(methodPrefixKey);
         resultKey.append(finalKey);

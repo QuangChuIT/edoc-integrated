@@ -13,29 +13,28 @@ import com.bkav.edoc.service.resource.StringPool;
 
 
 @XmlRootElement(name = "Organizations", namespace = StringPool.TARGET_NAMESPACE)
-@XmlType(name = "Organizations", propOrder = { "organization" })
+@XmlType(name = "Organizations", propOrder = {"organization"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GetOrganizationsResponse {
 
-	@XmlElement(name = "Organization")
-	protected List<Organization> organization;
+    @XmlElement(name = "Organization")
+    protected List<Organization> organization;
 
-	/**
-	 * @return the organization
-	 */
-	public List<Organization> getOrganization() {
-		return organization;
-	}
+    /**
+     * @return the organization
+     */
+    public List<Organization> getOrganization() {
+        return organization;
+    }
 
-	/**
-	 * @param organizations
-	 *            the organization to set
-	 */
-	public void setOrganization(List<Organization> organizations) {
-		if (organizations == null) {
-			this.organization = new ArrayList<Organization>();
-		} else {
-			this.organization = organizations;
-		}
-	}
+    /**
+     * @param organizations the organization to set
+     */
+    public void setOrganization(List<Organization> organizations) {
+        if (organizations == null) {
+            this.organization = new ArrayList<Organization>();
+        } else {
+            this.organization = organizations;
+        }
+    }
 }

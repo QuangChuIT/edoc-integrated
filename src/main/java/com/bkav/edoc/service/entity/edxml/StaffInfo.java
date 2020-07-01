@@ -15,11 +15,11 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>
  * Java class for StaffInfo complex type.
- * 
+ *
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="StaffInfo">
  *   &lt;complexContent>
@@ -32,90 +32,82 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "StaffInfo", propOrder = { "department", "staff", "email", "mobile"})
+@XmlType(name = "StaffInfo", propOrder = {"department", "staff", "email", "mobile"})
 public class StaffInfo {
 
-	@XmlElement(name = "Department", required = true)
-	protected String department;
-	@XmlElement(name = "Staff", required = true)
-	protected String staff;
-	@XmlElement(name = "Email", required = true)
-	protected String email;
-	@XmlElement(name = "Mobile", required = true)
-	protected String mobile;
+    @XmlElement(name = "Department", required = true)
+    protected String department;
+    @XmlElement(name = "Staff", required = true)
+    protected String staff;
+    @XmlElement(name = "Email", required = true)
+    protected String email;
+    @XmlElement(name = "Mobile", required = true)
+    protected String mobile;
 
-	/**
-	 * Gets the value of the department property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getDepartment() {
-		return department;
-	}
+    /**
+     * Gets the value of the department property.
+     *
+     * @return possible object is {@link String }
+     */
+    public String getDepartment() {
+        return department;
+    }
 
-	/**
-	 * Sets the value of the department property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setDepartment(String value) {
-		this.department = value;
-	}
+    /**
+     * Sets the value of the department property.
+     *
+     * @param value allowed object is {@link String }
+     */
+    public void setDepartment(String value) {
+        this.department = value;
+    }
 
-	/**
-	 * Gets the value of the staff property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getStaff() {
-		return staff;
-	}
+    /**
+     * Gets the value of the staff property.
+     *
+     * @return possible object is {@link String }
+     */
+    public String getStaff() {
+        return staff;
+    }
 
-	/**
-	 * Sets the value of the staff property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setStaff(String value) {
-		this.staff = value;
-	}
+    /**
+     * Sets the value of the staff property.
+     *
+     * @param value allowed object is {@link String }
+     */
+    public void setStaff(String value) {
+        this.staff = value;
+    }
 
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
 
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	/**
-	 * @return the mobile
-	 */
-	public String getMobile() {
-		return mobile;
-	}
+    /**
+     * @return the mobile
+     */
+    public String getMobile() {
+        return mobile;
+    }
 
-	/**
-	 * @param mobile the mobile to set
-	 */
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
+    /**
+     * @param mobile the mobile to set
+     */
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.bkav.edoc.service.entity.edxml;
 
 public class Receiver {
+
     private long receiverType;
     private String organId;
 

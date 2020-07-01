@@ -18,11 +18,11 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>
  * Java class for Attachment complex type.
- * 
+ *
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Attachment">
  *   &lt;complexContent>
@@ -35,86 +35,78 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Attachment", propOrder = { "name", "value" })
+@XmlType(name = "Attachment", propOrder = {"name", "value"})
 public class Attachment {
 
-	@XmlElement(required = true)
-	protected String name;
+    @XmlElement(required = true)
+    protected String name;
 
-	@XmlElement(required = true)
-	protected InputStream value;
+    @XmlElement(required = true)
+    protected InputStream value;
 
-	@XmlAttribute(required = true, name = "Content-Type")
-	protected String contentType;
+    @XmlAttribute(required = true, name = "Content-Type")
+    protected String contentType;
 
-	@XmlAttribute(required = true, name = "Content-Transfer-Encoding")
-	protected String contentTransfer;
+    @XmlAttribute(required = true, name = "Content-Transfer-Encoding")
+    protected String contentTransfer;
 
-	/**
-	 * Gets the value of the name property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Gets the value of the name property.
+     *
+     * @return possible object is {@link String }
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Sets the value of the name property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setName(String value) {
-		this.name = value;
-	}
+    /**
+     * Sets the value of the name property.
+     *
+     * @param value allowed object is {@link String }
+     */
+    public void setName(String value) {
+        this.name = value;
+    }
 
-	/**
-	 * Gets the value of the value property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public InputStream getValue() {
-		return value;
-	}
+    /**
+     * Gets the value of the value property.
+     *
+     * @return possible object is {@link String }
+     */
+    public InputStream getValue() {
+        return value;
+    }
 
-	/**
-	 * Sets the value of the value property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setValue(InputStream value) {
-		this.value = value;
-	}
+    /**
+     * Sets the value of the value property.
+     *
+     * @param value allowed object is {@link String }
+     */
+    public void setValue(InputStream value) {
+        this.value = value;
+    }
 
-	public String getContentType() {
-		return contentType;
-	}
+    public String getContentType() {
+        return contentType;
+    }
 
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
-	public String getContentTransfer() {
-		return contentTransfer;
-	}
+    public String getContentTransfer() {
+        return contentTransfer;
+    }
 
-	public void setContentTransfer(String contentTransfer) {
-		this.contentTransfer = contentTransfer;
-	}
-	
-	@Override
-	public String toString(){
-		return this.name + " - " + this.contentType + " - " + this.contentTransfer;
-	}
-	
+    public void setContentTransfer(String contentTransfer) {
+        this.contentTransfer = contentTransfer;
+    }
+
+    @Override
+    public String toString() {
+        return this.name + " - " + this.contentType + " - " + this.contentTransfer;
+    }
+
 }

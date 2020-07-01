@@ -19,7 +19,7 @@ public class EdocDynamicContactDaoImpl extends RootDaoImpl<EdocDynamicContact, L
         Query query = currentSession.createQuery(sql.toString());
         query.setString("domain", domain);
         List<EdocDynamicContact> result = query.list();
-        if(result != null && result.size() > 0) {
+        if (result != null && result.size() > 0) {
             return result.get(0);
         }
         return null;

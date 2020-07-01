@@ -17,9 +17,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * <p>Java class for PromulgationInfo complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="PromulgationInfo">
  *   &lt;complexContent>
@@ -32,13 +32,11 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PromulgationInfo", propOrder = {
-    "place",
-    "promulgationDate"
+        "place",
+        "promulgationDate"
 })
 public class PromulgationInfo {
 
@@ -49,11 +47,9 @@ public class PromulgationInfo {
 
     /**
      * Gets the value of the place property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getPlace() {
         return place;
@@ -61,11 +57,9 @@ public class PromulgationInfo {
 
     /**
      * Sets the value of the place property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setPlace(String value) {
         this.place = value;
@@ -73,11 +67,9 @@ public class PromulgationInfo {
 
     /**
      * Gets the value of the promulgationDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLGregorianCalendar }
      */
     public String getPromulgationDate() {
         return promulgationDate;
@@ -85,11 +77,9 @@ public class PromulgationInfo {
 
     /**
      * Sets the value of the promulgationDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLGregorianCalendar }
      */
     public void setPromulgationDate(String value) {
         this.promulgationDate = value;

@@ -15,11 +15,11 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>
  * Java class for Status complex type.
- * 
+ *
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Status">
  *   &lt;complexContent>
@@ -36,151 +36,131 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Status", propOrder = { "responseFor", "from", "description",
-		"timeStamp", "statusCode", "staffInfo" })
+@XmlType(name = "Status", propOrder = {"responseFor", "from", "description",
+        "timeStamp", "statusCode", "staffInfo"})
 public class Status {
 
-	@XmlElement(name = "ResponseFor", required = true)
-	protected ResponseFor responseFor;
-	@XmlElement(name = "From", required = true)
-	protected From from;
-	@XmlElement(name = "Description", required = true)
-	protected String description;
-	@XmlElement(name = "TimeStamp", required = true)
-	protected String timeStamp;
-	@XmlElement(name = "StatusCode", required = true)
-	protected String statusCode;
-	@XmlElement(name = "StaffInfo", required = true)
-	protected StaffInfo staffInfo;
+    @XmlElement(name = "ResponseFor", required = true)
+    protected ResponseFor responseFor;
+    @XmlElement(name = "From", required = true)
+    protected From from;
+    @XmlElement(name = "Description", required = true)
+    protected String description;
+    @XmlElement(name = "TimeStamp", required = true)
+    protected String timeStamp;
+    @XmlElement(name = "StatusCode", required = true)
+    protected String statusCode;
+    @XmlElement(name = "StaffInfo", required = true)
+    protected StaffInfo staffInfo;
 
-	/**
-	 * Gets the value of the responseFor property.
-	 * 
-	 * @return possible object is {@link ResponseFor }
-	 * 
-	 */
-	public ResponseFor getResponseFor() {
-		return responseFor;
-	}
+    /**
+     * Gets the value of the responseFor property.
+     *
+     * @return possible object is {@link ResponseFor }
+     */
+    public ResponseFor getResponseFor() {
+        return responseFor;
+    }
 
-	/**
-	 * Sets the value of the responseFor property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link ResponseFor }
-	 * 
-	 */
-	public void setResponseFor(ResponseFor value) {
-		this.responseFor = value;
-	}
+    /**
+     * Sets the value of the responseFor property.
+     *
+     * @param value allowed object is {@link ResponseFor }
+     */
+    public void setResponseFor(ResponseFor value) {
+        this.responseFor = value;
+    }
 
-	/**
-	 * Gets the value of the from property.
-	 * 
-	 * @return possible object is {@link From }
-	 * 
-	 */
-	public From getFrom() {
-		return from;
-	}
+    /**
+     * Gets the value of the from property.
+     *
+     * @return possible object is {@link From }
+     */
+    public From getFrom() {
+        return from;
+    }
 
-	/**
-	 * Sets the value of the from property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link From }
-	 * 
-	 */
-	public void setFrom(From value) {
-		this.from = value;
-	}
+    /**
+     * Sets the value of the from property.
+     *
+     * @param value allowed object is {@link From }
+     */
+    public void setFrom(From value) {
+        this.from = value;
+    }
 
-	/**
-	 * Gets the value of the description property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getDescription() {
-		return description;
-	}
+    /**
+     * Gets the value of the description property.
+     *
+     * @return possible object is {@link String }
+     */
+    public String getDescription() {
+        return description;
+    }
 
-	/**
-	 * Sets the value of the description property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setDescription(String value) {
-		this.description = value;
-	}
+    /**
+     * Sets the value of the description property.
+     *
+     * @param value allowed object is {@link String }
+     */
+    public void setDescription(String value) {
+        this.description = value;
+    }
 
-	/**
-	 * Gets the value of the timeStamp property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getTimeStamp() {
-		return timeStamp;
-	}
+    /**
+     * Gets the value of the timeStamp property.
+     *
+     * @return possible object is {@link String }
+     */
+    public String getTimeStamp() {
+        return timeStamp;
+    }
 
-	/**
-	 * Sets the value of the timeStamp property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setTimeStamp(String value) {
-		this.timeStamp = value;
-	}
+    /**
+     * Sets the value of the timeStamp property.
+     *
+     * @param value allowed object is {@link String }
+     */
+    public void setTimeStamp(String value) {
+        this.timeStamp = value;
+    }
 
-	/**
-	 * Gets the value of the statusCode property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getStatusCode() {
-		return statusCode;
-	}
+    /**
+     * Gets the value of the statusCode property.
+     *
+     * @return possible object is {@link String }
+     */
+    public String getStatusCode() {
+        return statusCode;
+    }
 
-	/**
-	 * Sets the value of the statusCode property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setStatusCode(String value) {
-		this.statusCode = value;
-	}
+    /**
+     * Sets the value of the statusCode property.
+     *
+     * @param value allowed object is {@link String }
+     */
+    public void setStatusCode(String value) {
+        this.statusCode = value;
+    }
 
-	/**
-	 * Gets the value of the staffInfo property.
-	 * 
-	 * @return possible object is {@link StaffInfo }
-	 * 
-	 */
-	public StaffInfo getStaffInfo() {
-		return staffInfo;
-	}
+    /**
+     * Gets the value of the staffInfo property.
+     *
+     * @return possible object is {@link StaffInfo }
+     */
+    public StaffInfo getStaffInfo() {
+        return staffInfo;
+    }
 
-	/**
-	 * Sets the value of the staffInfo property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link StaffInfo }
-	 * 
-	 */
-	public void setStaffInfo(StaffInfo value) {
-		this.staffInfo = value;
-	}
+    /**
+     * Sets the value of the staffInfo property.
+     *
+     * @param value allowed object is {@link StaffInfo }
+     */
+    public void setStaffInfo(StaffInfo value) {
+        this.staffInfo = value;
+    }
 
 }

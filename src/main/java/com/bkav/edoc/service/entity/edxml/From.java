@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for From complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="From">
  *   &lt;complexContent>
@@ -35,19 +35,17 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "From", propOrder = {
-    "organId",
-    "organName",
-    "organInCharge",
-    "organAdd",
-    "email",
-    "telephone",
-    "fax",
-    "website"
+        "organId",
+        "organName",
+        "organInCharge",
+        "organAdd",
+        "email",
+        "telephone",
+        "fax",
+        "website"
 })
 public class From {
 
@@ -57,7 +55,7 @@ public class From {
     protected String organName;
     @XmlElement(name = "OrganInCharge", required = true)
     protected String organInCharge;
-	@XmlElement(name = "OrganAdd", required = true)
+    @XmlElement(name = "OrganAdd", required = true)
     protected String organAdd;
     @XmlElement(name = "Email", required = true)
     protected String email;
@@ -70,37 +68,34 @@ public class From {
 
     /**
      * Gets the value of the organId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
-    
-    public From(){}
-    
-    public From(String organId, String organName, String organInCharge, String organAdd, String email, String telephone, String fax, String website){
-    	this.organId = organId;
-    	this.organName = organName;
-    	this.organInCharge = organInCharge;
-    	this.organAdd = organAdd;
-    	this.email = email;
-    	this.telephone = telephone;
-    	this.fax = fax;
-    	this.website = website;
+
+    public From() {
     }
-    
+
+    public From(String organId, String organName, String organInCharge, String organAdd, String email, String telephone, String fax, String website) {
+        this.organId = organId;
+        this.organName = organName;
+        this.organInCharge = organInCharge;
+        this.organAdd = organAdd;
+        this.email = email;
+        this.telephone = telephone;
+        this.fax = fax;
+        this.website = website;
+    }
+
     public String getOrganId() {
         return organId;
     }
 
     /**
      * Sets the value of the organId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setOrganId(String value) {
         this.organId = value;
@@ -108,37 +103,36 @@ public class From {
 
     /**
      * Gets the value of the organAdd property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
-    
-    /**
-	 * @return the organName
-	 */
-	public String getOrganName() {
-		return organName;
-	}
 
-	/**
-	 * @param organName the organName to set
-	 */
-	public void setOrganName(String organName) {
-		this.organName = organName;
-	}
+    /**
+     * @return the organName
+     */
+    public String getOrganName() {
+        return organName;
+    }
+
+    /**
+     * @param organName the organName to set
+     */
+    public void setOrganName(String organName) {
+        this.organName = organName;
+    }
+
     public String getOrganAdd() {
         return organAdd;
     }
 
     /**
      * Sets the value of the organAdd property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setOrganAdd(String value) {
         this.organAdd = value;
@@ -146,11 +140,9 @@ public class From {
 
     /**
      * Gets the value of the email property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getEmail() {
         return email;
@@ -158,11 +150,9 @@ public class From {
 
     /**
      * Sets the value of the email property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setEmail(String value) {
         this.email = value;
@@ -170,11 +160,9 @@ public class From {
 
     /**
      * Gets the value of the telephone property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getTelephone() {
         return telephone;
@@ -182,11 +170,9 @@ public class From {
 
     /**
      * Sets the value of the telephone property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setTelephone(String value) {
         this.telephone = value;
@@ -194,11 +180,9 @@ public class From {
 
     /**
      * Gets the value of the fax property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getFax() {
         return fax;
@@ -206,11 +190,9 @@ public class From {
 
     /**
      * Sets the value of the fax property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setFax(String value) {
         this.fax = value;
@@ -218,11 +200,9 @@ public class From {
 
     /**
      * Gets the value of the website property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getWebsite() {
         return website;
@@ -230,22 +210,20 @@ public class From {
 
     /**
      * Sets the value of the website property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setWebsite(String value) {
         this.website = value;
     }
 
-	public String getOrganInCharge() {
-		return organInCharge;
-	}
+    public String getOrganInCharge() {
+        return organInCharge;
+    }
 
-	public void setOrganInCharge(String organInCharge) {
-		this.organInCharge = organInCharge;
-	}
+    public void setOrganInCharge(String organInCharge) {
+        this.organInCharge = organInCharge;
+    }
 
 }

@@ -17,9 +17,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for OtherInfo complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="OtherInfo">
  *   &lt;complexContent>
@@ -35,16 +35,14 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OtherInfo", propOrder = {
-    "priority",
-    "sphereOfPromulgation",
-    "typerNotation",
-    "promulgationAmount",
-    "pageAmount"
+        "priority",
+        "sphereOfPromulgation",
+        "typerNotation",
+        "promulgationAmount",
+        "pageAmount"
 })
 public class OtherInfo {
 
@@ -64,7 +62,6 @@ public class OtherInfo {
 
     /**
      * Gets the value of the priority property.
-     * 
      */
     public int getPriority() {
         return priority;
@@ -72,7 +69,6 @@ public class OtherInfo {
 
     /**
      * Sets the value of the priority property.
-     * 
      */
     public void setPriority(int value) {
         this.priority = value;
@@ -80,11 +76,9 @@ public class OtherInfo {
 
     /**
      * Gets the value of the sphereOfPromulgation property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getSphereOfPromulgation() {
         return sphereOfPromulgation;
@@ -92,11 +86,9 @@ public class OtherInfo {
 
     /**
      * Sets the value of the sphereOfPromulgation property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setSphereOfPromulgation(String value) {
         this.sphereOfPromulgation = value;
@@ -104,11 +96,9 @@ public class OtherInfo {
 
     /**
      * Gets the value of the typerNotation property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getTyperNotation() {
         return typerNotation;
@@ -116,11 +106,9 @@ public class OtherInfo {
 
     /**
      * Sets the value of the typerNotation property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setTyperNotation(String value) {
         this.typerNotation = value;
@@ -128,7 +116,6 @@ public class OtherInfo {
 
     /**
      * Gets the value of the promulgationAmount property.
-     * 
      */
     public int getPromulgationAmount() {
         return promulgationAmount;
@@ -136,7 +123,6 @@ public class OtherInfo {
 
     /**
      * Sets the value of the promulgationAmount property.
-     * 
      */
     public void setPromulgationAmount(int value) {
         this.promulgationAmount = value;
@@ -144,7 +130,6 @@ public class OtherInfo {
 
     /**
      * Gets the value of the pageAmount property.
-     * 
      */
     public int getPageAmount() {
         return pageAmount;
@@ -152,7 +137,6 @@ public class OtherInfo {
 
     /**
      * Sets the value of the pageAmount property.
-     * 
      */
     public void setPageAmount(int value) {
         this.pageAmount = value;

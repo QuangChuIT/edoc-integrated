@@ -2,10 +2,10 @@ package com.bkav.edoc.service.util;
 
 
 public class EdXMLConfigUtil {
-	
-	public static String getValueByKey(String key){
-		
-		String value = "";
+
+    public static String getValueByKey(String key) {
+
+        String value = "";
 		
 		/*try{
 			edXMLConfig result =  edXMLConfigLocalServiceUtil.findByKey(key);
@@ -18,8 +18,8 @@ public class EdXMLConfigUtil {
 			
 			return null;
 		}*/
-		
-		return value;	
-		
-	}
+
+        return value;
+
+    }
 }

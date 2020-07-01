@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -49,739 +49,738 @@ import java.util.function.ToLongFunction;
  */
 public class ListUtil {
 
-	public static <E> List<E> concat(List<? extends E>... lists) {
-		List<E> newList = new ArrayList<>();
+    public static <E> List<E> concat(List<? extends E>... lists) {
+        List<E> newList = new ArrayList<>();
 
-		for (List<? extends E> list : lists) {
-			newList.addAll(list);
-		}
+        for (List<? extends E> list : lists) {
+            newList.addAll(list);
+        }
 
-		return newList;
-	}
+        return newList;
+    }
 
-	public static <E> List<E> copy(List<? extends E> master) {
-		if (master == null) {
-			return null;
-		}
+    public static <E> List<E> copy(List<? extends E> master) {
+        if (master == null) {
+            return null;
+        }
 
-		return new ArrayList<>(master);
-	}
+        return new ArrayList<>(master);
+    }
 
-	public static <E> void copy(
-		List<? extends E> master, List<? super E> copy) {
+    public static <E> void copy(
+            List<? extends E> master, List<? super E> copy) {
 
-		if ((master == null) || (copy == null)) {
-			return;
-		}
+        if ((master == null) || (copy == null)) {
+            return;
+        }
 
-		copy.clear();
+        copy.clear();
 
-		copy.addAll(master);
-	}
+        copy.addAll(master);
+    }
 
-	public static <E> int count(
-		List<? extends E> list, Predicate<E> predicate) {
+    public static <E> int count(
+            List<? extends E> list, Predicate<E> predicate) {
 
-		if (isEmpty(list)) {
-			return 0;
-		}
+        if (isEmpty(list)) {
+            return 0;
+        }
 
-		int count = 0;
+        int count = 0;
 
-		for (E element : list) {
-			if (predicate.test(element)) {
-				count++;
-			}
-		}
+        for (E element : list) {
+            if (predicate.test(element)) {
+                count++;
+            }
+        }
 
-		return count;
-	}
+        return count;
+    }
 
-	public static <E> void distinct(
-		List<? extends E> list, Comparator<E> comparator) {
+    public static <E> void distinct(
+            List<? extends E> list, Comparator<E> comparator) {
 
-		if (isEmpty(list)) {
-			return;
-		}
+        if (isEmpty(list)) {
+            return;
+        }
 
-		Set<E> set = new HashSet<>();
+        Set<E> set = new HashSet<>();
 
-		Iterator<? extends E> iterator = list.iterator();
+        Iterator<? extends E> iterator = list.iterator();
 
-		while (iterator.hasNext()) {
-			E obj = iterator.next();
+        while (iterator.hasNext()) {
+            E obj = iterator.next();
 
-			if (!set.add(obj)) {
-				iterator.remove();
-			}
-		}
+            if (!set.add(obj)) {
+                iterator.remove();
+            }
+        }
 
-		if (comparator != null) {
-			Collections.sort(list, comparator);
-		}
-	}
+        if (comparator != null) {
+            Collections.sort(list, comparator);
+        }
+    }
 
-	public static void distinct(List<?> list) {
-		distinct(list, null);
-	}
+    public static void distinct(List<?> list) {
+        distinct(list, null);
+    }
 
-	public static <E> boolean exists(
-		List<? extends E> list, Predicate<E> predicate) {
+    public static <E> boolean exists(
+            List<? extends E> list, Predicate<E> predicate) {
 
-		if (isEmpty(list)) {
-			return false;
-		}
+        if (isEmpty(list)) {
+            return false;
+        }
 
-		for (E element : list) {
-			if (predicate.test(element)) {
-				return true;
-			}
-		}
+        for (E element : list) {
+            if (predicate.test(element)) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public static <T> List<T> filter(
-		List<? extends T> inputList, List<T> outputList,
-		Predicate<T> predicate) {
+    public static <T> List<T> filter(
+            List<? extends T> inputList, List<T> outputList,
+            Predicate<T> predicate) {
 
-		for (T item : inputList) {
-			if (predicate.test(item)) {
-				outputList.add(item);
-			}
-		}
+        for (T item : inputList) {
+            if (predicate.test(item)) {
+                outputList.add(item);
+            }
+        }
 
-		return outputList;
-	}
+        return outputList;
+    }
 
-	public static <T> List<T> filter(
-		List<? extends T> inputList, Predicate<T> predicate) {
+    public static <T> List<T> filter(
+            List<? extends T> inputList, Predicate<T> predicate) {
 
-		return filter(inputList, new ArrayList<T>(inputList.size()), predicate);
-	}
+        return filter(inputList, new ArrayList<T>(inputList.size()), predicate);
+    }
 
-	public static List<Boolean> fromArray(boolean[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    public static List<Boolean> fromArray(boolean[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Boolean> list = new ArrayList<>(array.length);
+        List<Boolean> list = new ArrayList<>(array.length);
 
-		for (boolean value : array) {
-			list.add(value);
-		}
+        for (boolean value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static List<Character> fromArray(char[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    public static List<Character> fromArray(char[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Character> list = new ArrayList<>(array.length);
+        List<Character> list = new ArrayList<>(array.length);
 
-		for (char value : array) {
-			list.add(value);
-		}
+        for (char value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static List<Double> fromArray(double[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    public static List<Double> fromArray(double[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Double> list = new ArrayList<>(array.length);
+        List<Double> list = new ArrayList<>(array.length);
 
-		for (double value : array) {
-			list.add(value);
-		}
+        for (double value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static <E> List<E> fromArray(E... array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    public static <E> List<E> fromArray(E... array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		return new ArrayList<>(Arrays.asList(array));
-	}
+        return new ArrayList<>(Arrays.asList(array));
+    }
 
-	public static List<Float> fromArray(float[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    public static List<Float> fromArray(float[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Float> list = new ArrayList<>(array.length);
+        List<Float> list = new ArrayList<>(array.length);
 
-		for (float value : array) {
-			list.add(value);
-		}
+        for (float value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static List<Integer> fromArray(int[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    public static List<Integer> fromArray(int[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Integer> list = new ArrayList<>(array.length);
+        List<Integer> list = new ArrayList<>(array.length);
 
-		for (int value : array) {
-			list.add(value);
-		}
+        for (int value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static List<Long> fromArray(long[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    public static List<Long> fromArray(long[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Long> list = new ArrayList<>(array.length);
+        List<Long> list = new ArrayList<>(array.length);
 
-		for (long value : array) {
-			list.add(value);
-		}
+        for (long value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static List<Short> fromArray(short[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    public static List<Short> fromArray(short[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Short> list = new ArrayList<>(array.length);
+        List<Short> list = new ArrayList<>(array.length);
 
-		for (short value : array) {
-			list.add(value);
-		}
+        for (short value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public static <E> List<E> fromCollection(Collection<? extends E> c) {
-		if ((c != null) && (c instanceof List)) {
-			return (List)c;
-		}
+    @SuppressWarnings("rawtypes")
+    public static <E> List<E> fromCollection(Collection<? extends E> c) {
+        if ((c != null) && (c instanceof List)) {
+            return (List) c;
+        }
 
-		if ((c == null) || c.isEmpty()) {
-			return new ArrayList<>();
-		}
+        if ((c == null) || c.isEmpty()) {
+            return new ArrayList<>();
+        }
 
-		List<E> list = new ArrayList<>(c.size());
+        List<E> list = new ArrayList<>(c.size());
 
-		list.addAll(c);
+        list.addAll(c);
 
-		return list;
-	}
+        return list;
+    }
 
-	public static <E> List<E> fromEnumeration(
-		Enumeration<? extends E> enumeration) {
+    public static <E> List<E> fromEnumeration(
+            Enumeration<? extends E> enumeration) {
 
-		List<E> list = new ArrayList<>();
+        List<E> list = new ArrayList<>();
 
-		while (enumeration.hasMoreElements()) {
-			E obj = enumeration.nextElement();
+        while (enumeration.hasMoreElements()) {
+            E obj = enumeration.nextElement();
 
-			list.add(obj);
-		}
+            list.add(obj);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static List<String> fromFile(File file) throws IOException {
-		if (!file.exists()) {
-			return new ArrayList<>();
-		}
+    public static List<String> fromFile(File file) throws IOException {
+        if (!file.exists()) {
+            return new ArrayList<>();
+        }
 
-		List<String> list = new ArrayList<>();
+        List<String> list = new ArrayList<>();
 
-		try (UnsyncBufferedReader unsyncBufferedReader =
-				new UnsyncBufferedReader(new FileReader(file))) {
+        try (UnsyncBufferedReader unsyncBufferedReader =
+                     new UnsyncBufferedReader(new FileReader(file))) {
 
-			String s = StringPool.BLANK;
+            String s = StringPool.BLANK;
 
-			while ((s = unsyncBufferedReader.readLine()) != null) {
-				list.add(s);
-			}
-		}
+            while ((s = unsyncBufferedReader.readLine()) != null) {
+                list.add(s);
+            }
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static List<String> fromFile(String fileName) throws IOException {
-		return fromFile(new File(fileName));
-	}
+    public static List<String> fromFile(String fileName) throws IOException {
+        return fromFile(new File(fileName));
+    }
 
-	public static <E> List<E> fromMapKeys(Map<? extends E, ?> map) {
-		if (MapUtil.isEmpty(map)) {
-			return new ArrayList<>();
-		}
+    public static <E> List<E> fromMapKeys(Map<? extends E, ?> map) {
+        if (MapUtil.isEmpty(map)) {
+            return new ArrayList<>();
+        }
 
-		return new ArrayList<>(map.keySet());
-	}
+        return new ArrayList<>(map.keySet());
+    }
 
-	public static <E> List<E> fromMapValues(Map<?, ? extends E> map) {
-		if (MapUtil.isEmpty(map)) {
-			return new ArrayList<>();
-		}
+    public static <E> List<E> fromMapValues(Map<?, ? extends E> map) {
+        if (MapUtil.isEmpty(map)) {
+            return new ArrayList<>();
+        }
 
-		return new ArrayList<>(map.values());
-	}
+        return new ArrayList<>(map.values());
+    }
 
-	public static List<String> fromString(String s) {
-		return fromArray(StringUtil.splitLines(s));
-	}
+    public static List<String> fromString(String s) {
+        return fromArray(StringUtil.splitLines(s));
+    }
 
-	public static List<String> fromString(String s, String delimiter) {
-		return fromArray(StringUtil.split(s, delimiter));
-	}
+    public static List<String> fromString(String s, String delimiter) {
+        return fromArray(StringUtil.split(s, delimiter));
+    }
 
-	public static boolean isEmpty(List<?> list) {
-		if ((list == null) || list.isEmpty()) {
-			return true;
-		}
+    public static boolean isEmpty(List<?> list) {
+        if ((list == null) || list.isEmpty()) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public static boolean isNotEmpty(List<?> list) {
-		return !isEmpty(list);
-	}
+    public static boolean isNotEmpty(List<?> list) {
+        return !isEmpty(list);
+    }
 
-	public static boolean isNotNull(List<?> list) {
-		return !isNull(list);
-	}
+    public static boolean isNotNull(List<?> list) {
+        return !isNull(list);
+    }
 
-	public static boolean isNull(List<?> list) {
-		if ((list == null) || list.isEmpty()) {
-			return true;
-		}
+    public static boolean isNull(List<?> list) {
+        if ((list == null) || list.isEmpty()) {
+            return true;
+        }
 
-		for (Object bean : list) {
-			if (Validator.isNotNull(bean)) {
-				return false;
-			}
-		}
+        for (Object bean : list) {
+            if (Validator.isNotNull(bean)) {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public static boolean isUnmodifiableList(List<?> list) {
-		return _UNMODIFIABLE_LIST_CLASS.isInstance(list);
-	}
+    public static boolean isUnmodifiableList(List<?> list) {
+        return _UNMODIFIABLE_LIST_CLASS.isInstance(list);
+    }
 
-	public static <E> List<E> remove(List<E> list, List<? extends E> remove) {
-		if (isEmpty(list) || isEmpty(remove)) {
-			return list;
-		}
+    public static <E> List<E> remove(List<E> list, List<? extends E> remove) {
+        if (isEmpty(list) || isEmpty(remove)) {
+            return list;
+        }
 
-		list = copy(list);
+        list = copy(list);
 
-		for (E element : remove) {
-			list.remove(element);
-		}
+        for (E element : remove) {
+            list.remove(element);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static <E> Iterator<E> reverseIterator(List<E> list) {
-		final ListIterator<E> listIterator = list.listIterator(list.size());
+    public static <E> Iterator<E> reverseIterator(List<E> list) {
+        final ListIterator<E> listIterator = list.listIterator(list.size());
 
-		return new Iterator<E>() {
+        return new Iterator<E>() {
 
-			@Override
-			public boolean hasNext() {
-				return listIterator.hasPrevious();
-			}
+            @Override
+            public boolean hasNext() {
+                return listIterator.hasPrevious();
+            }
 
-			@Override
-			public E next() {
-				return listIterator.previous();
-			}
+            @Override
+            public E next() {
+                return listIterator.previous();
+            }
 
-			@Override
-			public void remove() {
-				listIterator.remove();
-			}
+            @Override
+            public void remove() {
+                listIterator.remove();
+            }
 
-		};
-	}
+        };
+    }
 
-	public static <E> List<E> sort(List<E> list) {
-		return sort(list, null);
-	}
+    public static <E> List<E> sort(List<E> list) {
+        return sort(list, null);
+    }
 
-	public static <E> List<E> sort(
-		List<E> list, Comparator<? super E> comparator) {
+    public static <E> List<E> sort(
+            List<E> list, Comparator<? super E> comparator) {
 
-		if (isUnmodifiableList(list)) {
-			list = copy(list);
-		}
+        if (isUnmodifiableList(list)) {
+            list = copy(list);
+        }
 
-		Collections.sort(list, comparator);
+        Collections.sort(list, comparator);
 
-		return list;
-	}
+        return list;
+    }
 
-	public static <E> List<E> subList(List<E> list, int start, int end) {
-		if (start < 0) {
-			start = 0;
-		}
+    public static <E> List<E> subList(List<E> list, int start, int end) {
+        if (start < 0) {
+            start = 0;
+        }
 
-		if ((end < 0) || (end > list.size())) {
-			end = list.size();
-		}
+        if ((end < 0) || (end > list.size())) {
+            end = list.size();
+        }
 
-		if (start < end) {
-			return list.subList(start, end);
-		}
+        if (start < end) {
+            return list.subList(start, end);
+        }
 
-		return Collections.emptyList();
-	}
+        return Collections.emptyList();
+    }
 
-	public static <T, A> A[] toArray(
-		List<? extends T> list, Accessor<T, A> accessor) {
+    public static <T, A> A[] toArray(
+            List<? extends T> list, Accessor<T, A> accessor) {
 
-		if (isEmpty(list)) {
-			return (A[])Array.newInstance(accessor.getAttributeClass(), 0);
-		}
+        if (isEmpty(list)) {
+            return (A[]) Array.newInstance(accessor.getAttributeClass(), 0);
+        }
 
-		A[] array = (A[])Array.newInstance(
-			accessor.getAttributeClass(), list.size());
+        A[] array = (A[]) Array.newInstance(
+                accessor.getAttributeClass(), list.size());
 
-		for (int i = 0; i < list.size(); i++) {
-			T bean = list.get(i);
+        for (int i = 0; i < list.size(); i++) {
+            T bean = list.get(i);
 
-			A attribute = accessor.get(bean);
+            A attribute = accessor.get(bean);
 
-			array[i] = attribute;
-		}
+            array[i] = attribute;
+        }
 
-		return array;
-	}
+        return array;
+    }
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #fromArray(boolean[])}
-	 */
-	@Deprecated
-	public static List<Boolean> toList(boolean[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    /**
+     * @deprecated As of Athanasius (7.3.x), replaced by {@link
+     *             #fromArray(boolean[])}
+     */
+    @Deprecated
+    public static List<Boolean> toList(boolean[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Boolean> list = new ArrayList<>(array.length);
+        List<Boolean> list = new ArrayList<>(array.length);
 
-		for (boolean value : array) {
-			list.add(value);
-		}
+        for (boolean value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #fromArray(char[])}
-	 */
-	@Deprecated
-	public static List<Character> toList(char[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    /**
+     * @deprecated As of Athanasius (7.3.x), replaced by {@link
+     *             #fromArray(char[])}
+     */
+    @Deprecated
+    public static List<Character> toList(char[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Character> list = new ArrayList<>(array.length);
+        List<Character> list = new ArrayList<>(array.length);
 
-		for (char value : array) {
-			list.add(value);
-		}
+        for (char value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #fromArray(double[])}
-	 */
-	@Deprecated
-	public static List<Double> toList(double[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    /**
+     * @deprecated As of Athanasius (7.3.x), replaced by {@link
+     *             #fromArray(double[])}
+     */
+    @Deprecated
+    public static List<Double> toList(double[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Double> list = new ArrayList<>(array.length);
+        List<Double> list = new ArrayList<>(array.length);
 
-		for (double value : array) {
-			list.add(value);
-		}
+        for (double value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static <E> List<E> toList(E value) {
-		return new ArrayList<>(Arrays.asList(value));
-	}
+    public static <E> List<E> toList(E value) {
+        return new ArrayList<>(Arrays.asList(value));
+    }
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #fromArray(E...)}
-	 */
-	@Deprecated
-	public static <E> List<E> toList(E[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    /**
+     * @deprecated As of Athanasius (7.3.x), replaced by {@link
+     *             #fromArray(E...)}
+     */
+    @Deprecated
+    public static <E> List<E> toList(E[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		return new ArrayList<>(Arrays.asList(array));
-	}
+        return new ArrayList<>(Arrays.asList(array));
+    }
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #fromArray(float[])}
-	 */
-	@Deprecated
-	public static List<Float> toList(float[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    /**
+     * @deprecated As of Athanasius (7.3.x), replaced by {@link
+     *             #fromArray(float[])}
+     */
+    @Deprecated
+    public static List<Float> toList(float[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Float> list = new ArrayList<>(array.length);
+        List<Float> list = new ArrayList<>(array.length);
 
-		for (float value : array) {
-			list.add(value);
-		}
+        for (float value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #fromArray(int[])}
-	 */
-	@Deprecated
-	public static List<Integer> toList(int[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    /**
+     * @deprecated As of Athanasius (7.3.x), replaced by {@link
+     *             #fromArray(int[])}
+     */
+    @Deprecated
+    public static List<Integer> toList(int[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Integer> list = new ArrayList<>(array.length);
+        List<Integer> list = new ArrayList<>(array.length);
 
-		for (int value : array) {
-			list.add(value);
-		}
+        for (int value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static <T, A> List<A> toList(List<T> list, Accessor<T, A> accessor) {
-		List<A> aList = new ArrayList<>(list.size());
+    public static <T, A> List<A> toList(List<T> list, Accessor<T, A> accessor) {
+        List<A> aList = new ArrayList<>(list.size());
 
-		for (T t : list) {
-			aList.add(accessor.get(t));
-		}
+        for (T t : list) {
+            aList.add(accessor.get(t));
+        }
 
-		return aList;
-	}
+        return aList;
+    }
 
-	public static <T, R> List<R> toList(List<T> list, Function<T, R> function) {
-		final List<R> result = new ArrayList<>(list.size());
+    public static <T, R> List<R> toList(List<T> list, Function<T, R> function) {
+        final List<R> result = new ArrayList<>(list.size());
 
-		for (T t : list) {
-			result.add(function.apply(t));
-		}
+        for (T t : list) {
+            result.add(function.apply(t));
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public static <T, V extends T> List<T> toList(List<V> vlist) {
-		return new ArrayList<T>(vlist);
-	}
+    public static <T, V extends T> List<T> toList(List<V> vlist) {
+        return new ArrayList<T>(vlist);
+    }
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #fromArray(long[])}
-	 */
-	@Deprecated
-	public static List<Long> toList(long[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    /**
+     * @deprecated As of Athanasius (7.3.x), replaced by {@link
+     *             #fromArray(long[])}
+     */
+    @Deprecated
+    public static List<Long> toList(long[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Long> list = new ArrayList<>(array.length);
+        List<Long> list = new ArrayList<>(array.length);
 
-		for (long value : array) {
-			list.add(value);
-		}
+        for (long value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #fromArray(short[])}
-	 */
-	@Deprecated
-	public static List<Short> toList(short[] array) {
-		if (ArrayUtil.isEmpty(array)) {
-			return new ArrayList<>();
-		}
+    /**
+     * @deprecated As of Athanasius (7.3.x), replaced by {@link
+     *             #fromArray(short[])}
+     */
+    @Deprecated
+    public static List<Short> toList(short[] array) {
+        if (ArrayUtil.isEmpty(array)) {
+            return new ArrayList<>();
+        }
 
-		List<Short> list = new ArrayList<>(array.length);
+        List<Short> list = new ArrayList<>(array.length);
 
-		for (short value : array) {
-			list.add(value);
-		}
+        for (short value : array) {
+            list.add(value);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static <T> long[] toLongArray(
-		List<? extends T> list, Accessor<T, Long> accessor) {
+    public static <T> long[] toLongArray(
+            List<? extends T> list, Accessor<T, Long> accessor) {
 
-		if (isEmpty(list)) {
-			return _EMPTY_LONG_ARRAY;
-		}
+        if (isEmpty(list)) {
+            return _EMPTY_LONG_ARRAY;
+        }
 
-		long[] array = new long[list.size()];
+        long[] array = new long[list.size()];
 
-		for (int i = 0; i < list.size(); i++) {
-			T bean = list.get(i);
+        for (int i = 0; i < list.size(); i++) {
+            T bean = list.get(i);
 
-			Long attribute = accessor.get(bean);
+            Long attribute = accessor.get(bean);
 
-			array[i] = attribute;
-		}
+            array[i] = attribute;
+        }
 
-		return array;
-	}
+        return array;
+    }
 
-	public static <T> long[] toLongArray(
-		List<? extends T> list, ToLongFunction<T> toLongFunction) {
+    public static <T> long[] toLongArray(
+            List<? extends T> list, ToLongFunction<T> toLongFunction) {
 
-		if (isEmpty(list)) {
-			return _EMPTY_LONG_ARRAY;
-		}
+        if (isEmpty(list)) {
+            return _EMPTY_LONG_ARRAY;
+        }
 
-		long[] array = new long[list.size()];
+        long[] array = new long[list.size()];
 
-		for (int i = 0; i < list.size(); i++) {
-			array[i] = toLongFunction.applyAsLong(list.get(i));
-		}
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = toLongFunction.applyAsLong(list.get(i));
+        }
 
-		return array;
-	}
+        return array;
+    }
 
-	/**
-	 * @see ArrayUtil#toString(Object[], Accessor)
-	 */
-	public static <T, A> String toString(
-		List<? extends T> list, Accessor<T, A> accessor) {
+    /**
+     * @see ArrayUtil#toString(Object[], Accessor)
+     */
+    public static <T, A> String toString(
+            List<? extends T> list, Accessor<T, A> accessor) {
 
-		return toString(list, accessor, StringPool.COMMA);
-	}
+        return toString(list, accessor, StringPool.COMMA);
+    }
 
-	/**
-	 * @see ArrayUtil#toString(Object[], Accessor, String)
-	 */
-	public static <T, A> String toString(
-		List<? extends T> list, Accessor<T, A> accessor, String delimiter) {
+    /**
+     * @see ArrayUtil#toString(Object[], Accessor, String)
+     */
+    public static <T, A> String toString(
+            List<? extends T> list, Accessor<T, A> accessor, String delimiter) {
 
-		if (isEmpty(list)) {
-			return StringPool.BLANK;
-		}
+        if (isEmpty(list)) {
+            return StringPool.BLANK;
+        }
 
-		StringBundler sb = new StringBundler(2 * list.size() - 1);
+        StringBundler sb = new StringBundler(2 * list.size() - 1);
 
-		for (int i = 0; i < list.size(); i++) {
-			T bean = list.get(i);
+        for (int i = 0; i < list.size(); i++) {
+            T bean = list.get(i);
 
-			A attribute = accessor.get(bean);
+            A attribute = accessor.get(bean);
 
-			if (attribute != null) {
-				sb.append(attribute);
-			}
+            if (attribute != null) {
+                sb.append(attribute);
+            }
 
-			if ((i + 1) != list.size()) {
-				sb.append(delimiter);
-			}
-		}
+            if ((i + 1) != list.size()) {
+                sb.append(delimiter);
+            }
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	/**
-	 * @see ArrayUtil#toString(Object[], String)
-	 */
-	public static String toString(List<?> list, String param) {
-		return toString(list, param, StringPool.COMMA);
-	}
+    /**
+     * @see ArrayUtil#toString(Object[], String)
+     */
+    public static String toString(List<?> list, String param) {
+        return toString(list, param, StringPool.COMMA);
+    }
 
-	/**
-	 * @see ArrayUtil#toString(Object[], String, String)
-	 */
-	public static String toString(
-		List<?> list, String param, String delimiter) {
+    /**
+     * @see ArrayUtil#toString(Object[], String, String)
+     */
+    public static String toString(
+            List<?> list, String param, String delimiter) {
 
-		if (isEmpty(list)) {
-			return StringPool.BLANK;
-		}
+        if (isEmpty(list)) {
+            return StringPool.BLANK;
+        }
 
-		StringBundler sb = new StringBundler(2 * list.size() - 1);
+        StringBundler sb = new StringBundler(2 * list.size() - 1);
 
-		for (int i = 0; i < list.size(); i++) {
-			Object bean = list.get(i);
+        for (int i = 0; i < list.size(); i++) {
+            Object bean = list.get(i);
 
-			Object value = null;
+            Object value = null;
 
-			if (Validator.isNull(param)) {
-				value = String.valueOf(bean);
-			}
-			else {
-				value = BeanPropertiesUtil.getObject(bean, param);
-			}
+            if (Validator.isNull(param)) {
+                value = String.valueOf(bean);
+            } else {
+                value = BeanPropertiesUtil.getObject(bean, param);
+            }
 
-			if (value != null) {
-				sb.append(value);
-			}
+            if (value != null) {
+                sb.append(value);
+            }
 
-			if ((i + 1) != list.size()) {
-				sb.append(delimiter);
-			}
-		}
+            if ((i + 1) != list.size()) {
+                sb.append(delimiter);
+            }
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	public static <T> List<T> unique(List<T> list) {
-		Set<T> set = new LinkedHashSet<>();
+    public static <T> List<T> unique(List<T> list) {
+        Set<T> set = new LinkedHashSet<>();
 
-		set.addAll(list);
+        set.addAll(list);
 
-		if (list.size() == set.size()) {
-			return list;
-		}
+        if (list.size() == set.size()) {
+            return list;
+        }
 
-		return new ArrayList<>(set);
-	}
+        return new ArrayList<>(set);
+    }
 
-	private static final long[] _EMPTY_LONG_ARRAY = {};
+    private static final long[] _EMPTY_LONG_ARRAY = {};
 
-	private static final Class<? extends List<?>> _UNMODIFIABLE_LIST_CLASS;
+    private static final Class<? extends List<?>> _UNMODIFIABLE_LIST_CLASS;
 
-	static {
-		List<Object> unmodifiableList = Collections.<Object>unmodifiableList(
-			new LinkedList<Object>());
+    static {
+        List<Object> unmodifiableList = Collections.<Object>unmodifiableList(
+                new LinkedList<Object>());
 
-		_UNMODIFIABLE_LIST_CLASS =
-			(Class<? extends List<?>>)unmodifiableList.getClass();
-	}
+        _UNMODIFIABLE_LIST_CLASS =
+                (Class<? extends List<?>>) unmodifiableList.getClass();
+    }
 
 }

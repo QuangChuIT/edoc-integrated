@@ -19,7 +19,7 @@ public class EdocTraceHeaderListDaoImpl extends RootDaoImpl<EdocTraceHeaderList,
         Query query = currentSession.createQuery(sql.toString());
         query.setLong("documentId", documentId);
         List<EdocTraceHeaderList> result = query.list();
-        if(result != null && result.size() > 0) {
+        if (result != null && result.size() > 0) {
             return result.get(0);
         }
         return null;

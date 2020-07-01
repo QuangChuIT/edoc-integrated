@@ -83,7 +83,7 @@ public class EdocTraceService {
         // search document by from organ domain and code
         documentDaoImpl.setCurrentSession(currentSession);
         EdocDocument edocDocument = documentDaoImpl.searchDocumentByOrganDomainAndCode(toOrganDomain, code);
-        if(edocDocument == null) {
+        if (edocDocument == null) {
             return false;
         }
 
@@ -119,7 +119,7 @@ public class EdocTraceService {
             currentSession.getTransaction().commit();
         } catch (Exception e) {
             log.error(e);
-            if(currentSession != null) {
+            if (currentSession != null) {
                 currentSession.getTransaction().rollback();
             }
             return false;
@@ -152,7 +152,7 @@ public class EdocTraceService {
         }
     }
 
-    public  List<EdocTrace> getEdocTracesByOrganId(String responseForOrganId) {
+    public List<EdocTrace> getEdocTracesByOrganId(String responseForOrganId) {
         traceDaoImpl.openCurrentSession();
 
         List<EdocTrace> traces = traceDaoImpl.getEdocTracesByOrganId(responseForOrganId);
@@ -163,6 +163,7 @@ public class EdocTraceService {
 
     /**
      * disable traces after get traces
+     *
      * @param traces
      */
     public void disableEdocTrace(List<EdocTrace> traces) {
@@ -170,14 +171,14 @@ public class EdocTraceService {
         try {
             currentSession.beginTransaction();
 
-            for (EdocTrace trace: traces) {
+            for (EdocTrace trace : traces) {
                 traceDaoImpl.disableEdocTrace(trace.getTraceId());
             }
 
             currentSession.getTransaction().commit();
         } catch (Exception e) {
             log.error(e);
-            if(currentSession != null) {
+            if (currentSession != null) {
                 currentSession.getTransaction().rollback();
             }
         } finally {

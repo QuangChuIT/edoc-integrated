@@ -19,232 +19,232 @@ import java.util.zip.ZipOutputStream;
 
 public class ArchiveUtil {
 
-	public File decompressFile(EdocAttachment attachment) {
+    public File decompressFile(EdocAttachment attachment) {
 
-		String specPath = relativePath
-				+ (relativePath.endsWith(File.separator) ? "" : File.separator)
-				+ attachment.getFullPath();
+        String specPath = relativePath
+                + (relativePath.endsWith(File.separator) ? "" : File.separator)
+                + attachment.getFullPath();
 
-		String resultFilePath = "";
+        String resultFilePath = "";
 
-		File oldFile = new File(specPath);
+        File oldFile = new File(specPath);
 
-		// Neu file ton tai nghia la chua nen => tra ve luon
-		if (oldFile.exists()) {
-			return oldFile;
-		} else {
-			// File khong ton tai => file da duoc nen
+        // Neu file ton tai nghia la chua nen => tra ve luon
+        if (oldFile.exists()) {
+            return oldFile;
+        } else {
+            // File khong ton tai => file da duoc nen
 
-			// Lay file nen
-			File zippedFile = new File(specPath + FILE_EXTENSION);
+            // Lay file nen
+            File zippedFile = new File(specPath + FILE_EXTENSION);
 
-			if (zippedFile.exists()) {
+            if (zippedFile.exists()) {
 
-				File oldFolder = new File(relativePath);
+                File oldFolder = new File(relativePath);
 
-				File fileInTemp = new File(oldFolder.getAbsolutePath() + "_tmp"
-						+ File.separator + attachment.getFullPath());
+                File fileInTemp = new File(oldFolder.getAbsolutePath() + "_tmp"
+                        + File.separator + attachment.getFullPath());
 
-				// Neu da ton tai file giai nen trong thu muc temp => tra ve
-				// luon
-				if (fileInTemp.exists()) {
+                // Neu da ton tai file giai nen trong thu muc temp => tra ve
+                // luon
+                if (fileInTemp.exists()) {
 
-					return fileInTemp;
-				} else {
-					//Giai nen ra thu muc temp
-					File tempFolder = fileInTemp.getParentFile();
+                    return fileInTemp;
+                } else {
+                    //Giai nen ra thu muc temp
+                    File tempFolder = fileInTemp.getParentFile();
 
-					if (!tempFolder.exists()) {
-						if(!tempFolder.mkdirs()){
-							_log.error("Can't make dir by: "+ tempFolder.getPath());
-						}
-					}
+                    if (!tempFolder.exists()) {
+                        if (!tempFolder.mkdirs()) {
+                            _log.error("Can't make dir by: " + tempFolder.getPath());
+                        }
+                    }
 
-					try {
-						resultFilePath = decompressFile(zippedFile.getAbsolutePath(),
-								tempFolder.getAbsolutePath());
-					} catch (IOException e) {
-						_log.error(e.getMessage());
-						resultFilePath = "";
-					}
-				}
+                    try {
+                        resultFilePath = decompressFile(zippedFile.getAbsolutePath(),
+                                tempFolder.getAbsolutePath());
+                    } catch (IOException e) {
+                        _log.error(e.getMessage());
+                        resultFilePath = "";
+                    }
+                }
 
-			} else {
-				resultFilePath = "";
-			}
-		}
+            } else {
+                resultFilePath = "";
+            }
+        }
 
-		return new File(resultFilePath);
-	}
+        return new File(resultFilePath);
+    }
 
-	/**
-	 * Decompresses a zlib compressed file.
-	 */
-	private String decompressFile(String targetFilePath, String outputFolderPath)
-			throws IOException {
+    /**
+     * Decompresses a zlib compressed file.
+     */
+    private String decompressFile(String targetFilePath, String outputFolderPath)
+            throws IOException {
 
-		String resultFilePath = "";
+        String resultFilePath = "";
 
-		File zippedFile = new File(targetFilePath);
+        File zippedFile = new File(targetFilePath);
 
-		File folder = new File(outputFolderPath);
-		if (!folder.exists()) {
-			if(!folder.mkdir()){
-				return "";
-			}
-		}
+        File folder = new File(outputFolderPath);
+        if (!folder.exists()) {
+            if (!folder.mkdir()) {
+                return "";
+            }
+        }
 
-		if (zippedFile.exists()) {
+        if (zippedFile.exists()) {
 
-			ZipInputStream zis = null;
+            ZipInputStream zis = null;
 
-			try {
-				zis = new ZipInputStream(new FileInputStream(zippedFile));
-				ZipEntry ze = zis.getNextEntry();
-				while (ze != null) {
+            try {
+                zis = new ZipInputStream(new FileInputStream(zippedFile));
+                ZipEntry ze = zis.getNextEntry();
+                while (ze != null) {
 
-					String fileName = ze.getName();
+                    String fileName = ze.getName();
 
-					File deCompressFile = new File(outputFolderPath
-							+ File.separator + fileName);
+                    File deCompressFile = new File(outputFolderPath
+                            + File.separator + fileName);
 
-					FileOutputStream fos = new FileOutputStream(deCompressFile);
+                    FileOutputStream fos = new FileOutputStream(deCompressFile);
 
-					shovelInToOut(zis, fos);
+                    shovelInToOut(zis, fos);
 
-					fos.close();
+                    fos.close();
 
-					ze = zis.getNextEntry();
+                    ze = zis.getNextEntry();
 
-					resultFilePath = deCompressFile.getAbsolutePath();
-				}
+                    resultFilePath = deCompressFile.getAbsolutePath();
+                }
 
-			} catch (Exception e) {
+            } catch (Exception e) {
 
-				_log.error(e.getMessage());
+                _log.error(e.getMessage());
 
-				resultFilePath = "";
+                resultFilePath = "";
 
-			} finally {
-				if (zis != null) {
-					zis.closeEntry();
-					zis.close();
-				}
+            } finally {
+                if (zis != null) {
+                    zis.closeEntry();
+                    zis.close();
+                }
 
-			}
+            }
 
-		}
+        }
 
-		return resultFilePath;
+        return resultFilePath;
 
-	}
+    }
 
-	private boolean compressFile(String targetFilePath) {
+    private boolean compressFile(String targetFilePath) {
 
-		boolean result = false;
-		File targetFile = new File(targetFilePath);
+        boolean result = false;
+        File targetFile = new File(targetFilePath);
 
-		if (targetFile.exists()) {
+        if (targetFile.exists()) {
 
-			String parentPart = targetFile.getParent();
+            String parentPart = targetFile.getParent();
 
-			String targetFileName = targetFile.getName();
+            String targetFileName = targetFile.getName();
 
-			File outputFile = new File(parentPart + File.separator
-					+ targetFileName + FILE_EXTENSION);
+            File outputFile = new File(parentPart + File.separator
+                    + targetFileName + FILE_EXTENSION);
 
-			InputStream in = null;
+            InputStream in = null;
 
-			ZipOutputStream out = null;
-			try {
+            ZipOutputStream out = null;
+            try {
 
-				ZipEntry ze = new ZipEntry(targetFileName);
+                ZipEntry ze = new ZipEntry(targetFileName);
 
-				in = new FileInputStream(targetFile);
+                in = new FileInputStream(targetFile);
 
-				out = new ZipOutputStream(new FileOutputStream(outputFile));
+                out = new ZipOutputStream(new FileOutputStream(outputFile));
 
-				out.putNextEntry(ze);
+                out.putNextEntry(ze);
 
-				shovelInToOut(in, out);
+                shovelInToOut(in, out);
 
-				result = true;
+                result = true;
 
-			} catch (Exception e) {
-				_log.error(e.getMessage());
-				result = false;
-			} finally {
+            } catch (Exception e) {
+                _log.error(e.getMessage());
+                result = false;
+            } finally {
 
-				try {
-					if (in != null) {
-						in.close();
-					}
-					if (out != null) {
-						out.closeEntry();
-						out.close();
-					}
-				} catch (Exception e) {
-					_log.error(e.getMessage());
-					result = false;
-				}
+                try {
+                    if (in != null) {
+                        in.close();
+                    }
+                    if (out != null) {
+                        out.closeEntry();
+                        out.close();
+                    }
+                } catch (Exception e) {
+                    _log.error(e.getMessage());
+                    result = false;
+                }
 
-			}
+            }
 
-		} else {
-			result = false;
-		}
+        } else {
+            result = false;
+        }
 
-		return result;
+        return result;
 
-	}
+    }
 
-	private void deleteFileAfterCompress(String targetFilePath) {
-		File targetFile = new File(targetFilePath);
-		if (targetFile.exists()) {
-			FileUtil.delete(targetFile);
-		}
+    private void deleteFileAfterCompress(String targetFilePath) {
+        File targetFile = new File(targetFilePath);
+        if (targetFile.exists()) {
+            FileUtil.delete(targetFile);
+        }
 
-	}
+    }
 
-	private void rollBackCompress(String targetFilePath) {
-		File targetFile = new File(targetFilePath);
-		if (targetFile.exists()) {
+    private void rollBackCompress(String targetFilePath) {
+        File targetFile = new File(targetFilePath);
+        if (targetFile.exists()) {
 
-			String parentPart = targetFile.getParent();
+            String parentPart = targetFile.getParent();
 
-			String targetFileName = targetFile.getName();
+            String targetFileName = targetFile.getName();
 
-			File rollBackFile = new File(parentPart + File.separator
-					+ targetFileName + FILE_EXTENSION);
+            File rollBackFile = new File(parentPart + File.separator
+                    + targetFileName + FILE_EXTENSION);
 
-			if (rollBackFile.exists()) {
-				deleteFileAfterCompress(targetFilePath);
-			}
-		}
-	}
+            if (rollBackFile.exists()) {
+                deleteFileAfterCompress(targetFilePath);
+            }
+        }
+    }
 
-	/**
-	 * Shovels all data from an input stream to an output stream.
-	 */
-	private static void shovelInToOut(InputStream in, OutputStream out)
-			throws IOException {
-		byte[] buffer = new byte[3072];
-		int len;
-		while ((len = in.read(buffer)) > 0) {
-			out.write(buffer, 0, len);
-		}
-	}
+    /**
+     * Shovels all data from an input stream to an output stream.
+     */
+    private static void shovelInToOut(InputStream in, OutputStream out)
+            throws IOException {
+        byte[] buffer = new byte[3072];
+        int len;
+        while ((len = in.read(buffer)) > 0) {
+            out.write(buffer, 0, len);
+        }
+    }
 
-	public ArchiveUtil() {
-		try {
-			relativePath = new AttachmentGlobalUtil().getAttachmentPath();
-		} catch (Exception e) {
-			_log.error(e.getMessage());
-		}
+    public ArchiveUtil() {
+        try {
+            relativePath = new AttachmentGlobalUtil().getAttachmentPath();
+        } catch (Exception e) {
+            _log.error(e.getMessage());
+        }
 
-	}
+    }
 
-	private String relativePath = "";
-	private static final String FILE_EXTENSION = ".edzip";
-	private static final Log _log = LogFactory.getLog(ArchiveUtil.class);
+    private String relativePath = "";
+    private static final String FILE_EXTENSION = ".edzip";
+    private static final Log _log = LogFactory.getLog(ArchiveUtil.class);
 }

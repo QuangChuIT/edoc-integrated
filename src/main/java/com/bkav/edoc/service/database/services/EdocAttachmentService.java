@@ -19,13 +19,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class EdocAttachmentService {
-    private EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
-    private EdocAttachmentDaoImpl attachmentDaoImpl = new EdocAttachmentDaoImpl();
+    private final EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
+    private final EdocAttachmentDaoImpl attachmentDaoImpl = new EdocAttachmentDaoImpl();
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
             "dd/MM/yyyy");
 
-    private Mapper mapper = new Mapper();
+    private final Mapper mapper = new Mapper();
 
     /**
      * add attachment
@@ -75,10 +75,11 @@ public class EdocAttachmentService {
 
     /**
      * get list edoc attachment
+     *
      * @param docId
      * @return
      */
-    public  List<EdocAttachment> getEdocAttachmentsByDocId(long docId) {
+    public List<EdocAttachment> getEdocAttachmentsByDocId(long docId) {
         attachmentDaoImpl.openCurrentSession();
 
         List<EdocAttachment> attachments = attachmentDaoImpl.getAttachmentsByDocumentId(docId);
@@ -89,6 +90,7 @@ public class EdocAttachmentService {
 
     /**
      * get list attachment
+     *
      * @param documentId
      * @return
      * @throws IOException

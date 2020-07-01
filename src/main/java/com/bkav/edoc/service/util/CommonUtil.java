@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommonUtil {
+
     public static List<Long> convertToListLong(List list) {
-        if(list == null) return null;
+        if (list == null) return null;
         List<Long> result = new ArrayList<>();
         for (Object item : list) {
             Double value = Double.parseDouble(item.toString());
@@ -17,13 +18,12 @@ public class CommonUtil {
     }
 
     public static List<EdocTrace> convertToListTrace(List list) {
-        if(list == null) return null;
+        if (list == null) return null;
         List<EdocTrace> result = new ArrayList<>();
         for (Object item : list) {
-            if(item instanceof EdocTrace) {
-                result.add((EdocTrace)item);
-            }
-            else {
+            if (item instanceof EdocTrace) {
+                result.add((EdocTrace) item);
+            } else {
 
             }
         }

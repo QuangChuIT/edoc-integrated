@@ -17,14 +17,15 @@ import java.util.Date;
 import java.util.List;
 
 public class EdocNotificationService {
-    private EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
-    private EdocNotificationDaoImpl notificationDaoImpl = new EdocNotificationDaoImpl();
+    private final EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
+    private final EdocNotificationDaoImpl notificationDaoImpl = new EdocNotificationDaoImpl();
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
             "dd/MM/yyyy");
 
     /**
      * Add notifications
+     *
      * @param messageHeader
      * @param docId
      * @return
@@ -42,6 +43,7 @@ public class EdocNotificationService {
             try {
                 dueDate = dateFormat.parse(messageHeader.getDueDate());
             } catch (ParseException e) {
+                log.error(e);
             }
             for (To to : tos) {
                 EdocNotification notification = new EdocNotification();
@@ -58,7 +60,7 @@ public class EdocNotificationService {
             currentSession.getTransaction().commit();
         } catch (Exception e) {
             log.error(e);
-            if(currentSession != null) {
+            if (currentSession != null) {
                 currentSession.getTransaction().rollback();
             }
             return false;
@@ -70,6 +72,7 @@ public class EdocNotificationService {
 
     /**
      * get document id by domain
+     *
      * @param organId
      * @return
      */
@@ -84,6 +87,7 @@ public class EdocNotificationService {
 
     /**
      * check allow of this domain with document
+     *
      * @param documentId
      * @param organId
      * @return
@@ -105,7 +109,7 @@ public class EdocNotificationService {
             currentSession.getTransaction().commit();
         } catch (SQLException e) {
             log.error(e);
-            if(currentSession != null) {
+            if (currentSession != null) {
                 currentSession.getTransaction().rollback();
             }
         } finally {

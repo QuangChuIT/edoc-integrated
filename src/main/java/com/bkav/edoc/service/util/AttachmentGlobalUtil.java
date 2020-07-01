@@ -2,7 +2,6 @@ package com.bkav.edoc.service.util;
 
 import java.io.*;
 
-import com.bkav.edoc.service.center.DynamicService;
 import com.bkav.edoc.service.kernel.string.StringPool;
 import com.bkav.edoc.service.kernel.util.Validator;
 import org.apache.commons.logging.Log;
@@ -11,165 +10,158 @@ import org.apache.commons.net.util.Base64;
 
 public class AttachmentGlobalUtil {
 
-	private String SPERATOR = File.separator;
+    private final String SEPARATOR = File.separator;
 
-	String DEFAULT_ROOT_PATH = SPERATOR;
+    String DEFAULT_ROOT_PATH = SEPARATOR;
 
-	public String getAttachmentPath() {
-		String folderName = "attachment";
-		return getSaveFilePath(folderName);
-	}
+    public String getAttachmentPath() {
+        String folderName = "attachment";
+        return getSaveFilePath(folderName);
+    }
 
-	public long saveToFile(String targetPath, InputStream is)
-			throws IOException {
+    public long saveToFile(String targetPath, InputStream is)
+            throws IOException {
 
-		if (Validator.isNull(is)) {
-			return -1;
-		}
+        if (Validator.isNull(is)) {
+            return -1;
+        }
 
-		File attachmentFile = new File(targetPath);
+        File attachmentFile = new File(targetPath);
 
-		File parentFile = attachmentFile.getParentFile();
-		if (!parentFile.exists()) {
-			if (!parentFile.mkdirs()) {
-				return -1;
-			}
-		}
+        File parentFile = attachmentFile.getParentFile();
+        if (!parentFile.exists()) {
+            if (!parentFile.mkdirs()) {
+                return -1;
+            }
+        }
 
-		if (!attachmentFile.exists()) {
+        if (!attachmentFile.exists()) {
 
-			if (!attachmentFile.createNewFile()) {
-				return -1;
-			}
+            if (!attachmentFile.createNewFile()) {
+                return -1;
+            }
 
-		}
-		OutputStream os = new FileOutputStream(attachmentFile);
+        }
+        OutputStream os = new FileOutputStream(attachmentFile);
 
-		// Save an attachment into Attachment folder
+        // Save an attachment into Attachment folder
 
-		long bytesReaded = 0;
-		int read = 0;
+        long bytesReaded = 0;
+        int read = 0;
 
-		byte[] bytes = new byte[3072];
+        byte[] bytes = new byte[3072];
 
-		while ((read = is.read(bytes)) != -1) {
+        while ((read = is.read(bytes)) != -1) {
 
-			os.write(bytes, 0, read);
-			bytesReaded += read;
+            os.write(bytes, 0, read);
+            bytesReaded += read;
 
-		}
+        }
 
-		is.close();
-		os.close();
-		// long bytesRead = (long) is.available();
+        is.close();
+        os.close();
 
-		// IOUtils.copy(is, outputStream);
+        return bytesReaded;
+    }
 
-		// IOUtils.closeQuietly(is);
+    /**
+     * Input : String base64 Output : InputStream
+     */
+    public InputStream convertBase64ToIS(String base64) {
 
-		// IOUtils.closeQuietly(outputStream);
+        // InputStream is = new
+        // ByteArrayInputStream(Base64.decodeBase64(base64));
+        InputStream is = new ByteArrayInputStream(base64.getBytes());
 
-		return bytesReaded;
-	}
+        return is;
 
-	/**
-	 * Input : String base64 Output : InputStream
-	 * */
-	public InputStream convertBase64ToIS(String base64) {
+    }
 
-		// InputStream is = new
-		// ByteArrayInputStream(Base64.decodeBase64(base64));
-		InputStream is = new ByteArrayInputStream(base64.getBytes());
+    public InputStream convertBase64ToIS(byte[] base64) {
 
-		return is;
+        // InputStream is = new
+        // ByteArrayInputStream(Base64.decodeBase64(base64));
+        InputStream is = new ByteArrayInputStream(base64);
 
-	}
+        return is;
 
-	public InputStream convertBase64ToIS(byte[] base64) {
+    }
 
-		// InputStream is = new
-		// ByteArrayInputStream(Base64.decodeBase64(base64));
-		InputStream is = new ByteArrayInputStream(base64);
+    public String getSaveFilePath(String folderName) {
 
-		return is;
+        String rootPath = StringPool.BLANK;
 
-	}
+        /*
+         * edXMLConfig result = null; try { result = edXMLConfigLocalServiceUtil
+         * .findByKey(EdXMLConfigKey.ATACHMENT_FOLDER_ROOT); } catch (Exception
+         * ex) { _log.error(ex); }
+         */
 
-	public String getSaveFilePath(String folderName) {
+        String setupPath = PropsUtil.get(EdXMLConfigKey.ATACHMENT_FOLDER_ROOT);
 
-		String rootPath = StringPool.BLANK;
+        if (Validator.isNull(setupPath)) {
 
-		/*
-		 * edXMLConfig result = null; try { result = edXMLConfigLocalServiceUtil
-		 * .findByKey(EdXMLConfigKey.ATACHMENT_FOLDER_ROOT); } catch (Exception
-		 * ex) { _log.error(ex); }
-		 */
+            rootPath = DEFAULT_ROOT_PATH;
+        } else {
 
-		String setupPath = PropsUtil.get(EdXMLConfigKey.ATACHMENT_FOLDER_ROOT);
+            rootPath = setupPath;// result.getValue();
 
-		if (Validator.isNull(setupPath)) {
+        }
+        if (!rootPath.endsWith(SEPARATOR)) {
 
-			rootPath = DEFAULT_ROOT_PATH;
-		} else {
+            rootPath += SEPARATOR;
+        }
 
-			rootPath = setupPath;// result.getValue();
+        File parent = new File(rootPath);// .getParentFile();
 
-		}
-		if (!rootPath.endsWith(SPERATOR)) {
+        File targetFodler = new File(parent.getAbsolutePath() + SEPARATOR
+                + folderName + SEPARATOR);
 
-			rootPath += SPERATOR;
-		}
+        if (!targetFodler.exists()) {
+            if (!targetFodler.mkdirs()) {
+                log.error("Can't create dir with" + targetFodler.getAbsolutePath());
+            }
+        }
 
-		File parent = new File(rootPath);// .getParentFile();
+        return targetFodler.getAbsolutePath();
 
-		File targetFodler = new File(parent.getAbsolutePath() + SPERATOR
-				+ folderName + SPERATOR);
+    }
 
-		if (!targetFodler.exists()) {
-			if (!targetFodler.mkdirs()) {
-				log.error("Can't create dir with" + targetFodler.getAbsolutePath());
-			}
-		}
+    public byte[] parseBase64ISToBytes(InputStream base64IS) throws IOException {
 
-		return targetFodler.getAbsolutePath();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            byte[] buffer = new byte[1024];
+            int readed = 0;
+            while ((readed = base64IS.read(buffer, 0, buffer.length)) != -1) {
 
-	}
+                baos.write(buffer, 0, readed);
+            }
+        } catch (Exception ex) {
+            log.error(ex);
+        } finally {
+            base64IS.close();
+        }
+        byte[] bytes = baos.toByteArray();
+        baos.close();
 
-	public byte[] parseBase64ISToBytes(InputStream base64IS) throws IOException {
+        if (!Base64.isBase64(bytes[0])) {
+            bytes = Base64.encodeBase64(bytes);
+        }
+        return bytes;
+    }
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {
-			byte[] buffer = new byte[1024];
-			int readed = 0;
-			while ((readed = base64IS.read(buffer, 0, buffer.length)) != -1) {
+    public InputStream getFileIS(String filePath) throws IOException {
 
-				baos.write(buffer, 0, readed);
-			}
-		} catch (Exception ex) {
-			log.error(ex);
-		} finally {
-			base64IS.close();
-		}
-		byte[] bytes = baos.toByteArray();
-		baos.close();
+        File file = new File(filePath);
 
-		if (!Base64.isBase64(bytes[0])) {
-			bytes = Base64.encodeBase64(bytes);
-		}
-		return bytes;
-	}
+        if (file.exists()) {
+            return new FileInputStream(file);
+        }
 
-	public InputStream getFileIS(String filePath) throws IOException {
+        return null;
+    }
 
-		File file = new File(filePath);
-
-		if (file.exists()) {
-			return new FileInputStream(file);
-		}
-
-		return null;
-	}
-
-	private static final Log log = LogFactory.getLog(AttachmentGlobalUtil.class);
+    private static final Log log = LogFactory.getLog(AttachmentGlobalUtil.class);
 
 }

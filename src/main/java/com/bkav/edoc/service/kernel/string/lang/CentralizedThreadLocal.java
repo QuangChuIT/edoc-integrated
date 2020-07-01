@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -28,370 +28,365 @@ import java.util.function.Supplier;
  */
 public class CentralizedThreadLocal<T> extends ThreadLocal<T> {
 
-	public static void clearLongLivedThreadLocals() {
-		_longLivedThreadLocals.remove();
-	}
-
-	public static void clearShortLivedThreadLocals() {
-		_shortLivedThreadLocals.remove();
-	}
-
-	public static Map<CentralizedThreadLocal<?>, Object>
-		getLongLivedThreadLocals() {
+    public static void clearLongLivedThreadLocals() {
+        _longLivedThreadLocals.remove();
+    }
 
-		return _toMap(_longLivedThreadLocals.get());
-	}
+    public static void clearShortLivedThreadLocals() {
+        _shortLivedThreadLocals.remove();
+    }
 
-	public static Map<CentralizedThreadLocal<?>, Object>
-		getShortLivedThreadLocals() {
+    public static Map<CentralizedThreadLocal<?>, Object>
+    getLongLivedThreadLocals() {
 
-		return _toMap(_shortLivedThreadLocals.get());
-	}
+        return _toMap(_longLivedThreadLocals.get());
+    }
 
-	public static void setThreadLocals(
-		Map<CentralizedThreadLocal<?>, Object> longLivedCentralizedThreadLocals,
-		Map<CentralizedThreadLocal<?>, Object>
-			shortLivedCentralizedThreadLocals) {
+    public static Map<CentralizedThreadLocal<?>, Object>
+    getShortLivedThreadLocals() {
 
-		ThreadLocalMap threadLocalMap = _longLivedThreadLocals.get();
+        return _toMap(_shortLivedThreadLocals.get());
+    }
 
-		for (Map.Entry<CentralizedThreadLocal<?>, Object> entry :
-				longLivedCentralizedThreadLocals.entrySet()) {
+    public static void setThreadLocals(
+            Map<CentralizedThreadLocal<?>, Object> longLivedCentralizedThreadLocals,
+            Map<CentralizedThreadLocal<?>, Object>
+                    shortLivedCentralizedThreadLocals) {
 
-			threadLocalMap.putEntry(entry.getKey(), entry.getValue());
-		}
+        ThreadLocalMap threadLocalMap = _longLivedThreadLocals.get();
 
-		threadLocalMap = _shortLivedThreadLocals.get();
+        for (Map.Entry<CentralizedThreadLocal<?>, Object> entry :
+                longLivedCentralizedThreadLocals.entrySet()) {
 
-		for (Map.Entry<CentralizedThreadLocal<?>, Object> entry :
-				shortLivedCentralizedThreadLocals.entrySet()) {
+            threadLocalMap.putEntry(entry.getKey(), entry.getValue());
+        }
 
-			threadLocalMap.putEntry(entry.getKey(), entry.getValue());
-		}
-	}
+        threadLocalMap = _shortLivedThreadLocals.get();
 
-	public CentralizedThreadLocal(boolean shortLived) {
-		this(null, () -> null, shortLived);
-	}
+        for (Map.Entry<CentralizedThreadLocal<?>, Object> entry :
+                shortLivedCentralizedThreadLocals.entrySet()) {
 
-	public CentralizedThreadLocal(String name) {
-		this(name, () -> null, true);
-	}
+            threadLocalMap.putEntry(entry.getKey(), entry.getValue());
+        }
+    }
 
-	public CentralizedThreadLocal(String name, Supplier<T> supplier) {
-		this(name, supplier, true);
-	}
+    public CentralizedThreadLocal(boolean shortLived) {
+        this(null, () -> null, shortLived);
+    }
 
-	public CentralizedThreadLocal(
-		String name, Supplier<T> supplier, boolean shortLived) {
+    public CentralizedThreadLocal(String name) {
+        this(name, () -> null, true);
+    }
 
-		this(name, supplier, null, shortLived);
-	}
+    public CentralizedThreadLocal(String name, Supplier<T> supplier) {
+        this(name, supplier, true);
+    }
 
-	public CentralizedThreadLocal(
-		String name, Supplier<T> supplier, Function<T, T> copyFunction,
-		boolean shortLived) {
+    public CentralizedThreadLocal(
+            String name, Supplier<T> supplier, boolean shortLived) {
 
-		if (shortLived) {
-			_hashCode = _shortLivedNextHasCode.getAndAdd(_HASH_INCREMENT);
-		}
-		else {
-			_hashCode = _longLivedNextHasCode.getAndAdd(_HASH_INCREMENT);
-		}
+        this(name, supplier, null, shortLived);
+    }
 
-		if (name == null) {
-			_name = super.toString();
-		}
-		else {
-			_name = name;
-		}
+    public CentralizedThreadLocal(
+            String name, Supplier<T> supplier, Function<T, T> copyFunction,
+            boolean shortLived) {
 
-		if (supplier == null) {
-			_supplier = () -> null;
-		}
-		else {
-			_supplier = supplier;
-		}
+        if (shortLived) {
+            _hashCode = _shortLivedNextHasCode.getAndAdd(_HASH_INCREMENT);
+        } else {
+            _hashCode = _longLivedNextHasCode.getAndAdd(_HASH_INCREMENT);
+        }
 
-		if (copyFunction == null) {
-			_copyFunction = this::_copy;
-		}
-		else {
-			_copyFunction = copyFunction;
-		}
+        if (name == null) {
+            _name = super.toString();
+        } else {
+            _name = name;
+        }
 
-		_shortLived = shortLived;
-	}
+        if (supplier == null) {
+            _supplier = () -> null;
+        } else {
+            _supplier = supplier;
+        }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
+        if (copyFunction == null) {
+            _copyFunction = this::_copy;
+        } else {
+            _copyFunction = copyFunction;
+        }
 
-		return false;
-	}
+        _shortLived = shortLived;
+    }
 
-	@Override
-	public T get() {
-		ThreadLocalMap threadLocalMap = _getThreadLocalMap();
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
 
-		Entry entry = threadLocalMap.getEntry(this);
+        return false;
+    }
 
-		if (entry == null) {
-			T value = initialValue();
+    @Override
+    public T get() {
+        ThreadLocalMap threadLocalMap = _getThreadLocalMap();
 
-			threadLocalMap.putEntry(this, value);
+        Entry entry = threadLocalMap.getEntry(this);
 
-			return value;
-		}
+        if (entry == null) {
+            T value = initialValue();
 
-		return (T)entry._value;
-	}
+            threadLocalMap.putEntry(this, value);
 
-	@Override
-	public int hashCode() {
-		return _hashCode;
-	}
+            return value;
+        }
 
-	@Override
-	public void remove() {
-		ThreadLocalMap threadLocalMap = _getThreadLocalMap();
+        return (T) entry._value;
+    }
 
-		threadLocalMap.removeEntry(this);
-	}
+    @Override
+    public int hashCode() {
+        return _hashCode;
+    }
 
-	@Override
-	public void set(T value) {
-		ThreadLocalMap threadLocalMap = _getThreadLocalMap();
+    @Override
+    public void remove() {
+        ThreadLocalMap threadLocalMap = _getThreadLocalMap();
 
-		threadLocalMap.putEntry(this, value);
-	}
+        threadLocalMap.removeEntry(this);
+    }
 
-	public SafeClosable setWithSafeClosable(T value) {
-		ThreadLocalMap threadLocalMap = _getThreadLocalMap();
+    @Override
+    public void set(T value) {
+        ThreadLocalMap threadLocalMap = _getThreadLocalMap();
 
-		Entry entry = threadLocalMap.getEntry(this);
+        threadLocalMap.putEntry(this, value);
+    }
 
-		if (entry == null) {
-			threadLocalMap.putEntry(this, value);
+    public SafeClosable setWithSafeClosable(T value) {
+        ThreadLocalMap threadLocalMap = _getThreadLocalMap();
 
-			return () -> threadLocalMap.removeEntry(this);
-		}
+        Entry entry = threadLocalMap.getEntry(this);
 
-		Object originalValue = entry._value;
+        if (entry == null) {
+            threadLocalMap.putEntry(this, value);
 
-		entry._value = value;
+            return () -> threadLocalMap.removeEntry(this);
+        }
 
-		return () -> entry._value = originalValue;
-	}
+        Object originalValue = entry._value;
 
-	@Override
-	public String toString() {
-		return _name;
-	}
+        entry._value = value;
 
-	@Override
-	protected T initialValue() {
-		return _supplier.get();
-	}
+        return () -> entry._value = originalValue;
+    }
 
-	private static Map<CentralizedThreadLocal<?>, Object> _toMap(
-		ThreadLocalMap threadLocalMap) {
+    @Override
+    public String toString() {
+        return _name;
+    }
 
-		Map<CentralizedThreadLocal<?>, Object> map = new HashMap<>();
+    @Override
+    protected T initialValue() {
+        return _supplier.get();
+    }
 
-		for (Entry entry : threadLocalMap._table) {
-			while (entry != null) {
-				CentralizedThreadLocal<Object> centralizedThreadLocal =
-					(CentralizedThreadLocal<Object>)entry._key;
+    private static Map<CentralizedThreadLocal<?>, Object> _toMap(
+            ThreadLocalMap threadLocalMap) {
 
-				Object value = centralizedThreadLocal._copyFunction.apply(
-					entry._value);
+        Map<CentralizedThreadLocal<?>, Object> map = new HashMap<>();
 
-				if (value != null) {
-					map.put(centralizedThreadLocal, value);
-				}
+        for (Entry entry : threadLocalMap._table) {
+            while (entry != null) {
+                CentralizedThreadLocal<Object> centralizedThreadLocal =
+                        (CentralizedThreadLocal<Object>) entry._key;
 
-				entry = entry._next;
-			}
-		}
+                Object value = centralizedThreadLocal._copyFunction.apply(
+                        entry._value);
 
-		return map;
-	}
+                if (value != null) {
+                    map.put(centralizedThreadLocal, value);
+                }
 
-	private T _copy(T value) {
-		if (value != null) {
-			Class<?> clazz = value.getClass();
+                entry = entry._next;
+            }
+        }
 
-			if (_immutableTypes.contains(clazz)) {
-				return value;
-			}
-		}
+        return map;
+    }
 
-		return null;
-	}
+    private T _copy(T value) {
+        if (value != null) {
+            Class<?> clazz = value.getClass();
 
-	private ThreadLocalMap _getThreadLocalMap() {
-		if (_shortLived) {
-			return _shortLivedThreadLocals.get();
-		}
+            if (_immutableTypes.contains(clazz)) {
+                return value;
+            }
+        }
 
-		return _longLivedThreadLocals.get();
-	}
+        return null;
+    }
 
-	private static final int _HASH_INCREMENT = 0x61c88647;
+    private ThreadLocalMap _getThreadLocalMap() {
+        if (_shortLived) {
+            return _shortLivedThreadLocals.get();
+        }
 
-	private static final Set<Class<?>> _immutableTypes = new HashSet<>(
-		Arrays.asList(
-			Boolean.class, Byte.class, Character.class, Double.class,
-			Float.class, Integer.class, Long.class, Short.class, String.class));
-	private static final AtomicInteger _longLivedNextHasCode =
-		new AtomicInteger();
-	private static final ThreadLocal<ThreadLocalMap> _longLivedThreadLocals =
-		ThreadLocal.withInitial(ThreadLocalMap::new);
-	private static final AtomicInteger _shortLivedNextHasCode =
-		new AtomicInteger();
-	private static final ThreadLocal<ThreadLocalMap> _shortLivedThreadLocals =
-		ThreadLocal.withInitial(ThreadLocalMap::new);
+        return _longLivedThreadLocals.get();
+    }
 
-	private final Function<T, T> _copyFunction;
-	private final int _hashCode;
-	private final String _name;
-	private final boolean _shortLived;
-	private final Supplier<T> _supplier;
+    private static final int _HASH_INCREMENT = 0x61c88647;
 
-	private static class Entry {
+    private static final Set<Class<?>> _immutableTypes = new HashSet<>(
+            Arrays.asList(
+                    Boolean.class, Byte.class, Character.class, Double.class,
+                    Float.class, Integer.class, Long.class, Short.class, String.class));
+    private static final AtomicInteger _longLivedNextHasCode =
+            new AtomicInteger();
+    private static final ThreadLocal<ThreadLocalMap> _longLivedThreadLocals =
+            ThreadLocal.withInitial(ThreadLocalMap::new);
+    private static final AtomicInteger _shortLivedNextHasCode =
+            new AtomicInteger();
+    private static final ThreadLocal<ThreadLocalMap> _shortLivedThreadLocals =
+            ThreadLocal.withInitial(ThreadLocalMap::new);
 
-		public Entry(CentralizedThreadLocal<?> key, Object value, Entry next) {
-			_key = key;
-			_value = value;
-			_next = next;
-		}
+    private final Function<T, T> _copyFunction;
+    private final int _hashCode;
+    private final String _name;
+    private final boolean _shortLived;
+    private final Supplier<T> _supplier;
 
-		private CentralizedThreadLocal<?> _key;
-		private Entry _next;
-		private Object _value;
+    private static class Entry {
 
-	}
+        public Entry(CentralizedThreadLocal<?> key, Object value, Entry next) {
+            _key = key;
+            _value = value;
+            _next = next;
+        }
 
-	private static class ThreadLocalMap {
+        private CentralizedThreadLocal<?> _key;
+        private Entry _next;
+        private Object _value;
 
-		public void expand(int newCapacity) {
-			if (newCapacity == (_MAXIMUM_CAPACITY * 2)) {
-				_threshold = Integer.MAX_VALUE;
+    }
 
-				return;
-			}
+    private static class ThreadLocalMap {
 
-			Entry[] newTable = new Entry[newCapacity];
+        public void expand(int newCapacity) {
+            if (newCapacity == (_MAXIMUM_CAPACITY * 2)) {
+                _threshold = Integer.MAX_VALUE;
 
-			for (int i = 0; i < _table.length; i++) {
-				Entry entry = _table[i];
+                return;
+            }
 
-				if (entry == null) {
-					continue;
-				}
+            Entry[] newTable = new Entry[newCapacity];
 
-				_table[i] = null;
+            for (int i = 0; i < _table.length; i++) {
+                Entry entry = _table[i];
 
-				do {
-					Entry nextEntry = entry._next;
+                if (entry == null) {
+                    continue;
+                }
 
-					int index = entry._key._hashCode & (newCapacity - 1);
+                _table[i] = null;
 
-					entry._next = newTable[index];
+                do {
+                    Entry nextEntry = entry._next;
 
-					newTable[index] = entry;
+                    int index = entry._key._hashCode & (newCapacity - 1);
 
-					entry = nextEntry;
-				}
-				while (entry != null);
-			}
+                    entry._next = newTable[index];
 
-			_table = newTable;
+                    newTable[index] = entry;
 
-			_threshold = newCapacity * 2 / 3;
-		}
+                    entry = nextEntry;
+                }
+                while (entry != null);
+            }
 
-		public Entry getEntry(CentralizedThreadLocal<?> key) {
-			int index = key._hashCode & (_table.length - 1);
+            _table = newTable;
 
-			Entry entry = _table[index];
+            _threshold = newCapacity * 2 / 3;
+        }
 
-			if (entry == null) {
-				return null;
-			}
+        public Entry getEntry(CentralizedThreadLocal<?> key) {
+            int index = key._hashCode & (_table.length - 1);
 
-			if (entry._key == key) {
-				return entry;
-			}
+            Entry entry = _table[index];
 
-			while ((entry = entry._next) != null) {
-				if (entry._key == key) {
-					return entry;
-				}
-			}
+            if (entry == null) {
+                return null;
+            }
 
-			return null;
-		}
+            if (entry._key == key) {
+                return entry;
+            }
 
-		public void putEntry(CentralizedThreadLocal<?> key, Object value) {
-			int index = key._hashCode & (_table.length - 1);
+            while ((entry = entry._next) != null) {
+                if (entry._key == key) {
+                    return entry;
+                }
+            }
 
-			for (Entry entry = _table[index]; entry != null;
-				 entry = entry._next) {
+            return null;
+        }
 
-				if (entry._key == key) {
-					entry._value = value;
+        public void putEntry(CentralizedThreadLocal<?> key, Object value) {
+            int index = key._hashCode & (_table.length - 1);
 
-					return;
-				}
-			}
+            for (Entry entry = _table[index]; entry != null;
+                 entry = entry._next) {
 
-			_table[index] = new Entry(key, value, _table[index]);
+                if (entry._key == key) {
+                    entry._value = value;
 
-			if (_size++ >= _threshold) {
-				expand(2 * _table.length);
-			}
-		}
+                    return;
+                }
+            }
 
-		public void removeEntry(CentralizedThreadLocal<?> key) {
-			int index = key._hashCode & (_table.length - 1);
+            _table[index] = new Entry(key, value, _table[index]);
 
-			Entry previousEntry = null;
+            if (_size++ >= _threshold) {
+                expand(2 * _table.length);
+            }
+        }
 
-			Entry entry = _table[index];
+        public void removeEntry(CentralizedThreadLocal<?> key) {
+            int index = key._hashCode & (_table.length - 1);
 
-			while (entry != null) {
-				Entry nextEntry = entry._next;
+            Entry previousEntry = null;
 
-				if (entry._key == key) {
-					_size--;
+            Entry entry = _table[index];
 
-					if (previousEntry == null) {
-						_table[index] = nextEntry;
-					}
-					else {
-						previousEntry._next = nextEntry;
-					}
+            while (entry != null) {
+                Entry nextEntry = entry._next;
 
-					return;
-				}
+                if (entry._key == key) {
+                    _size--;
 
-				previousEntry = entry;
-				entry = nextEntry;
-			}
-		}
+                    if (previousEntry == null) {
+                        _table[index] = nextEntry;
+                    } else {
+                        previousEntry._next = nextEntry;
+                    }
 
-		private static final int _INITIAL_CAPACITY = 16;
+                    return;
+                }
 
-		private static final int _MAXIMUM_CAPACITY = 1 << 30;
+                previousEntry = entry;
+                entry = nextEntry;
+            }
+        }
 
-		private int _size;
-		private Entry[] _table = new Entry[_INITIAL_CAPACITY];
-		private int _threshold = _INITIAL_CAPACITY * 2 / 3;
+        private static final int _INITIAL_CAPACITY = 16;
 
-	}
+        private static final int _MAXIMUM_CAPACITY = 1 << 30;
+
+        private int _size;
+        private Entry[] _table = new Entry[_INITIAL_CAPACITY];
+        private int _threshold = _INITIAL_CAPACITY * 2 / 3;
+
+    }
 
 }

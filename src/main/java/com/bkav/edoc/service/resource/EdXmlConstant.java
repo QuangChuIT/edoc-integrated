@@ -6,6 +6,7 @@ package com.bkav.edoc.service.resource;
 import org.jdom2.Namespace;
 
 public class EdXmlConstant {
+
     public static final String EDXML_PREFIX = "edXML";
     public static final Namespace EDXML_NS = Namespace.getNamespace("http://www.e-doc.vn/Schema/");
     public static final Namespace XLINK_NS = Namespace.getNamespace("http://www.w3.org/1999/xlink");

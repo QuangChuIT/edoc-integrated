@@ -30,19 +30,18 @@ public class HibernateUtil {
             settings.put(Environment.AUTO_CLOSE_SESSION, PropsUtil.get(Environment.AUTO_CLOSE_SESSION));
 
             configuration.setProperties(settings);
-            configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocDocument.hbm.xml"));
-            configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocDocumentDetail.hbm.xml"));
-            configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocTraceHeaderList.hbm.xml"));
-            configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocTrace.hbm.xml"));
-            configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocNotification.hbm.xml"));
-            configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocPriority.hbm.xml"));
-            configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocAttachment.hbm.xml"));
-            configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocDynamicContact.hbm.xml"));
-            configuration.addInputStream( HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocTraceHeader.hbm.xml"));
+            configuration.addInputStream(HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocDocument.hbm.xml"));
+            configuration.addInputStream(HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocDocumentDetail.hbm.xml"));
+            configuration.addInputStream(HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocTraceHeaderList.hbm.xml"));
+            configuration.addInputStream(HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocTrace.hbm.xml"));
+            configuration.addInputStream(HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocNotification.hbm.xml"));
+            configuration.addInputStream(HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocPriority.hbm.xml"));
+            configuration.addInputStream(HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocAttachment.hbm.xml"));
+            configuration.addInputStream(HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocDynamicContact.hbm.xml"));
+            configuration.addInputStream(HibernateUtil.class.getClassLoader().getResourceAsStream("entity/EdocTraceHeader.hbm.xml"));
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
             return configuration.buildSessionFactory(serviceRegistry);
-        }
-        catch (Throwable ex) {
+        } catch (Throwable ex) {
             // Make sure you log the exception, as it might be swallowed
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);

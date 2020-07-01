@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -13,6 +13,7 @@
  */
 
 package com.bkav.edoc.service.kernel.io.unsync;
+
 import com.bkav.edoc.service.kernel.string.CharPool;
 import com.bkav.edoc.service.kernel.string.StringBundler;
 
@@ -28,382 +29,380 @@ import java.io.Reader;
  */
 public class UnsyncBufferedReader extends Reader {
 
-	public UnsyncBufferedReader(Reader reader) {
-		this(reader, _DEFAULT_BUFFER_SIZE);
-	}
+    public UnsyncBufferedReader(Reader reader) {
+        this(reader, _DEFAULT_BUFFER_SIZE);
+    }
 
-	public UnsyncBufferedReader(Reader reader, int size) {
-		if (size <= 0) {
-			throw new IllegalArgumentException("Size is less than 0");
-		}
+    public UnsyncBufferedReader(Reader reader, int size) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("Size is less than 0");
+        }
 
-		this.reader = reader;
+        this.reader = reader;
 
-		buffer = new char[size];
-	}
+        buffer = new char[size];
+    }
 
-	@Override
-	public void close() throws IOException {
-		if (reader != null) {
-			reader.close();
+    @Override
+    public void close() throws IOException {
+        if (reader != null) {
+            reader.close();
 
-			reader = null;
-			buffer = null;
-		}
-	}
+            reader = null;
+            buffer = null;
+        }
+    }
 
-	@Override
-	public void mark(int markLimit) throws IOException {
-		if (markLimit < 0) {
-			throw new IllegalArgumentException("Mark limit is less than 0");
-		}
+    @Override
+    public void mark(int markLimit) throws IOException {
+        if (markLimit < 0) {
+            throw new IllegalArgumentException("Mark limit is less than 0");
+        }
 
-		if (reader == null) {
-			throw new IOException("Reader is null");
-		}
+        if (reader == null) {
+            throw new IOException("Reader is null");
+        }
 
-		if (markLimit == 0) {
-			return;
-		}
+        if (markLimit == 0) {
+            return;
+        }
 
-		markLimitIndex = markLimit;
+        markLimitIndex = markLimit;
 
-		if (index == 0) {
-			return;
-		}
+        if (index == 0) {
+            return;
+        }
 
-		int available = firstInvalidIndex - index;
+        int available = firstInvalidIndex - index;
 
-		if (available > 0) {
+        if (available > 0) {
 
-			// Shuffle mark beginning to buffer beginning
+            // Shuffle mark beginning to buffer beginning
 
-			System.arraycopy(buffer, index, buffer, 0, available);
+            System.arraycopy(buffer, index, buffer, 0, available);
 
-			index = 0;
+            index = 0;
 
-			firstInvalidIndex = available;
-		}
-		else {
+            firstInvalidIndex = available;
+        } else {
 
-			// Reset buffer states
+            // Reset buffer states
 
-			index = firstInvalidIndex = 0;
-		}
-	}
+            index = firstInvalidIndex = 0;
+        }
+    }
 
-	@Override
-	public boolean markSupported() {
-		return true;
-	}
+    @Override
+    public boolean markSupported() {
+        return true;
+    }
 
-	@Override
-	public int read() throws IOException {
-		if (reader == null) {
-			throw new IOException("Reader is null");
-		}
+    @Override
+    public int read() throws IOException {
+        if (reader == null) {
+            throw new IOException("Reader is null");
+        }
 
-		if (index >= firstInvalidIndex) {
-			fillInBuffer();
+        if (index >= firstInvalidIndex) {
+            fillInBuffer();
 
-			if (index >= firstInvalidIndex) {
-				return -1;
-			}
-		}
+            if (index >= firstInvalidIndex) {
+                return -1;
+            }
+        }
 
-		return buffer[index++];
-	}
+        return buffer[index++];
+    }
 
-	@Override
-	public int read(char[] chars) throws IOException {
-		return read(chars, 0, chars.length);
-	}
+    @Override
+    public int read(char[] chars) throws IOException {
+        return read(chars, 0, chars.length);
+    }
 
-	@Override
-	public int read(char[] chars, int offset, int length) throws IOException {
-		if (reader == null) {
-			throw new IOException("Reader is null");
-		}
+    @Override
+    public int read(char[] chars, int offset, int length) throws IOException {
+        if (reader == null) {
+            throw new IOException("Reader is null");
+        }
 
-		if (length <= 0) {
-			return 0;
-		}
+        if (length <= 0) {
+            return 0;
+        }
 
-		int read = 0;
+        int read = 0;
 
-		while (true) {
+        while (true) {
 
-			// Try to at least read some data
+            // Try to at least read some data
 
-			int currentRead = readOnce(chars, offset + read, length - read);
+            int currentRead = readOnce(chars, offset + read, length - read);
 
-			if (currentRead <= 0) {
-				if (read == 0) {
-					read = currentRead;
-				}
+            if (currentRead <= 0) {
+                if (read == 0) {
+                    read = currentRead;
+                }
 
-				break;
-			}
+                break;
+            }
 
-			read += currentRead;
+            read += currentRead;
 
-			if (!reader.ready() || (read >= length)) {
+            if (!reader.ready() || (read >= length)) {
 
-				// Read enough or further reading may be blocked, stop reading
+                // Read enough or further reading may be blocked, stop reading
 
-				break;
-			}
-		}
+                break;
+            }
+        }
 
-		return read;
-	}
+        return read;
+    }
 
-	public String readLine() throws IOException {
-		if (reader == null) {
-			throw new IOException("Reader is null");
-		}
+    public String readLine() throws IOException {
+        if (reader == null) {
+            throw new IOException("Reader is null");
+        }
 
-		StringBundler sb = null;
+        StringBundler sb = null;
 
-		while (true) {
-			if (index >= firstInvalidIndex) {
-				fillInBuffer();
-			}
+        while (true) {
+            if (index >= firstInvalidIndex) {
+                fillInBuffer();
+            }
 
-			if (index >= firstInvalidIndex) {
-				if ((sb != null) && (sb.index() > 0)) {
-					return sb.toString();
-				}
+            if (index >= firstInvalidIndex) {
+                if ((sb != null) && (sb.index() > 0)) {
+                    return sb.toString();
+                }
 
-				return null;
-			}
+                return null;
+            }
 
-			boolean hasLineBreak = false;
-			char lineEndChar = 0;
+            boolean hasLineBreak = false;
+            char lineEndChar = 0;
 
-			int x = index;
+            int x = index;
 
-			int y = index;
+            int y = index;
 
-			while (y < firstInvalidIndex) {
-				lineEndChar = buffer[y];
+            while (y < firstInvalidIndex) {
+                lineEndChar = buffer[y];
 
-				if ((lineEndChar == CharPool.NEW_LINE) ||
-					(lineEndChar == CharPool.RETURN)) {
+                if ((lineEndChar == CharPool.NEW_LINE) ||
+                        (lineEndChar == CharPool.RETURN)) {
 
-					hasLineBreak = true;
+                    hasLineBreak = true;
 
-					break;
-				}
+                    break;
+                }
 
-				y++;
-			}
+                y++;
+            }
 
-			String line = new String(buffer, x, y - x);
+            String line = new String(buffer, x, y - x);
 
-			index = y;
+            index = y;
 
-			if (hasLineBreak) {
-				index++;
+            if (hasLineBreak) {
+                index++;
 
-				if ((lineEndChar == CharPool.RETURN) &&
-					(index < buffer.length) &&
-					(buffer[index] == CharPool.NEW_LINE)) {
+                if ((lineEndChar == CharPool.RETURN) &&
+                        (index < buffer.length) &&
+                        (buffer[index] == CharPool.NEW_LINE)) {
 
-					index++;
-				}
+                    index++;
+                }
 
-				if (sb == null) {
-					return line;
-				}
+                if (sb == null) {
+                    return line;
+                }
 
-				sb.append(line);
+                sb.append(line);
 
-				return sb.toString();
-			}
+                return sb.toString();
+            }
 
-			if (sb == null) {
-				sb = new StringBundler();
-			}
+            if (sb == null) {
+                sb = new StringBundler();
+            }
 
-			sb.append(line);
-		}
-	}
+            sb.append(line);
+        }
+    }
 
-	@Override
-	public boolean ready() throws IOException {
-		if (reader == null) {
-			throw new IOException("Reader is null");
-		}
+    @Override
+    public boolean ready() throws IOException {
+        if (reader == null) {
+            throw new IOException("Reader is null");
+        }
 
-		if ((index < firstInvalidIndex) || reader.ready()) {
-			return true;
-		}
+        if ((index < firstInvalidIndex) || reader.ready()) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public void reset() throws IOException {
-		if (reader == null) {
-			throw new IOException("Reader is null");
-		}
+    @Override
+    public void reset() throws IOException {
+        if (reader == null) {
+            throw new IOException("Reader is null");
+        }
 
-		if (markLimitIndex < 0) {
-			throw new IOException("Resetting to invalid mark");
-		}
+        if (markLimitIndex < 0) {
+            throw new IOException("Resetting to invalid mark");
+        }
 
-		index = 0;
-	}
+        index = 0;
+    }
 
-	@Override
-	public long skip(long skip) throws IOException {
-		if (skip < 0) {
-			throw new IllegalArgumentException("Skip is less than 0");
-		}
+    @Override
+    public long skip(long skip) throws IOException {
+        if (skip < 0) {
+            throw new IllegalArgumentException("Skip is less than 0");
+        }
 
-		if (reader == null) {
-			throw new IOException("Reader is null");
-		}
+        if (reader == null) {
+            throw new IOException("Reader is null");
+        }
 
-		if (skip == 0) {
-			return 0;
-		}
+        if (skip == 0) {
+            return 0;
+        }
 
-		long available = firstInvalidIndex - index;
+        long available = firstInvalidIndex - index;
 
-		if (available <= 0) {
-			if (markLimitIndex < 0) {
+        if (available <= 0) {
+            if (markLimitIndex < 0) {
 
-				// No mark required, skip the underlying input stream
+                // No mark required, skip the underlying input stream
 
-				return reader.skip(skip);
-			}
+                return reader.skip(skip);
+            }
 
-			// Mark required, save the skipped data
+            // Mark required, save the skipped data
 
-			fillInBuffer();
+            fillInBuffer();
 
-			available = firstInvalidIndex - index;
+            available = firstInvalidIndex - index;
 
-			if (available <= 0) {
-				return 0;
-			}
-		}
+            if (available <= 0) {
+                return 0;
+            }
+        }
 
-		// Skip the data in buffer
+        // Skip the data in buffer
 
-		if (available < skip) {
-			skip = available;
-		}
+        if (available < skip) {
+            skip = available;
+        }
 
-		index += skip;
+        index += skip;
 
-		return skip;
-	}
+        return skip;
+    }
 
-	protected void fillInBuffer() throws IOException {
-		if (markLimitIndex < 0) {
+    protected void fillInBuffer() throws IOException {
+        if (markLimitIndex < 0) {
 
-			// No mark required, fill the buffer
+            // No mark required, fill the buffer
 
-			index = firstInvalidIndex = 0;
+            index = firstInvalidIndex = 0;
 
-			int number = reader.read(buffer);
+            int number = reader.read(buffer);
 
-			if (number > 0) {
-				firstInvalidIndex = number;
-			}
+            if (number > 0) {
+                firstInvalidIndex = number;
+            }
 
-			return;
-		}
+            return;
+        }
 
-		// Mark required
+        // Mark required
 
-		if (index >= markLimitIndex) {
+        if (index >= markLimitIndex) {
 
-			// Passed mark limit indexs, get rid of all cache data
+            // Passed mark limit indexs, get rid of all cache data
 
-			markLimitIndex = -1;
+            markLimitIndex = -1;
 
-			index = firstInvalidIndex = 0;
-		}
-		else if (index == buffer.length) {
+            index = firstInvalidIndex = 0;
+        } else if (index == buffer.length) {
 
-			// Cannot get rid of cache data and there is no room to read in any
-			// more data, so grow the buffer
+            // Cannot get rid of cache data and there is no room to read in any
+            // more data, so grow the buffer
 
-			int newBufferSize = buffer.length * 2;
+            int newBufferSize = buffer.length * 2;
 
-			if (newBufferSize > markLimitIndex) {
-				newBufferSize = markLimitIndex;
-			}
+            if (newBufferSize > markLimitIndex) {
+                newBufferSize = markLimitIndex;
+            }
 
-			char[] newBuffer = new char[newBufferSize];
+            char[] newBuffer = new char[newBufferSize];
 
-			System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
 
-			buffer = newBuffer;
-		}
+            buffer = newBuffer;
+        }
 
-		// Read the underlying input stream since the buffer has more space
+        // Read the underlying input stream since the buffer has more space
 
-		firstInvalidIndex = index;
+        firstInvalidIndex = index;
 
-		int number = reader.read(buffer, index, buffer.length - index);
+        int number = reader.read(buffer, index, buffer.length - index);
 
-		if (number > 0) {
-			firstInvalidIndex += number;
-		}
-	}
+        if (number > 0) {
+            firstInvalidIndex += number;
+        }
+    }
 
-	protected int readOnce(char[] chars, int offset, int length)
-		throws IOException {
+    protected int readOnce(char[] chars, int offset, int length)
+            throws IOException {
 
-		int available = firstInvalidIndex - index;
+        int available = firstInvalidIndex - index;
 
-		if (available <= 0) {
+        if (available <= 0) {
 
-			// Buffer is empty, read from underlying reader
+            // Buffer is empty, read from underlying reader
 
-			if ((markLimitIndex < 0) && (length >= buffer.length)) {
+            if ((markLimitIndex < 0) && (length >= buffer.length)) {
 
-				// No mark required, left read block is no less than buffer,
-				// read through buffer is inefficient, so directly read from
-				// underlying reader
+                // No mark required, left read block is no less than buffer,
+                // read through buffer is inefficient, so directly read from
+                // underlying reader
 
-				return reader.read(chars, offset, length);
-			}
+                return reader.read(chars, offset, length);
+            }
 
-			// Mark is required, has to read through the buffer to remember
-			// data
+            // Mark is required, has to read through the buffer to remember
+            // data
 
-			fillInBuffer();
+            fillInBuffer();
 
-			available = firstInvalidIndex - index;
+            available = firstInvalidIndex - index;
 
-			if (available <= 0) {
-				return -1;
-			}
-		}
+            if (available <= 0) {
+                return -1;
+            }
+        }
 
-		if (length > available) {
-			length = available;
-		}
+        if (length > available) {
+            length = available;
+        }
 
-		System.arraycopy(buffer, index, chars, offset, length);
+        System.arraycopy(buffer, index, chars, offset, length);
 
-		index += length;
+        index += length;
 
-		return length;
-	}
+        return length;
+    }
 
-	protected char[] buffer;
-	protected int firstInvalidIndex;
-	protected int index;
-	protected int markLimitIndex = -1;
-	protected Reader reader;
+    protected char[] buffer;
+    protected int firstInvalidIndex;
+    protected int index;
+    protected int markLimitIndex = -1;
+    protected Reader reader;
 
-	private static final int _DEFAULT_BUFFER_SIZE = 8192;
+    private static final int _DEFAULT_BUFFER_SIZE = 8192;
 
 }

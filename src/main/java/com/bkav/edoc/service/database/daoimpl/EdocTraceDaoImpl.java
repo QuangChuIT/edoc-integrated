@@ -12,7 +12,7 @@ public class EdocTraceDaoImpl extends RootDaoImpl<EdocTrace, Long> implements Ed
         super(EdocTrace.class);
     }
 
-    public  List<EdocTrace> getEdocTracesByOrganId(String responseForOrganId) {
+    public List<EdocTrace> getEdocTracesByOrganId(String responseForOrganId) {
         Session currentSession = getCurrentSession();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT et FROM EdocTrace et where et.toOrganDomain=:responseForOrganId and et.enable=:enable order by et.timeStamp DESC");

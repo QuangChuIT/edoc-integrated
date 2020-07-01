@@ -5,28 +5,26 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-/*QuangCV - May 15, 2020*/
-
 public class XpathUtil {
 
-	/**
-	 * @param xpathValue
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public XPathExpression getXpathExpression(String xpathValue)
-			throws XPathExpressionException {
+    /**
+     * @param xpathValue
+     * @return
+     * @throws XPathExpressionException
+     */
+    public XPathExpression getXpathExpression(String xpathValue)
+            throws XPathExpressionException {
 
-		return xpath.compile(xpathValue);
-	}
+        return xpath.compile(xpathValue);
+    }
 
-	private static final XPathFactory factory = XPathFactory.newInstance();
+    private static final XPathFactory factory = XPathFactory.newInstance();
 
-	private static XPath xpath;
+    private static XPath xpath;
 
-	static {
-		if (factory != null) {
-			xpath = factory.newXPath();
-		}
-	}
+    static {
+        if (factory != null) {
+            xpath = factory.newXPath();
+        }
+    }
 }

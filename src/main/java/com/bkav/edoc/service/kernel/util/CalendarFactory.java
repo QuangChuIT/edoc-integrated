@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -24,32 +24,32 @@ import java.util.TimeZone;
  */
 public interface CalendarFactory {
 
-	public Calendar getCalendar();
+    public Calendar getCalendar();
 
-	public Calendar getCalendar(int year, int month, int date);
+    public Calendar getCalendar(int year, int month, int date);
 
-	public Calendar getCalendar(
-		int year, int month, int date, int hour, int minute);
+    public Calendar getCalendar(
+            int year, int month, int date, int hour, int minute);
 
-	public Calendar getCalendar(
-		int year, int month, int date, int hour, int minute, int second);
+    public Calendar getCalendar(
+            int year, int month, int date, int hour, int minute, int second);
 
-	public Calendar getCalendar(
-		int year, int month, int date, int hour, int minute, int second,
-		int millisecond);
+    public Calendar getCalendar(
+            int year, int month, int date, int hour, int minute, int second,
+            int millisecond);
 
-	public Calendar getCalendar(
-		int year, int month, int date, int hour, int minute, int second,
-		int millisecond, TimeZone timeZone);
+    public Calendar getCalendar(
+            int year, int month, int date, int hour, int minute, int second,
+            int millisecond, TimeZone timeZone);
 
-	public Calendar getCalendar(Locale locale);
+    public Calendar getCalendar(Locale locale);
 
-	public Calendar getCalendar(long time);
+    public Calendar getCalendar(long time);
 
-	public Calendar getCalendar(long time, TimeZone timeZone);
+    public Calendar getCalendar(long time, TimeZone timeZone);
 
-	public Calendar getCalendar(TimeZone timeZone);
+    public Calendar getCalendar(TimeZone timeZone);
 
-	public Calendar getCalendar(TimeZone timeZone, Locale locale);
+    public Calendar getCalendar(TimeZone timeZone, Locale locale);
 
 }

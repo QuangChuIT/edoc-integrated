@@ -46,9 +46,6 @@ public class StringPool {
 
     public static final String TARGET_NAMESPACE = "http://www.e-doc.vn/Schema/";
 
-    public static final String EDOC1_TARGET_NAMESPACE = "http://edoc.bkav.com/Schema/";
-    public static String EDOC1_EDXML_PREFIX = "edXml";
-
     public static String XLINK_NAMESPACE = "http://www.w3.org/1999/xlink";
     public static String ATTR_HREF = "href";
 

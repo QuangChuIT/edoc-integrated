@@ -18,20 +18,18 @@ import com.bkav.edoc.service.entity.soapenv.Envelope;
 import com.bkav.edoc.service.entity.soapenv.Header;
 
 
-
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the Bkav.eDoc.Service.Entity package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
+ * This object contains factory methods for each
+ * Java content interface and Java element interface
+ * generated in the Bkav.eDoc.Service.Entity package.
+ * <p>An ObjectFactory allows you to programatically
+ * construct new instances of the Java representation
+ * for XML content. The Java representation of XML
+ * content can consist of schema derived interfaces
+ * and classes representing the binding of schema
+ * type definitions, element declarations and model
+ * groups.  Factory methods for each of these are
  * provided in this class.
- * 
  */
 @XmlRegistry
 public class ObjectFactory {
@@ -40,14 +38,12 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: Bkav.eDoc.Service.Entity
-     * 
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link From }
-     * 
      */
     public From createFrom() {
         return new From();
@@ -55,7 +51,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link To }
-     * 
      */
     public To createTo() {
         return new To();
@@ -63,7 +58,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link OtherInfo }
-     * 
      */
     public OtherInfo createOtherInfo() {
         return new OtherInfo();
@@ -71,7 +65,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Author }
-     * 
      */
     public Author createAuthor() {
         return new Author();
@@ -79,7 +72,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link MessageHeader }
-     * 
      */
     public MessageHeader createMessageHeader() {
         return new MessageHeader();
@@ -87,7 +79,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Header }
-     * 
      */
     public Header createHeader() {
         return new Header();
@@ -95,7 +86,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Code }
-     * 
      */
     public Code createCode() {
         return new Code();
@@ -103,7 +93,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ToPlaces }
-     * 
      */
     public ToPlaces createToPlaces() {
         return new ToPlaces();
@@ -111,7 +100,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Manifest }
-     * 
      */
     public Manifest createManifest() {
         return new Manifest();
@@ -119,7 +107,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Attachment }
-     * 
      */
     public Attachment createAttachment() {
         return new Attachment();
@@ -127,7 +114,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Body }
-     * 
      */
     public Body createBody() {
         return new Body();
@@ -135,7 +121,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Appendixes }
-     * 
      */
     public Appendixes createAppendixes() {
         return new Appendixes();
@@ -143,7 +128,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Envelope }
-     * 
      */
     public Envelope createEnvelope() {
         return new Envelope();
@@ -151,7 +135,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Reference }
-     * 
      */
     public Reference createReference() {
         return new Reference();
@@ -159,7 +142,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link PromulgationInfo }
-     * 
      */
     public PromulgationInfo createPromulgationInfo() {
         return new PromulgationInfo();
@@ -167,7 +149,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link DocumentType }
-     * 
      */
     public DocumentType createDocumentType() {
         return new DocumentType();
@@ -175,7 +156,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link Envelope }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://schemas.xmlsoap.org/soap/envelope/", name = "Envelope")
     public JAXBElement<Envelope> createEnvelope(Envelope value) {

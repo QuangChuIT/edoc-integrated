@@ -18,9 +18,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for Manifest complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Manifest">
  *   &lt;complexContent>
@@ -32,12 +32,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Manifest", propOrder = {
-    "reference"
+        "reference"
 })
 public class Manifest {
 
@@ -46,25 +44,21 @@ public class Manifest {
 
     /**
      * Gets the value of the reference property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Reference }
-     *     
+     *
+     * @return possible object is
+     * {@link Reference }
      */
-    public  List<Reference> getReference() {
+    public List<Reference> getReference() {
         return reference;
     }
 
     /**
      * Sets the value of the reference property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Reference }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Reference }
      */
-    public void setReference( List<Reference> value) {
+    public void setReference(List<Reference> value) {
         this.reference = value;
     }
 

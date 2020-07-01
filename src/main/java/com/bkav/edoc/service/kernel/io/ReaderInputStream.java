@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -31,227 +31,224 @@ import java.nio.charset.CharsetEncoder;
  */
 public class ReaderInputStream extends InputStream {
 
-	public ReaderInputStream(Reader reader) {
-		this(
-			reader, StringPool.UTF8, _DEFAULT_INTPUT_BUFFER_SIZE,
-			_DEFAULT_OUTPUT_BUFFER_SIZE);
-	}
-
-	public ReaderInputStream(Reader reader, String charsetName) {
-		this(
-			reader, charsetName, _DEFAULT_INTPUT_BUFFER_SIZE,
-			_DEFAULT_OUTPUT_BUFFER_SIZE);
-	}
+    public ReaderInputStream(Reader reader) {
+        this(
+                reader, StringPool.UTF8, _DEFAULT_INTPUT_BUFFER_SIZE,
+                _DEFAULT_OUTPUT_BUFFER_SIZE);
+    }
 
-	public ReaderInputStream(
-		Reader reader, String charsetName, int inputBufferSize,
-		int outputBufferSize) {
+    public ReaderInputStream(Reader reader, String charsetName) {
+        this(
+                reader, charsetName, _DEFAULT_INTPUT_BUFFER_SIZE,
+                _DEFAULT_OUTPUT_BUFFER_SIZE);
+    }
 
-		_reader = reader;
-		_charsetName = charsetName;
+    public ReaderInputStream(
+            Reader reader, String charsetName, int inputBufferSize,
+            int outputBufferSize) {
 
-		if (inputBufferSize <= 0) {
-			throw new IllegalArgumentException(
-				"Input buffer size " + inputBufferSize +
-					" must be a positive number");
-		}
+        _reader = reader;
+        _charsetName = charsetName;
 
-		_inputBuffer = CharBuffer.allocate(inputBufferSize);
+        if (inputBufferSize <= 0) {
+            throw new IllegalArgumentException(
+                    "Input buffer size " + inputBufferSize +
+                            " must be a positive number");
+        }
 
-		_charsetEncoder = CharsetEncoderUtil.getCharsetEncoder(charsetName);
+        _inputBuffer = CharBuffer.allocate(inputBufferSize);
 
-		_maxBytesPerChar = (int)Math.ceil(_charsetEncoder.maxBytesPerChar());
+        _charsetEncoder = CharsetEncoderUtil.getCharsetEncoder(charsetName);
 
-		if (outputBufferSize < _maxBytesPerChar) {
-			throw new IllegalArgumentException(
-				StringBundler.concat(
-					"Output buffer size ", outputBufferSize, " is less than ",
-					_maxBytesPerChar));
-		}
+        _maxBytesPerChar = (int) Math.ceil(_charsetEncoder.maxBytesPerChar());
 
-		_outputBuffer = ByteBuffer.allocate(outputBufferSize);
+        if (outputBufferSize < _maxBytesPerChar) {
+            throw new IllegalArgumentException(
+                    StringBundler.concat(
+                            "Output buffer size ", outputBufferSize, " is less than ",
+                            _maxBytesPerChar));
+        }
 
-		_outputBuffer.flip();
-	}
+        _outputBuffer = ByteBuffer.allocate(outputBufferSize);
 
-	@Override
-	public int available() {
-		return _outputBuffer.remaining() + _inputBuffer.position();
-	}
+        _outputBuffer.flip();
+    }
 
-	@Override
-	public void close() throws IOException {
-		if (_inputBuffer != null) {
-			_inputBuffer.clear();
+    @Override
+    public int available() {
+        return _outputBuffer.remaining() + _inputBuffer.position();
+    }
 
-			_inputBuffer = null;
-		}
+    @Override
+    public void close() throws IOException {
+        if (_inputBuffer != null) {
+            _inputBuffer.clear();
 
-		if (_outputBuffer != null) {
-			_outputBuffer.clear();
+            _inputBuffer = null;
+        }
 
-			_outputBuffer = null;
-		}
+        if (_outputBuffer != null) {
+            _outputBuffer.clear();
 
-		_reader.close();
-	}
+            _outputBuffer = null;
+        }
 
-	public String getEncoding() {
-		return _charsetName;
-	}
+        _reader.close();
+    }
 
-	@Override
-	public int read() throws IOException {
-		byte[] bytes = new byte[1];
+    public String getEncoding() {
+        return _charsetName;
+    }
 
-		int result = read(bytes, 0, 1);
+    @Override
+    public int read() throws IOException {
+        byte[] bytes = new byte[1];
 
-		if (result == 1) {
-			return bytes[0];
-		}
+        int result = read(bytes, 0, 1);
 
-		return -1;
-	}
+        if (result == 1) {
+            return bytes[0];
+        }
 
-	@Override
-	public int read(byte[] bytes) throws IOException {
-		return read(bytes, 0, bytes.length);
-	}
+        return -1;
+    }
 
-	@Override
-	public int read(byte[] bytes, int offset, int length) throws IOException {
-		if (bytes == null) {
-			throw new NullPointerException();
-		}
-		else if ((offset < 0) || (length < 0) ||
-				 (length > (bytes.length - offset))) {
+    @Override
+    public int read(byte[] bytes) throws IOException {
+        return read(bytes, 0, bytes.length);
+    }
 
-			throw new IndexOutOfBoundsException();
-		}
-		else if (length == 0) {
-			return 0;
-		}
+    @Override
+    public int read(byte[] bytes, int offset, int length) throws IOException {
+        if (bytes == null) {
+            throw new NullPointerException();
+        } else if ((offset < 0) || (length < 0) ||
+                (length > (bytes.length - offset))) {
 
-		int originalLength = length;
+            throw new IndexOutOfBoundsException();
+        } else if (length == 0) {
+            return 0;
+        }
 
-		while (length > 0) {
-			int blockSize = Math.min(_outputBuffer.remaining(), length);
+        int originalLength = length;
 
-			if (blockSize > 0) {
-				_outputBuffer.get(bytes, offset, blockSize);
+        while (length > 0) {
+            int blockSize = Math.min(_outputBuffer.remaining(), length);
 
-				length -= blockSize;
-				offset += blockSize;
+            if (blockSize > 0) {
+                _outputBuffer.get(bytes, offset, blockSize);
 
-				if (length == 0) {
-					break;
-				}
-			}
+                length -= blockSize;
+                offset += blockSize;
 
-			int inputPosition = _inputBuffer.position();
+                if (length == 0) {
+                    break;
+                }
+            }
 
-			int result = _reader.read(
-				_inputBuffer.array(), inputPosition, _inputBuffer.remaining());
+            int inputPosition = _inputBuffer.position();
 
-			if (result != -1) {
-				_inputBuffer.position(inputPosition + result);
-			}
+            int result = _reader.read(
+                    _inputBuffer.array(), inputPosition, _inputBuffer.remaining());
 
-			_inputBuffer.flip();
+            if (result != -1) {
+                _inputBuffer.position(inputPosition + result);
+            }
 
-			int inputRemaining = _inputBuffer.remaining();
+            _inputBuffer.flip();
 
-			if (inputRemaining <= 0) {
-				break;
-			}
+            int inputRemaining = _inputBuffer.remaining();
 
-			if ((inputRemaining * _maxBytesPerChar) < length) {
-				ByteBuffer byteBuffer = ByteBuffer.wrap(bytes, offset, length);
+            if (inputRemaining <= 0) {
+                break;
+            }
 
-				_charsetEncoder.encode(_inputBuffer, byteBuffer, true);
+            if ((inputRemaining * _maxBytesPerChar) < length) {
+                ByteBuffer byteBuffer = ByteBuffer.wrap(bytes, offset, length);
 
-				int outputRemaining = byteBuffer.remaining();
+                _charsetEncoder.encode(_inputBuffer, byteBuffer, true);
 
-				offset += length - outputRemaining;
-				length = outputRemaining;
-			}
-			else {
-				_outputBuffer.clear();
+                int outputRemaining = byteBuffer.remaining();
 
-				_charsetEncoder.encode(_inputBuffer, _outputBuffer, true);
+                offset += length - outputRemaining;
+                length = outputRemaining;
+            } else {
+                _outputBuffer.clear();
 
-				_outputBuffer.flip();
-			}
+                _charsetEncoder.encode(_inputBuffer, _outputBuffer, true);
 
-			_inputBuffer.compact();
-		}
+                _outputBuffer.flip();
+            }
 
-		int result = originalLength - length;
+            _inputBuffer.compact();
+        }
 
-		if (result == 0) {
-			return -1;
-		}
+        int result = originalLength - length;
 
-		return result;
-	}
+        if (result == 0) {
+            return -1;
+        }
 
-	@Override
-	public long skip(long length) throws IOException {
-		if (length < 0) {
-			throw new IllegalArgumentException();
-		}
+        return result;
+    }
 
-		long originalLength = length;
+    @Override
+    public long skip(long length) throws IOException {
+        if (length < 0) {
+            throw new IllegalArgumentException();
+        }
 
-		while (length > 0) {
-			int blockSize = (int)Math.min(_outputBuffer.remaining(), length);
+        long originalLength = length;
 
-			if (blockSize > 0) {
-				_outputBuffer.position(_outputBuffer.position() + blockSize);
+        while (length > 0) {
+            int blockSize = (int) Math.min(_outputBuffer.remaining(), length);
 
-				length -= blockSize;
+            if (blockSize > 0) {
+                _outputBuffer.position(_outputBuffer.position() + blockSize);
 
-				if (length == 0) {
-					break;
-				}
-			}
+                length -= blockSize;
 
-			int inputPosition = _inputBuffer.position();
+                if (length == 0) {
+                    break;
+                }
+            }
 
-			int result = _reader.read(
-				_inputBuffer.array(), inputPosition, _inputBuffer.remaining());
+            int inputPosition = _inputBuffer.position();
 
-			if (result != -1) {
-				_inputBuffer.position(inputPosition + result);
-			}
+            int result = _reader.read(
+                    _inputBuffer.array(), inputPosition, _inputBuffer.remaining());
 
-			_inputBuffer.flip();
+            if (result != -1) {
+                _inputBuffer.position(inputPosition + result);
+            }
 
-			if (_inputBuffer.remaining() <= 0) {
-				break;
-			}
+            _inputBuffer.flip();
 
-			_outputBuffer.clear();
+            if (_inputBuffer.remaining() <= 0) {
+                break;
+            }
 
-			_charsetEncoder.encode(_inputBuffer, _outputBuffer, true);
+            _outputBuffer.clear();
 
-			_outputBuffer.flip();
+            _charsetEncoder.encode(_inputBuffer, _outputBuffer, true);
 
-			_inputBuffer.compact();
-		}
+            _outputBuffer.flip();
 
-		return originalLength - length;
-	}
+            _inputBuffer.compact();
+        }
 
-	private static final int _DEFAULT_INTPUT_BUFFER_SIZE = 128;
+        return originalLength - length;
+    }
 
-	private static final int _DEFAULT_OUTPUT_BUFFER_SIZE = 1024;
+    private static final int _DEFAULT_INTPUT_BUFFER_SIZE = 128;
 
-	private final CharsetEncoder _charsetEncoder;
-	private final String _charsetName;
-	private CharBuffer _inputBuffer;
-	private final int _maxBytesPerChar;
-	private ByteBuffer _outputBuffer;
-	private final Reader _reader;
+    private static final int _DEFAULT_OUTPUT_BUFFER_SIZE = 1024;
+
+    private final CharsetEncoder _charsetEncoder;
+    private final String _charsetName;
+    private CharBuffer _inputBuffer;
+    private final int _maxBytesPerChar;
+    private ByteBuffer _outputBuffer;
+    private final Reader _reader;
 
 }

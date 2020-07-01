@@ -5,8 +5,8 @@
 <hibernate-mapping>
     <class name="com.bkav.edoc.service.database.entity.EdocDocument" table="edoc_document">
         <id name="documentId" type="java.lang.Long">
-            <column name="document_id" />
-            <generator class="identity" />
+            <column name="document_id"/>
+            <generator class="identity"/>
         </id>
         <property name="edXMLDocId" type="string" column="edXML_doc_id"/>
         <property name="createDate" type="date" column="create_date"/>
@@ -33,28 +33,28 @@
         <one-to-one name="traceHeaderList" class="com.bkav.edoc.service.database.entity.EdocTraceHeaderList"
                     cascade="save-update"/>
         <many-to-one name="priority" class="com.bkav.edoc.service.database.entity.EdocPriority" fetch="select">
-            <column name="priority_id" />
+            <column name="priority_id"/>
         </many-to-one>
         <set name="notifications" table="edoc_notification"
              inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="DOC_ID"/>
             </key>
-            <one-to-many class="com.bkav.edoc.service.database.entity.EdocNotification" />
+            <one-to-many class="com.bkav.edoc.service.database.entity.EdocNotification"/>
         </set>
         <set name="traces" table="edoc_trace"
              inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="DOC_ID"/>
             </key>
-            <one-to-many class="com.bkav.edoc.service.database.entity.EdocTrace" />
+            <one-to-many class="com.bkav.edoc.service.database.entity.EdocTrace"/>
         </set>
         <set name="attachments" table="edoc_attachment"
              inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="DOC_ID"/>
             </key>
-            <one-to-many class="com.bkav.edoc.service.database.entity.EdocAttachment" />
+            <one-to-many class="com.bkav.edoc.service.database.entity.EdocAttachment"/>
         </set>
     </class>
 </hibernate-mapping>

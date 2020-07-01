@@ -5,8 +5,8 @@
 <hibernate-mapping>
     <class name="com.bkav.edoc.service.database.entity.EdocAttachment" table="edoc_attachment">
         <id name="attachmentId" type="java.lang.Long">
-            <column name="attachment_id" />
-            <generator class="identity" />
+            <column name="attachment_id"/>
+            <generator class="identity"/>
         </id>
         <property name="organDomain" type="string" column="organ_domain"/>
         <property name="name" type="string" column="name"/>

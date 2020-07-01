@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for Envelope complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Envelope">
  *   &lt;complexContent>
@@ -31,13 +31,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Envelope", propOrder = {
-    "header",
-    "body"
+        "header",
+        "body"
 })
 public class Envelope {
 
@@ -48,11 +46,9 @@ public class Envelope {
 
     /**
      * Gets the value of the header property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Header }
-     *     
+     *
+     * @return possible object is
+     * {@link Header }
      */
     public Header getHeader() {
         return header;
@@ -60,11 +56,9 @@ public class Envelope {
 
     /**
      * Sets the value of the header property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Header }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Header }
      */
     public void setHeader(Header value) {
         this.header = value;
@@ -72,11 +66,9 @@ public class Envelope {
 
     /**
      * Gets the value of the body property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Body }
-     *     
+     *
+     * @return possible object is
+     * {@link Body }
      */
     public Body getBody() {
         return body;
@@ -84,11 +76,9 @@ public class Envelope {
 
     /**
      * Sets the value of the body property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Body }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Body }
      */
     public void setBody(Body value) {
         this.body = value;

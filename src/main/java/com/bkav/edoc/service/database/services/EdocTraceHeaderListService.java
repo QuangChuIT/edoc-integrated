@@ -20,12 +20,13 @@ import java.util.List;
 import java.util.Set;
 
 public class EdocTraceHeaderListService {
-    private EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
-    private EdocTraceHeaderListDaoImpl traceHeaderListDaoImpl = new EdocTraceHeaderListDaoImpl();
-    private EdocTraceHeaderDaoImpl traceHeaderDaoImpl = new EdocTraceHeaderDaoImpl();
+    private final EdocDocumentDaoImpl documentDaoImpl = new EdocDocumentDaoImpl();
+    private final EdocTraceHeaderListDaoImpl traceHeaderListDaoImpl = new EdocTraceHeaderListDaoImpl();
+    private final EdocTraceHeaderDaoImpl traceHeaderDaoImpl = new EdocTraceHeaderDaoImpl();
 
     /**
      * Add trace header list
+     *
      * @param traceHeaderList
      * @param docId
      * @return
@@ -46,7 +47,7 @@ public class EdocTraceHeaderListService {
                 edocTraceHeaderList.setPaper((int) traceHeaderList.getBusiness().getPaper());
                 edocTraceHeaderList.setBusinessInfo(businessInfo);
                 // get staff info
-                if(traceHeaderList.getBusiness().getStaffInfo() != null) {
+                if (traceHeaderList.getBusiness().getStaffInfo() != null) {
                     StaffInfo staffInfo = traceHeaderList.getBusiness().getStaffInfo();
                     edocTraceHeaderList.setEmail(staffInfo.getEmail());
                     edocTraceHeaderList.setDepartment(staffInfo.getDepartment());
@@ -72,7 +73,7 @@ public class EdocTraceHeaderListService {
             currentSession.getTransaction().commit();
         } catch (Exception e) {
             log.error(e);
-            if(currentSession != null) {
+            if (currentSession != null) {
                 currentSession.getTransaction().rollback();
             }
             return false;
@@ -84,6 +85,7 @@ public class EdocTraceHeaderListService {
 
     /**
      * get trace header list by doc id
+     *
      * @param documentId
      * @return
      */
@@ -112,7 +114,7 @@ public class EdocTraceHeaderListService {
         business.setStaffInfo(staffInfo);
 
         List<TraceHeader> traceHeaders = new ArrayList<>();
-        for(EdocTraceHeader edocTraceHeader: edocTraceHeaders) {
+        for (EdocTraceHeader edocTraceHeader : edocTraceHeaders) {
             // add trace header
             TraceHeader traceHeader = new TraceHeader();
             traceHeader.setOrganId(edocTraceHeader.getOrganDomain());

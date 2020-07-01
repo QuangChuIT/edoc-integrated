@@ -5,8 +5,8 @@
 <hibernate-mapping>
     <class name="com.bkav.edoc.service.database.entity.EdocPriority" table="edoc_priority">
         <id name="priorityId" type="java.lang.Long">
-            <column name="priority_id" />
-            <generator class="identity" />
+            <column name="priority_id"/>
+            <generator class="identity"/>
         </id>
         <property name="value" type="string"/>
     </class>

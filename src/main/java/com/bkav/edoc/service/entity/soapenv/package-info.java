@@ -5,6 +5,6 @@
 // Generated on: 2013.10.10 at 08:40:26 AM ICT 
 //
 
-@javax.xml.bind.annotation.XmlSchema(elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED, namespace = "http://schemas.xmlsoap.org/soap/envelope/", xmlns = { @javax.xml.bind.annotation.XmlNs(prefix = "soap-env", namespaceURI = "http://schemas.xmlsoap.org/soap/envelope/") })
+@javax.xml.bind.annotation.XmlSchema(elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED, namespace = "http://schemas.xmlsoap.org/soap/envelope/", xmlns = {@javax.xml.bind.annotation.XmlNs(prefix = "soap-env", namespaceURI = "http://schemas.xmlsoap.org/soap/envelope/")})
 package com.bkav.edoc.service.entity.soapenv;
 

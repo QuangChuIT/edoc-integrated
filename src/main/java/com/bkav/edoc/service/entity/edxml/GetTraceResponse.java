@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.bkav.edoc.service.entity.edxml;
 
@@ -17,29 +17,29 @@ import java.util.List;
 
 /**
  * @author QuangCV
- * 
+ *
  */
 @XmlRootElement(name = "Traces", namespace = StringPool.TARGET_NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GetTraceResponse {
 
-	@XmlElement(name="Status")
-	protected List<Status> statuses;
+    @XmlElement(name = "Status")
+    protected List<Status> statuses;
 
-	public List<Status> getStatuses() {
-		return statuses;
-	}
+    public List<Status> getStatuses() {
+        return statuses;
+    }
 
-	public void setStatuses(List<Status> statuses) {
-		this.statuses = statuses;
-	}
+    public void setStatuses(List<Status> statuses) {
+        this.statuses = statuses;
+    }
 
-	public GetTraceResponse(List<Status> statuses) {
-		super();
-		this.statuses = statuses;
-	}
+    public GetTraceResponse(List<Status> statuses) {
+        super();
+        this.statuses = statuses;
+    }
 
-	public GetTraceResponse() {
-		statuses = new ArrayList<Status>();
-	}
+    public GetTraceResponse() {
+        statuses = new ArrayList<Status>();
+    }
 }
