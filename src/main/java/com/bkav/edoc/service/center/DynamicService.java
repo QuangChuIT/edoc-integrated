@@ -355,7 +355,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     TraceHeaderList traceHeaderList = traceHeaderListService.getTraceHeaderListByDocId(documentId);
 
                     // parse business info
-                    mapper.parseBussinessInfo(messageHeader, traceHeaderList);
+                    mapper.parseBusinessInfo(messageHeader, traceHeaderList);
 
                     headerEntity.setMessageHeader(messageHeader);
                     headerEntity.setTraceHeaderList(traceHeaderList);

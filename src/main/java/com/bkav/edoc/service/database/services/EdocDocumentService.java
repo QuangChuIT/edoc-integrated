@@ -89,11 +89,11 @@ public class EdocDocumentService {
             return false;
         }
 
-        // get bussiness info
-        String bussinessInfo = getBussinessInfo(messageHeader, traces);
+        // get business info
+        String businessInfo = getBusinessInfo(messageHeader, traces);
 
         // Insert Trace Header List
-        if (!traceHeaderListService.addTraceHeaderList(traces, bussinessInfo, docId)) {
+        if (!traceHeaderListService.addTraceHeaderList(traces, businessInfo, docId)) {
             return false;
         }
         // Insert vao bang Attachment
@@ -156,33 +156,32 @@ public class EdocDocumentService {
     }
 
     /**
-     * get bussiness info
+     * get business info
+     *
      * @param messageHeader
      * @param traceHeaderList
      * @return
      */
-    private String getBussinessInfo(MessageHeader messageHeader, TraceHeaderList traceHeaderList) {
-        if(traceHeaderList.getBussiness() == null) return null;
-        String bussinessInfo = null;
-        // check bussiness doc type
-        long bussinessDocType = traceHeaderList.getBussiness().getBussinessDocType();
-        if(bussinessDocType == EdocTraceHeaderList.BussinessDocType.REVOKE.ordinal()) {
+    private String getBusinessInfo(MessageHeader messageHeader, TraceHeaderList traceHeaderList) {
+        if (traceHeaderList.getBusiness() == null) return null;
+        String businessInfo = null;
+        // check business doc type
+        long businessDocType = traceHeaderList.getBusiness().getBusinessDocType();
+        if (businessDocType == EdocTraceHeaderList.BusinessDocType.REVOKE.ordinal()) {
             // get response for
             List<ResponseFor> responseFors = messageHeader.getResponseFors();
-            bussinessInfo = gson.toJson(responseFors);
-        }
-        else if(bussinessDocType == EdocTraceHeaderList.BussinessDocType.UPDATE.ordinal()) {
-            // get bussiness document info
-            BussinessDocumentInfo bussinessDocumentInfo = traceHeaderList.getBussiness().getBussinessDocumentInfo();
-            bussinessInfo = gson.toJson(bussinessDocumentInfo);
-        }
-        else if(bussinessDocType == EdocTraceHeaderList.BussinessDocType.REPLACE.ordinal()) {
+            businessInfo = gson.toJson(responseFors);
+        } else if (businessDocType == EdocTraceHeaderList.BusinessDocType.UPDATE.ordinal()) {
+            // get business document info
+            BusinessDocumentInfo businessDocumentInfo = traceHeaderList.getBusiness().getBusinessDocumentInfo();
+            businessInfo = gson.toJson(businessDocumentInfo);
+        } else if (businessDocType == EdocTraceHeaderList.BusinessDocType.REPLACE.ordinal()) {
             // get replacement info
-            List<ReplacementInfo> replacementInfoList = traceHeaderList.getBussiness().getReplacementInfoList();
-            bussinessInfo = gson.toJson(replacementInfoList);
+            List<ReplacementInfo> replacementInfoList = traceHeaderList.getBusiness().getReplacementInfoList();
+            businessInfo = gson.toJson(replacementInfoList);
         }
 
-        return bussinessInfo;
+        return businessInfo;
     }
 
     /**
@@ -324,10 +323,10 @@ public class EdocDocumentService {
     }
 
     public boolean checkNewDocument(TraceHeaderList traceHeaderList) {
-        // get bussiness doc type
-        long bussinessDocType = traceHeaderList.getBussiness().getBussinessDocType();
-        // with new document, bussiness doc type = 0
-        return bussinessDocType == 0;
+        // get business doc type
+        long businessDocType = traceHeaderList.getBusiness().getBusinessDocType();
+        // with new document, business doc type = 0
+        return businessDocType == 0;
     }
 
     /**

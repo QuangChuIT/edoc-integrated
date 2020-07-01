@@ -3,7 +3,8 @@ package com.bkav.edoc.service.entity.edxml;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BussinessDocumentInfo {
+public class BusinessDocumentInfo {
+
     private String documentInfo;
     private String documentReceiver;
     private List<Receiver> receiverList = new ArrayList<>();

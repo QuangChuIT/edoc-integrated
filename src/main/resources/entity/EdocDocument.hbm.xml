@@ -29,9 +29,9 @@
         <property name="fromOrganDomain" type="string" column="from_organ_domain"/>
         <property name="visible" type="boolean" column="visible"/>
         <one-to-one name="documentDetail" class="com.bkav.edoc.service.database.entity.EdocDocumentDetail"
-                    cascade="save-update"></one-to-one>
+                    cascade="save-update"/>
         <one-to-one name="traceHeaderList" class="com.bkav.edoc.service.database.entity.EdocTraceHeaderList"
-                    cascade="save-update"></one-to-one>
+                    cascade="save-update"/>
         <many-to-one name="priority" class="com.bkav.edoc.service.database.entity.EdocPriority" fetch="select">
             <column name="priority_id" />
         </many-to-one>

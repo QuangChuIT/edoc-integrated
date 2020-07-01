@@ -10,62 +10,62 @@ import java.util.List;
  *
  */
 public class TraceHeaderList {
-	private List<TraceHeader> traceHeaders;
+    private List<TraceHeader> traceHeaders;
 
-	private Bussiness bussiness;
+    private Business business;
 
-	private String bussinessInfo;
+    private String businessInfo;
 
-	/**
-	 * @param traceHeaders
-	 * @param bussiness
-	 */
-	public TraceHeaderList(List<TraceHeader> traceHeaders, Bussiness bussiness) {
-		super();
-		this.traceHeaders = traceHeaders;
-		this.bussiness = bussiness;
-	}
+    /**
+     * @param traceHeaders
+     * @param business
+     */
+    public TraceHeaderList(List<TraceHeader> traceHeaders, Business business) {
+        super();
+        this.traceHeaders = traceHeaders;
+        this.business = business;
+    }
 
-	/**
-	 *
-	 */
-	public TraceHeaderList() {
-		super();
-	}
+    /**
+     *
+     */
+    public TraceHeaderList() {
+        super();
+    }
 
-	/**
-	 * @return the traceHeader
-	 */
-	public List<TraceHeader> getTraceHeaders() {
-		return traceHeaders;
-	}
+    /**
+     * @return the traceHeader
+     */
+    public List<TraceHeader> getTraceHeaders() {
+        return traceHeaders;
+    }
 
-	/**
-	 * @param traceHeaders the traceHeader to set
-	 */
-	public void setTraceHeaders(List<TraceHeader> traceHeaders) {
-		this.traceHeaders = traceHeaders;
-	}
+    /**
+     * @param traceHeaders the traceHeader to set
+     */
+    public void setTraceHeaders(List<TraceHeader> traceHeaders) {
+        this.traceHeaders = traceHeaders;
+    }
 
-	/**
-	 * @return the bussiness
-	 */
-	public Bussiness getBussiness() {
-		return bussiness;
-	}
+    /**
+     * @return the business
+     */
+    public Business getBusiness() {
+        return business;
+    }
 
-	/**
-	 * @param bussiness the bussiness to set
-	 */
-	public void setBussiness(Bussiness bussiness) {
-		this.bussiness = bussiness;
-	}
+    /**
+     * @param business the business to set
+     */
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
 
-	public String getBussinessInfo() {
-		return bussinessInfo;
-	}
+    public String getBusinessInfo() {
+        return businessInfo;
+    }
 
-	public void setBussinessInfo(String bussinessInfo) {
-		this.bussinessInfo = bussinessInfo;
-	}
+    public void setBusinessInfo(String businessInfo) {
+        this.businessInfo = businessInfo;
+    }
 }

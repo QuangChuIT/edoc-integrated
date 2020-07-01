@@ -6,13 +6,13 @@ import java.util.Set;
 
 public class EdocTraceHeaderList {
 
-    public enum BussinessDocType {
+    public enum BusinessDocType {
         NEW, REVOKE, UPDATE, REPLACE
     }
 
     private Long documentId;
-    private BussinessDocType bussinessDocType;
-    private String bussinessDocReason;
+    private BusinessDocType businessDocType;
+    private String businessDocReason;
     private Integer paper;
     private String department;
     private String staff;
@@ -20,14 +20,14 @@ public class EdocTraceHeaderList {
     private String email;
     private EdocDocument document;
     private Set<EdocTraceHeader> traceHeaders = new HashSet<>();
-    private String bussinessInfo;
+    private String businessInfo;
 
-    public String getBussinessInfo() {
-        return bussinessInfo;
+    public String getBusinessInfo() {
+        return businessInfo;
     }
 
-    public void setBussinessInfo(String bussinessInfo) {
-        this.bussinessInfo = bussinessInfo;
+    public void setBusinessInfo(String businessInfo) {
+        this.businessInfo = businessInfo;
     }
 
     public Set<EdocTraceHeader> getTraceHeaders() {
@@ -46,20 +46,20 @@ public class EdocTraceHeaderList {
         this.documentId = documentId;
     }
 
-    public BussinessDocType getBussinessDocType() {
-        return bussinessDocType;
+    public BusinessDocType getBusinessDocType() {
+        return businessDocType;
     }
 
-    public void setBussinessDocType(BussinessDocType bussinessDocType) {
-        this.bussinessDocType = bussinessDocType;
+    public void setBusinessDocType(BusinessDocType businessDocType) {
+        this.businessDocType = businessDocType;
     }
 
-    public String getBussinessDocReason() {
-        return bussinessDocReason;
+    public String getBusinessDocReason() {
+        return businessDocReason;
     }
 
-    public void setBussinessDocReason(String bussinessDocReason) {
-        this.bussinessDocReason = bussinessDocReason;
+    public void setBusinessDocReason(String businessDocReason) {
+        this.businessDocReason = businessDocReason;
     }
 
     public Integer getPaper() {

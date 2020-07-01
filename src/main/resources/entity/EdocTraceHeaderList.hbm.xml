@@ -10,16 +10,16 @@
                 <param name="property">document</param>
             </generator>
         </id>
-        <property name="bussinessDocReason" type="string" column="bussiness_doc_reason"/>
+        <property name="businessDocReason" type="string" column="business_doc_reason"/>
         <property name="paper" type="int" column="paper"/>
         <property name="department" type="string" column="department"/>
         <property name="staff" type="string" column="staff"/>
         <property name="mobile" type="string" column="mobile"/>
         <property name="email" type="string" column="email"/>
-        <property name="bussinessInfo" type="string" column="bussiness_info"/>
-        <property name="bussinessDocType" column="bussiness_doc_type">
+        <property name="businessInfo" type="string" column="business_info"/>
+        <property name="businessDocType" column="business_doc_type">
             <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">com.bkav.edoc.service.database.entity.EdocTraceHeaderList$BussinessDocType</param>
+                <param name="enumClass">com.bkav.edoc.service.database.entity.EdocTraceHeaderList$BusinessDocType</param>
             </type>
         </property>
         <one-to-one name="document" class="com.bkav.edoc.service.database.entity.EdocDocument"

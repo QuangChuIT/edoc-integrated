@@ -556,47 +556,47 @@ public class XmlUtil {
             nodes.add(traceHeader);
         }
 
-        // get bussiness node
-        OMElement bussinessNode = getBussinessChild(traceHeaderList, ns);
-        nodes.add(bussinessNode);
+        // get business node
+        OMElement businessNode = getBusinessChild(traceHeaderList, ns);
+        nodes.add(businessNode);
 
         return nodes;
     }
 
-    private OMElement getBussinessChild(TraceHeaderList traceHeaderList, OMNamespace ns) {
+    private OMElement getBusinessChild(TraceHeaderList traceHeaderList, OMNamespace ns) {
         OMFactory factoryOM = OMAbstractFactory.getOMFactory();
 
-        Bussiness bussiness = traceHeaderList.getBussiness();
+        Business business = traceHeaderList.getBusiness();
 
-        OMElement bussinessNode = factoryOM.createOMElement("Bussiness", ns);
+        OMElement businessNode = factoryOM.createOMElement("Business", ns);
 
-        OMElement bussinessDocTypeNode = factoryOM.createOMElement("BussinessDocType", ns);
-        bussinessDocTypeNode.setText(String.valueOf(bussiness.getBussinessDocType()));
-        bussinessNode.addChild(bussinessDocTypeNode);
+        OMElement businessDocTypeNode = factoryOM.createOMElement("BusinessDocType", ns);
+        businessDocTypeNode.setText(String.valueOf(business.getBusinessDocType()));
+        businessNode.addChild(businessDocTypeNode);
 
-        OMElement bussinessDocReasonNode = factoryOM.createOMElement("BussinessDocReason", ns);
-        bussinessDocReasonNode.setText(bussiness.getBussinessDocReason());
-        bussinessNode.addChild(bussinessDocReasonNode);
+        OMElement businessDocReasonNode = factoryOM.createOMElement("BusinessDocReason", ns);
+        businessDocReasonNode.setText(business.getBusinessDocReason());
+        businessNode.addChild(businessDocReasonNode);
 
         OMElement paperNode = factoryOM.createOMElement("Paper", ns);
-        paperNode.setText(String.valueOf(bussiness.getPaper()));
-        bussinessNode.addChild(paperNode);
+        paperNode.setText(String.valueOf(business.getPaper()));
+        businessNode.addChild(paperNode);
 
         // staff info
-        OMElement staffInfoNode = getStaffInfoNode(bussiness.getStaffInfo(), ns);
-        bussinessNode.addChild(staffInfoNode);
+        OMElement staffInfoNode = getStaffInfoNode(business.getStaffInfo(), ns);
+        businessNode.addChild(staffInfoNode);
 
         // replacement info list
-        if(bussiness.getBussinessDocType() == EdocTraceHeaderList.BussinessDocType.REPLACE.ordinal()) {
-            OMElement replacementInfoListNode = getReplacementInfoListNode(bussiness.getReplacementInfoList(), ns);
-            bussinessNode.addChild(replacementInfoListNode);
+        if(business.getBusinessDocType() == EdocTraceHeaderList.BusinessDocType.REPLACE.ordinal()) {
+            OMElement replacementInfoListNode = getReplacementInfoListNode(business.getReplacementInfoList(), ns);
+            businessNode.addChild(replacementInfoListNode);
         }
-        else if(bussiness.getBussinessDocType() == EdocTraceHeaderList.BussinessDocType.UPDATE.ordinal()) {
-            OMElement bussinessDocumentInfoNode = getBussinessDocumentInfoNode(bussiness.getBussinessDocumentInfo(), ns);
-            bussinessNode.addChild(bussinessDocumentInfoNode);
+        else if(business.getBusinessDocType() == EdocTraceHeaderList.BusinessDocType.UPDATE.ordinal()) {
+            OMElement businessDocumentInfoNode = getBusinessDocumentInfoNode(business.getBusinessDocumentInfo(), ns);
+            businessNode.addChild(businessDocumentInfoNode);
         }
 
-        return bussinessNode;
+        return businessNode;
     }
 
     private OMElement getReplacementInfoListNode(List<ReplacementInfo> replacementInfoList, OMNamespace ns) {
@@ -625,21 +625,21 @@ public class XmlUtil {
         return replacementInfoListNode;
     }
 
-    private OMElement getBussinessDocumentInfoNode(BussinessDocumentInfo bussinessDocumentInfo, OMNamespace ns) {
+    private OMElement getBusinessDocumentInfoNode(BusinessDocumentInfo businessDocumentInfo, OMNamespace ns) {
         OMFactory factoryOM = OMAbstractFactory.getOMFactory();
 
-        OMElement bussinessDocumentInfoNode = factoryOM.createOMElement("BussinessDocumentInfo", ns);
+        OMElement businessDocumentInfoNode = factoryOM.createOMElement("BusinessDocumentInfo", ns);
 
         OMElement documentInfoNode = factoryOM.createOMElement("DocumentInfo", ns);
-        documentInfoNode.setText(bussinessDocumentInfo.getDocumentInfo());
-        bussinessDocumentInfoNode.addChild(documentInfoNode);
+        documentInfoNode.setText(businessDocumentInfo.getDocumentInfo());
+        businessDocumentInfoNode.addChild(documentInfoNode);
 
         OMElement documentReceiverNode = factoryOM.createOMElement("DocumentReceiver", ns);
-        documentReceiverNode.setText(bussinessDocumentInfo.getDocumentReceiver());
-        bussinessDocumentInfoNode.addChild(documentReceiverNode);
+        documentReceiverNode.setText(businessDocumentInfo.getDocumentReceiver());
+        businessDocumentInfoNode.addChild(documentReceiverNode);
 
         OMElement receiverListNode = factoryOM.createOMElement("ReceiverList", ns);
-        for(Receiver receiver: bussinessDocumentInfo.getReceiverList()) {
+        for(Receiver receiver: businessDocumentInfo.getReceiverList()) {
             OMElement receiverNode = factoryOM.createOMElement("Receiver", ns);
 
             OMElement receiverTypeNode = factoryOM.createOMElement("ReceiverType", ns);
@@ -652,9 +652,9 @@ public class XmlUtil {
 
             receiverListNode.addChild(receiverNode);
         }
-        bussinessDocumentInfoNode.addChild(receiverListNode);
+        businessDocumentInfoNode.addChild(receiverListNode);
 
-        return bussinessDocumentInfoNode;
+        return businessDocumentInfoNode;
     }
 
     private OMElement getStaffInfoNode(StaffInfo staffInfo, OMNamespace ns) {

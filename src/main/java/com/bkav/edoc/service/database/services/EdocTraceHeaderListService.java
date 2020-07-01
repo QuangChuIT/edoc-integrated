@@ -4,7 +4,7 @@ import com.bkav.edoc.service.database.daoimpl.*;
 import com.bkav.edoc.service.database.entity.EdocDocument;
 import com.bkav.edoc.service.database.entity.EdocTraceHeader;
 import com.bkav.edoc.service.database.entity.EdocTraceHeaderList;
-import com.bkav.edoc.service.entity.edxml.Bussiness;
+import com.bkav.edoc.service.entity.edxml.Business;
 import com.bkav.edoc.service.entity.edxml.StaffInfo;
 import com.bkav.edoc.service.entity.edxml.TraceHeader;
 import com.bkav.edoc.service.entity.edxml.TraceHeaderList;
@@ -30,7 +30,7 @@ public class EdocTraceHeaderListService {
      * @param docId
      * @return
      */
-    public boolean addTraceHeaderList(TraceHeaderList traceHeaderList, String bussinessInfo, long docId) {
+    public boolean addTraceHeaderList(TraceHeaderList traceHeaderList, String businessInfo, long docId) {
         Session currentSession = traceHeaderListDaoImpl.openCurrentSession();
         try {
             currentSession.beginTransaction();
@@ -39,15 +39,15 @@ public class EdocTraceHeaderListService {
                 documentDaoImpl.setCurrentSession(currentSession);
                 EdocDocument document = documentDaoImpl.findById(docId);
                 EdocTraceHeaderList edocTraceHeaderList = new EdocTraceHeaderList();
-                edocTraceHeaderList.setBussinessDocReason(traceHeaderList.getBussiness().getBussinessDocReason());
-                int bussinessDocType = (int) traceHeaderList.getBussiness().getBussinessDocType();
-                EdocTraceHeaderList.BussinessDocType type = EdocTraceHeaderList.BussinessDocType.values()[bussinessDocType];
-                edocTraceHeaderList.setBussinessDocType(type);
-                edocTraceHeaderList.setPaper((int) traceHeaderList.getBussiness().getPaper());
-                edocTraceHeaderList.setBussinessInfo(bussinessInfo);
+                edocTraceHeaderList.setBusinessDocReason(traceHeaderList.getBusiness().getBusinessDocReason());
+                int businessDocType = (int) traceHeaderList.getBusiness().getBusinessDocType();
+                EdocTraceHeaderList.BusinessDocType type = EdocTraceHeaderList.BusinessDocType.values()[businessDocType];
+                edocTraceHeaderList.setBusinessDocType(type);
+                edocTraceHeaderList.setPaper((int) traceHeaderList.getBusiness().getPaper());
+                edocTraceHeaderList.setBusinessInfo(businessInfo);
                 // get staff info
-                if(traceHeaderList.getBussiness().getStaffInfo() != null) {
-                    StaffInfo staffInfo = traceHeaderList.getBussiness().getStaffInfo();
+                if(traceHeaderList.getBusiness().getStaffInfo() != null) {
+                    StaffInfo staffInfo = traceHeaderList.getBusiness().getStaffInfo();
                     edocTraceHeaderList.setEmail(staffInfo.getEmail());
                     edocTraceHeaderList.setDepartment(staffInfo.getDepartment());
                     edocTraceHeaderList.setMobile(staffInfo.getMobile());
@@ -99,17 +99,17 @@ public class EdocTraceHeaderListService {
 
         traceHeaderList = new TraceHeaderList();
 
-        Bussiness bussiness = new Bussiness();
-        bussiness.setPaper(edocTraceHeaderList.getPaper());
-        bussiness.setBussinessDocReason(edocTraceHeaderList.getBussinessDocReason());
-        bussiness.setBussinessDocType(edocTraceHeaderList.getBussinessDocType().ordinal());
+        Business business = new Business();
+        business.setPaper(edocTraceHeaderList.getPaper());
+        business.setBusinessDocReason(edocTraceHeaderList.getBusinessDocReason());
+        business.setBusinessDocType(edocTraceHeaderList.getBusinessDocType().ordinal());
 
         StaffInfo staffInfo = new StaffInfo();
         staffInfo.setMobile(edocTraceHeaderList.getMobile());
         staffInfo.setStaff(edocTraceHeaderList.getStaff());
         staffInfo.setEmail(edocTraceHeaderList.getEmail());
         staffInfo.setDepartment(edocTraceHeaderList.getDepartment());
-        bussiness.setStaffInfo(staffInfo);
+        business.setStaffInfo(staffInfo);
 
         List<TraceHeader> traceHeaders = new ArrayList<>();
         for(EdocTraceHeader edocTraceHeader: edocTraceHeaders) {
@@ -121,8 +121,8 @@ public class EdocTraceHeaderListService {
         }
 
         traceHeaderList.setTraceHeaders(traceHeaders);
-        traceHeaderList.setBussiness(bussiness);
-        traceHeaderList.setBussinessInfo(edocTraceHeaderList.getBussinessInfo());
+        traceHeaderList.setBusiness(business);
+        traceHeaderList.setBusinessInfo(edocTraceHeaderList.getBusinessInfo());
 
         traceHeaderListDaoImpl.closeCurrentSession();
         return traceHeaderList;
