@@ -99,7 +99,7 @@ public class DynamicService extends AbstractMediator implements ManagedLifecycle
                     log.error("Soap action not define !!!!!!!");
             }
         } catch (Exception e) {
-            log.error("Error when process eDoc mediator !!!!!!!!!!!!!!!!!!!");
+            log.error("Error when process eDoc mediator !!!!!!!!!!!!!!!!!!!" + e.getMessage());
         }
         responseEnvelope = ResponseUtil.buildResultEnvelope(inMessageContext, map, soapAction);
         try {

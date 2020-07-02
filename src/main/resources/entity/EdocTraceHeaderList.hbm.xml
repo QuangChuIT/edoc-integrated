@@ -19,8 +19,7 @@
         <property name="businessInfo" type="string" column="business_info"/>
         <property name="businessDocType" column="business_doc_type">
             <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">com.bkav.edoc.service.database.entity.EdocTraceHeaderList$BusinessDocType
-                </param>
+                <param name="enumClass">com.bkav.edoc.service.database.entity.EdocTraceHeaderList$BusinessDocType</param>
             </type>
         </property>
         <one-to-one name="document" class="com.bkav.edoc.service.database.entity.EdocDocument"
